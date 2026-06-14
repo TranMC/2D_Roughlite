@@ -1,0 +1,103 @@
+name: Discord - Pretty commit notification
+
+on:
+  push:
+    branches: [ main ]            # đổi thành ['**'] nếu muốn mọi nhánh
+  workflow_dispatch:              # chạy test thủ công trong tab Actions
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ensure jq is available
+        run: jq --version || (sudo apt-get update && sudo apt-get install -y jq)
+
+      - name: Build Discord embed payload (with role ping)
+        run: |
+          REPO="${{ github.repository }}"                # org/repo
+          OWNER="${REPO%%/*}"                            # org / user
+          BRANCH="${{ github.ref_name }}"
+          PUSHER="${{ github.actor }}"
+          COMPARE_URL="${{ github.event.compare }}"
+          EVENT='${{ toJson(github.event) }}'
+          TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # 🔔 Role sẽ bị ping
+          ROLE_ID="1515715176060420177"  # đổi thành ID role bạn muốn ping
+
+          # 🎨 Màu theo nhánh (tuỳ biến)
+          case "$BRANCH" in
+            main|master) COLOR=5763719 ;;       # xanh dương
+            dev|develop) COLOR=16753920 ;;      # cam
+            release*)    COLOR=5793266 ;;       # blurple
+            hotfix*)     COLOR=15548997 ;;      # đỏ
+            *)           COLOR=9807270 ;;       # xám
+          esac
+
+          # 🔢 Lấy số lượng commit an toàn
+          COMMIT_COUNT=$(jq -nr --argjson e "$EVENT" '($e.commits // []) | length')
+          if [ "$COMMIT_COUNT" -eq 0 ]; then COMMIT_COUNT=1; fi
+
+          # 📜 Chuỗi commit markdown (Chỉ lấy dòng 1 của message, highlight ID)
+          COMMITS=$(jq -nr --argjson e "$EVENT" '
+            ($e.commits // []) as $cs |
+            ($cs | length) as $n |
+            if $n > 0 then
+              ($cs[0:5]
+               | map("`[\(.id[0:7])]` [\(.message | split("\n")[0])](\(.url)) - \(.author.username // $e.pusher.name)")
+               | join("\n"))
+              +
+              (if $n > 5 then "\n*… và \($n-5) commit nữa*" else "" end)
+            else
+              "`[\($e.head_commit.id[0:7])]` [\($e.head_commit.message | split("\n")[0] // "unknown")](\($e.head_commit.url))"
+            end
+          ')
+
+          # 🖼️ Ảnh đại diện & Logo
+          ORG_ICON="https://github.com/${OWNER}.png?size=64"
+          PUSHER_ICON="https://github.com/${PUSHER}.png?size=64"
+          GITHUB_LOGO="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+
+          # 🧱 Dựng payload JSON an toàn bằng jq
+          jq -n \
+            --arg content "<@&${ROLE_ID}> 🚀 **Có bản cập nhật mới trên \`${BRANCH}\`!**" \
+            --arg repo "$REPO" \
+            --arg branch "$BRANCH" \
+            --arg pusher "$PUSHER" \
+            --arg compare "$COMPARE_URL" \
+            --arg commits "$COMMITS" \
+            --arg ts "$TS" \
+            --arg org_icon "$ORG_ICON" \
+            --arg pusher_icon "$PUSHER_ICON" \
+            --arg gh_logo "$GITHUB_LOGO" \
+            --arg role "$ROLE_ID" \
+            --arg count "$COMMIT_COUNT" \
+            --argjson color "$COLOR" \
+            '{
+              content: $content,
+              allowed_mentions: { roles: [ $role ] },   # chỉ cho phép ping role này
+              embeds: [
+                {
+                  title: ("✨ " + $count + " new commit(s) pushed to " + $branch),
+                  url: $compare,
+                  description: $commits,
+                  color: $color,
+                  author: { name: $repo, url: ("https://github.com/" + $repo), icon_url: $org_icon },
+                  fields: [
+                    { name: "🌿 Branch", value: ("`" + $branch + "`"), inline: true },
+                    { name: "👤 Pusher", value: ("[" + $pusher + "](https://github.com/" + $pusher + ")"), inline: true },
+                    { name: "🔗 Action", value: ("[Compare Changes](" + $compare + ")"), inline: true }
+                  ],
+                  thumbnail: { url: $pusher_icon },
+                  footer: { text: "GitHub Actions", icon_url: $gh_logo },
+                  timestamp: $ts
+                }
+              ]
+            }' > payload.json
+
+      - name: Send to Discord
+        run: |
+          curl -X POST -H 'Content-Type: application/json' \
+               --data "@payload.json" \
+               "${{ secrets.DISCORD_WEBHOOK_URL }}"

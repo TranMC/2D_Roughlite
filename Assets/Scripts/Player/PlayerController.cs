@@ -12,6 +12,7 @@ namespace Roguelite.Player
         public Rigidbody2D Rb { get; private set; }
         public Animator Animator { get; private set; }
         public SpriteRenderer SpriteRenderer { get; private set; }
+        public PlayerStats Stats { get; private set; }
 
         [Header("Movement Settings")]
         [Tooltip("Tốc độ di chuyển ngang trên mặt đất.")]
@@ -78,6 +79,7 @@ namespace Roguelite.Player
             // Tìm Animator và SpriteRenderer ở bản thân hoặc các Object con (thường Prefab tách phần Model/Visual ra con)
             Animator = GetComponentInChildren<Animator>();
             SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            Stats = GetComponent<PlayerStats>();
 
             // Khởi tạo máy trạng thái và các state tương ứng với chuỗi Animator bool
             StateMachine = new PlayerStateMachine();

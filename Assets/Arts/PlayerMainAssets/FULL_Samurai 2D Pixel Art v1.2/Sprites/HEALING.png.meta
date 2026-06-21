@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c3e21933180390c4a946dd0944852f7c
+guid: dc23ab99727f0a746ad5b92813ec59aa
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DASH_0
+      name: HEALING_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +120,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f75311f51019e24f83b19f05a66dd89
-      internalID: -1715421738
+      spriteID: 6ca38e28cf3235a4bb9b90a32de764c9
+      internalID: -1524711569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_1
+      name: HEALING_1
       rect:
         serializedVersion: 2
         x: 96
@@ -129,19 +141,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 969ad27a8e9bf9b41aa4eb57ef3ca821
-      internalID: 1774247718
+      spriteID: 674da10bc10eca14b9967128c716a6ac
+      internalID: -357760879
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_2
+      name: HEALING_2
       rect:
         serializedVersion: 2
         x: 192
@@ -151,19 +162,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af8bc2518d382ff449a2e49868d3a033
-      internalID: -912128264
+      spriteID: ba1c1aab759c6d54b887398a00696b62
+      internalID: -505511177
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_3
+      name: HEALING_3
       rect:
         serializedVersion: 2
         x: 288
@@ -173,19 +183,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eecb213be0eacb944a0bedb196a53e32
-      internalID: -1559283835
+      spriteID: 58a9f482b3bb4c24486e4a383ae376b9
+      internalID: 1249735325
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_4
+      name: HEALING_4
       rect:
         serializedVersion: 2
         x: 384
@@ -195,19 +204,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0abda2593b9d12542ad4a1b326982ca3
-      internalID: -259092813
+      spriteID: 77a2ebe48a32a844293637ce515905f9
+      internalID: 1772140356
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_5
+      name: HEALING_5
       rect:
         serializedVersion: 2
         x: 480
@@ -217,19 +225,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b25d8f4e4e416924b8c001355c62eb48
-      internalID: -642863055
+      spriteID: d36f293c3f8d69e4ea3237a2d8ae9c49
+      internalID: -1807773231
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_6
+      name: HEALING_6
       rect:
         serializedVersion: 2
         x: 576
@@ -239,19 +246,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7872fc0ca7cb3154092c92e4c629f549
-      internalID: -934592395
+      spriteID: d116ada14a97bfa48bc815bceef56980
+      internalID: 389958627
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: DASH_7
+      name: HEALING_7
       rect:
         serializedVersion: 2
         x: 672
@@ -261,41 +267,189 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc3aec8134364c341baab90b2b53ebdb
-      internalID: 1914263688
+      spriteID: 043db5277d038964583868daaf3694c2
+      internalID: -1775684820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_8
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f05b507ed6950c641a2467442d501a8b
+      internalID: 1200531673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_9
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db88a3af3ebe40645a3af6faa2974771
+      internalID: -1951271807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_10
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4a0adfc7de9bce438c57d1008004d54
+      internalID: -2011078294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_11
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 478bc8e80d83bd84dac32985881b4a06
+      internalID: -674783875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_12
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f04db9d5818bfda4ebfe5cd9f8b5cc9a
+      internalID: 1021141794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_13
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2838f2a9843697c4195a07ff10138bcd
+      internalID: -1674210946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HEALING_14
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d045602e361b8334ca8e2714f306c9ae
+      internalID: 1521282473
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: 92ca70f0397a827438342da8e2066750
+    spriteID: 28ce3b3aa5599f74a954a2365c6dbb7b
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      DASH_0: -1715421738
-      DASH_1: 1774247718
-      DASH_2: -912128264
-      DASH_3: -1559283835
-      DASH_4: -259092813
-      DASH_5: -642863055
-      DASH_6: -934592395
-      DASH_7: 1914263688
+      HEALING_0: -1524711569
+      HEALING_1: -357760879
+      HEALING_10: -2011078294
+      HEALING_11: -674783875
+      HEALING_12: 1021141794
+      HEALING_13: -1674210946
+      HEALING_14: 1521282473
+      HEALING_2: -505511177
+      HEALING_3: 1249735325
+      HEALING_4: 1772140356
+      HEALING_5: -1807773231
+      HEALING_6: 389958627
+      HEALING_7: -1775684820
+      HEALING_8: 1200531673
+      HEALING_9: -1951271807
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

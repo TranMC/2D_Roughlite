@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dc23ab99727f0a746ad5b92813ec59aa
+guid: 7f7add71ee21a7541b415e15c43232ec
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HEALING_0
+      name: HEALING NO EFFECT_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +120,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6ca38e28cf3235a4bb9b90a32de764c9
-      internalID: -1524711569
+      spriteID: d5a9146d79b00ed40a9d5d9d772a3007
+      internalID: -1423075447
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_1
+      name: HEALING NO EFFECT_1
       rect:
         serializedVersion: 2
         x: 96
@@ -129,19 +141,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 674da10bc10eca14b9967128c716a6ac
-      internalID: -357760879
+      spriteID: 898d172b62a88854a9703f18c7a1439a
+      internalID: 2015805584
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_2
+      name: HEALING NO EFFECT_2
       rect:
         serializedVersion: 2
         x: 192
@@ -151,19 +162,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba1c1aab759c6d54b887398a00696b62
-      internalID: -505511177
+      spriteID: fdcec7ef03ec34941a4f547f128ab562
+      internalID: 982186063
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_3
+      name: HEALING NO EFFECT_3
       rect:
         serializedVersion: 2
         x: 288
@@ -173,19 +183,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58a9f482b3bb4c24486e4a383ae376b9
-      internalID: 1249735325
+      spriteID: 225ff7cac832b2340a2e894d5a60db74
+      internalID: 439620387
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_4
+      name: HEALING NO EFFECT_4
       rect:
         serializedVersion: 2
         x: 384
@@ -195,19 +204,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 77a2ebe48a32a844293637ce515905f9
-      internalID: 1772140356
+      spriteID: ce10d0cafb45e4e42b62fa8535cf2029
+      internalID: -1389846910
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_5
+      name: HEALING NO EFFECT_5
       rect:
         serializedVersion: 2
         x: 480
@@ -217,19 +225,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d36f293c3f8d69e4ea3237a2d8ae9c49
-      internalID: -1807773231
+      spriteID: 5ec1d60f8d59f8e45bb0c3ddd4f75206
+      internalID: -1397584611
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_6
+      name: HEALING NO EFFECT_6
       rect:
         serializedVersion: 2
         x: 576
@@ -239,19 +246,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d116ada14a97bfa48bc815bceef56980
-      internalID: 389958627
+      spriteID: e829f7d2d08edc542bd03d2f26a9216c
+      internalID: -1449733237
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_7
+      name: HEALING NO EFFECT_7
       rect:
         serializedVersion: 2
         x: 672
@@ -261,19 +267,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 043db5277d038964583868daaf3694c2
-      internalID: -1775684820
+      spriteID: ecca381cb209f4a4d9288db2f5dc159b
+      internalID: -1747609077
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_8
+      name: HEALING NO EFFECT_8
       rect:
         serializedVersion: 2
         x: 768
@@ -283,19 +288,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f05b507ed6950c641a2467442d501a8b
-      internalID: 1200531673
+      spriteID: 803568932913f1f4085f38c73ef70675
+      internalID: -2037032343
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_9
+      name: HEALING NO EFFECT_9
       rect:
         serializedVersion: 2
         x: 864
@@ -305,19 +309,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: db88a3af3ebe40645a3af6faa2974771
-      internalID: -1951271807
+      spriteID: 30315f245fc75174fbea039531989753
+      internalID: -1812676094
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_10
+      name: HEALING NO EFFECT_10
       rect:
         serializedVersion: 2
         x: 960
@@ -327,19 +330,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a4a0adfc7de9bce438c57d1008004d54
-      internalID: -2011078294
+      spriteID: 8fbb031fd395e804e9be63ed1514295b
+      internalID: -1481223262
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_11
+      name: HEALING NO EFFECT_11
       rect:
         serializedVersion: 2
         x: 1056
@@ -349,19 +351,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 478bc8e80d83bd84dac32985881b4a06
-      internalID: -674783875
+      spriteID: 81cdc3cfc5288bf4cabfa1562b50671b
+      internalID: -966215702
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_12
+      name: HEALING NO EFFECT_12
       rect:
         serializedVersion: 2
         x: 1152
@@ -371,19 +372,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f04db9d5818bfda4ebfe5cd9f8b5cc9a
-      internalID: 1021141794
+      spriteID: e24e1b9cc734898429225cc445df523c
+      internalID: 314921636
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_13
+      name: HEALING NO EFFECT_13
       rect:
         serializedVersion: 2
         x: 1248
@@ -393,19 +393,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2838f2a9843697c4195a07ff10138bcd
-      internalID: -1674210946
+      spriteID: 14bf80261f27dba4ba529a7f2777f1f6
+      internalID: -1963842935
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HEALING_14
+      name: HEALING NO EFFECT_14
       rect:
         serializedVersion: 2
         x: 1344
@@ -415,48 +414,42 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d045602e361b8334ca8e2714f306c9ae
-      internalID: 1521282473
+      spriteID: e0e027fccf065b341a06aec1a5d106b0
+      internalID: 1968765917
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: 28ce3b3aa5599f74a954a2365c6dbb7b
+    spriteID: d5c366e168a9fe44e9dea3d74b291196
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      HEALING_0: -1524711569
-      HEALING_1: -357760879
-      HEALING_10: -2011078294
-      HEALING_11: -674783875
-      HEALING_12: 1021141794
-      HEALING_13: -1674210946
-      HEALING_14: 1521282473
-      HEALING_2: -505511177
-      HEALING_3: 1249735325
-      HEALING_4: 1772140356
-      HEALING_5: -1807773231
-      HEALING_6: 389958627
-      HEALING_7: -1775684820
-      HEALING_8: 1200531673
-      HEALING_9: -1951271807
+      HEALING NO EFFECT_0: -1423075447
+      HEALING NO EFFECT_1: 2015805584
+      HEALING NO EFFECT_10: -1481223262
+      HEALING NO EFFECT_11: -966215702
+      HEALING NO EFFECT_12: 314921636
+      HEALING NO EFFECT_13: -1963842935
+      HEALING NO EFFECT_14: 1968765917
+      HEALING NO EFFECT_2: 982186063
+      HEALING NO EFFECT_3: 439620387
+      HEALING NO EFFECT_4: -1389846910
+      HEALING NO EFFECT_5: -1397584611
+      HEALING NO EFFECT_6: -1449733237
+      HEALING NO EFFECT_7: -1747609077
+      HEALING NO EFFECT_8: -2037032343
+      HEALING NO EFFECT_9: -1812676094
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

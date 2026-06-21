@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 6951296986269504407}
   - component: {fileID: 5699054443768927260}
   - component: {fileID: 1641182201220779459}
+  - component: {fileID: 5473817790128322941}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -163,11 +164,11 @@ MonoBehaviour:
   airControlFactor: 0.8
   cutJumpHeightFactor: 0.5
   fallMultiplier: 2.5
-  groundCheckPoint: {fileID: 0}
+  groundCheckPoint: {fileID: 3077451853919894609}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   coyoteTime: 0.15
   jumpBufferTime: 0.15
 --- !u!95 &1641182201220779459
@@ -191,3 +192,38 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!70 &5473817790128322941
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201934938828041213}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0058636665, y: -0.9675077}
+  m_Size: {x: 0.9220495, y: 2.1416957}
+  m_Direction: 0

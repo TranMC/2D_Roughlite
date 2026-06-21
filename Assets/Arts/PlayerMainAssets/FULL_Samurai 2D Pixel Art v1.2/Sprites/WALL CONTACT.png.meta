@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fa5037fc9e846514dba5f2754156ae72
+guid: 8f42f0067e9710144b0cd53da3dc3dad
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: topplayer_0
+      name: WALL CONTACT_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,36 +120,72 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
-      physicsShape:
-      - - {x: -12, y: -33}
-        - {x: 9, y: -33}
-        - {x: 9, y: 1}
-        - {x: -12, y: 1}
+      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7e67c8ef6c1d4bb40800000000000000
-      internalID: 5455215701256861415
+      spriteID: 0f97b413a6547be419ee59a6f18663bf
+      internalID: 1679417784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WALL CONTACT_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af22dfc554e9ebb48bb46e9c3be0cf52
+      internalID: -1896730588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WALL CONTACT_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99384f75323db3b448594e062c9784ef
+      internalID: 107199072
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: b6595b56da6f974489a6da17c9ec88e3
+    spriteID: d29ce1b59c60f524f9cefb898916bea1
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries: []
     nameFileIdTable:
-      topplayer_0: 5455215701256861415
+      WALL CONTACT_0: 1679417784
+      WALL CONTACT_1: -1896730588
+      WALL CONTACT_2: 107199072
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

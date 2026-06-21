@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8f09ff328f0b10040a281e1dc60bed12
+guid: 5c6df35f7e94e03438ea75bf456daa16
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ATTACK 2_0
+      name: CLIMBING_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +120,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d422bb9e717027c49b1d0120c4d53056
-      internalID: -1446759265
+      spriteID: dd702e6bd986fa146875a9d0f5f1ebf6
+      internalID: 1566142837
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_1
+      name: CLIMBING_1
       rect:
         serializedVersion: 2
         x: 96
@@ -129,19 +141,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 219893e4fd7f2e748b695d7f1820cc8c
-      internalID: 1914647028
+      spriteID: bfe3138055215694581ce9cf38c4c5e2
+      internalID: 455951032
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_2
+      name: CLIMBING_2
       rect:
         serializedVersion: 2
         x: 192
@@ -151,19 +162,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 39f175cae7f51ef4ca514a9eb342cf4c
-      internalID: 621295806
+      spriteID: 03effd6d3fdb7634293b227103ec6fa7
+      internalID: -1473348223
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_3
+      name: CLIMBING_3
       rect:
         serializedVersion: 2
         x: 288
@@ -173,19 +183,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0ca83a8c2a6b04a40a6053bd43e3d0f7
-      internalID: 1835571110
+      spriteID: 39cfbe99dfa8ed740bc6adf9b5057079
+      internalID: 2005789137
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_4
+      name: CLIMBING_4
       rect:
         serializedVersion: 2
         x: 384
@@ -195,19 +204,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a227faa6059ae3444b5edd38639bc24b
-      internalID: -453722288
+      spriteID: d372e8acb61e5744588b2716a5eb4359
+      internalID: -1485180327
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_5
+      name: CLIMBING_5
       rect:
         serializedVersion: 2
         x: 480
@@ -217,19 +225,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b131084dd1815fe4abeabdac50408d22
-      internalID: -209538331
+      spriteID: f10fc44921d4dbd45a1bd6c7157edcda
+      internalID: -1220011431
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ATTACK 2_6
+      name: CLIMBING_6
       rect:
         serializedVersion: 2
         x: 576
@@ -239,40 +246,56 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0322316a82e1f342a9e0143734306ab
-      internalID: 1517280225
+      spriteID: e7afaa8e5d9bae94c876d979d4a21251
+      internalID: 360148370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLIMBING_7
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a02b02579d343194dac8f25a4064d236
+      internalID: 641748238
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: d89980a1ff5cdc749aaf1ed4f610216a
+    spriteID: b8dc46483c424c94e908e97368756c4e
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      ATTACK 2_0: -1446759265
-      ATTACK 2_1: 1914647028
-      ATTACK 2_2: 621295806
-      ATTACK 2_3: 1835571110
-      ATTACK 2_4: -453722288
-      ATTACK 2_5: -209538331
-      ATTACK 2_6: 1517280225
+      CLIMBING_0: 1566142837
+      CLIMBING_1: 455951032
+      CLIMBING_2: -1473348223
+      CLIMBING_3: 2005789137
+      CLIMBING_4: -1485180327
+      CLIMBING_5: -1220011431
+      CLIMBING_6: 360148370
+      CLIMBING_7: 641748238
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

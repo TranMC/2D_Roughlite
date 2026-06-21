@@ -102,8 +102,22 @@ namespace Roguelite.Player
             // Cập nhật các bộ đếm thời gian
             UpdateTimers();
 
+            // Cập nhật tham số Animator
+            UpdateAnimator();
+
             // Cập nhật logic máy trạng thái
             StateMachine.CurrentState.LogicUpdate();
+        }
+
+        /// <summary>
+        /// Cập nhật tham số isGrounded trong Animator.
+        /// </summary>
+        private void UpdateAnimator()
+        {
+            if (Animator != null)
+            {
+                Animator.SetBool("isGrounded", IsGrounded());
+            }
         }
 
         private void FixedUpdate()
@@ -169,9 +183,27 @@ namespace Roguelite.Player
             if (groundCheckPoint == null)
             {
                 // Fallback nếu người chơi chưa gán groundCheckPoint
-                return Physics2D.Raycast(transform.position, Vector2.down, 1.1f, groundLayer);
+                // Bắt đầu raycast từ dưới chân nhân vật xuống dưới để tránh tự va chạm
+                Collider2D col = GetComponent<Collider2D>();
+                Vector2 startPos = transform.position;
+                if (col != null)
+                {
+                    startPos = new Vector2(transform.position.x, col.bounds.min.y + 0.05f);
+                }
+                RaycastHit2D hit = Physics2D.Raycast(startPos, Vector2.down, 0.15f, groundLayer);
+                return hit.collider != null && hit.collider.transform != transform;
             }
-            return Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
+
+            Collider2D[] results = Physics2D.OverlapCircleAll(groundCheckPoint.position, groundCheckRadius, groundLayer);
+            foreach (var result in results)
+            {
+                // Bỏ qua các collider thuộc về chính bản thân Player
+                if (result.transform != transform)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

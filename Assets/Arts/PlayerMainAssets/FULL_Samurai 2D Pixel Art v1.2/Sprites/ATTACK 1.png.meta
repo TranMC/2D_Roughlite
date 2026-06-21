@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f5dadc43771c9824f81617d420279966
+guid: 772b4dc4238bfee468e66677a42b77a9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IDLE_0
+      name: ATTACK 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +120,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 382c6793e1b30934b84d2eebe4da27af
-      internalID: 2055724632
+      spriteID: 2504cc1f04078f142b60ed1e3049285d
+      internalID: 1830189971
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_1
+      name: ATTACK 1_1
       rect:
         serializedVersion: 2
         x: 96
@@ -129,19 +141,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fdad901e325a8ae498fe1e4da9ee105d
-      internalID: -1143721601
+      spriteID: 60ff84ae1d6a2c94482d908a168d18b9
+      internalID: 244772298
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_2
+      name: ATTACK 1_2
       rect:
         serializedVersion: 2
         x: 192
@@ -151,19 +162,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d14939de6e36edd45b3d3f7e8c8692f5
-      internalID: -1783935578
+      spriteID: dfa4241f458b36346aee5d45efa28ec8
+      internalID: -1974802627
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_3
+      name: ATTACK 1_3
       rect:
         serializedVersion: 2
         x: 288
@@ -173,19 +183,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9037b5443ffe72b4684e65ee04536b16
-      internalID: -1159809176
+      spriteID: 8d1c1997c1818174198ad81e3c7902bc
+      internalID: 1000681474
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_4
+      name: ATTACK 1_4
       rect:
         serializedVersion: 2
         x: 384
@@ -195,19 +204,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc8fcaddd617c914f85092a3535ebb93
-      internalID: 1766826239
+      spriteID: 7e044ac5008b96d459db8090636b29e4
+      internalID: 686137556
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_5
+      name: ATTACK 1_5
       rect:
         serializedVersion: 2
         x: 480
@@ -217,19 +225,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 733fa5c8ccabaed4ebca952b9b1fd9a6
-      internalID: -1351664744
+      spriteID: 37054c54b3cf1ed459769c5cc93b6061
+      internalID: 1433123017
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IDLE_6
+      name: ATTACK 1_6
       rect:
         serializedVersion: 2
         x: 576
@@ -239,109 +246,34 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 102ac3bbed339fb47b562778ebb6a593
-      internalID: 1577108158
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IDLE_7
-      rect:
-        serializedVersion: 2
-        x: 672
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2b2646701f0458d42a7d8f58f4d07448
-      internalID: 310026806
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IDLE_8
-      rect:
-        serializedVersion: 2
-        x: 768
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8010283ce1c2ec34d968d0a39707dd46
-      internalID: 809891582
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IDLE_9
-      rect:
-        serializedVersion: 2
-        x: 864
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: efd5d32cc7128ea4fbfa150a15d7e5e2
-      internalID: 690308696
+      spriteID: 8096f61715efbf942b8eb7feaf6ad850
+      internalID: 1813566097
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: e37e87d7b8b981c4e9a174984914e89f
+    spriteID: c43b53efa36b01c478cd31fa22b7a605
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      IDLE_0: 2055724632
-      IDLE_1: -1143721601
-      IDLE_2: -1783935578
-      IDLE_3: -1159809176
-      IDLE_4: 1766826239
-      IDLE_5: -1351664744
-      IDLE_6: 1577108158
-      IDLE_7: 310026806
-      IDLE_8: 809891582
-      IDLE_9: 690308696
+      ATTACK 1_0: 1830189971
+      ATTACK 1_1: 244772298
+      ATTACK 1_2: -1974802627
+      ATTACK 1_3: 1000681474
+      ATTACK 1_4: 686137556
+      ATTACK 1_5: 1433123017
+      ATTACK 1_6: 1813566097
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e590b73b210443b439dcff174e147f76
+guid: 7b8ad9fe2d1e4ed46a89999a2b7862f8
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   swizzle: 50462976
   cookieLightType: 0
   platformSettings:
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
@@ -80,7 +80,7 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,11 +93,37 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WALL JUMP_0
+      name: WALL SLIDE - revert_0
       rect:
         serializedVersion: 2
         x: 0
@@ -107,19 +133,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7085cba4b9e8b745b82a185f38d22a0
-      internalID: 354204749
+      spriteID: 2c448ee2168203342bdb434159f7ac9d
+      internalID: 585360636
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WALL JUMP_1
+      name: WALL SLIDE - revert_1
       rect:
         serializedVersion: 2
         x: 96
@@ -129,19 +154,18 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8f267cb5b984ca94f9fc43538f1de414
-      internalID: -1657998816
+      spriteID: decff0fd9435053409a635226db21ac8
+      internalID: 318075078
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WALL JUMP_2
+      name: WALL SLIDE - revert_2
       rect:
         serializedVersion: 2
         x: 192
@@ -151,36 +175,30 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 725b19412c77f55469e1dc4caf8030a1
-      internalID: -1776369491
+      spriteID: a975876e429ab8744b550cf46056ab9c
+      internalID: -710396860
       vertices: []
       indices: 
       edges: []
       weights: []
     outline: []
-    customData: 
     physicsShape: []
     bones: []
-    spriteID: 342d0d5fbb8d27a4da068126a0bb532f
+    spriteID: c2626e56727ead443b4fe264cc31b18e
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      WALL JUMP_0: 354204749
-      WALL JUMP_1: -1657998816
-      WALL JUMP_2: -1776369491
+      WALL SLIDE - revert_0: 585360636
+      WALL SLIDE - revert_1: 318075078
+      WALL SLIDE - revert_2: -710396860
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

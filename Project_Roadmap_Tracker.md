@@ -5,11 +5,11 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Giai đoạn thiết lập nền tảng & cấu trúc dự án.
+*   **Trạng thái hiện tại**: Giai đoạn xây dựng Core Gameplay & Player Controller.
 *   **Tổng số Story Points (SP)**: 50 SP.
-*   **Đã hoàn thành**: 14 / 50 SP (28%).
+*   **Đã hoàn thành**: 17 / 50 SP (34%).
 *   **Đang thực hiện**: 0 / 50 SP (0%).
-*   **Chưa bắt đầu**: 36 / 50 SP (72%).
+*   **Chưa bắt đầu**: 33 / 50 SP (66%).
 
 ---
 
@@ -33,7 +33,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-006** | Xây dựng PlayerController và State Machine xử lý di chuyển (Idle, Move, Jump, Fall) bằng Rigidbody2D | Player | 3 | 🔴 High | ⏳ Chưa bắt đầu | Di chuyển vật lý 2D, hỗ trợ cảm giác điều khiển mượt mà. |
+| **US-006** | Xây dựng PlayerController và State Machine xử lý di chuyển (Idle, Move, Jump, Fall) bằng Rigidbody2D | Player | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện PlayerController, PlayerStateMachine và các trạng thái di chuyển (Idle, Move, Jump, Fall) sử dụng Rigidbody2D. |
 | **US-007** | Tạo PlayerStats để quản lí HP của player và các trạng thái Hit, Dead | Player | 3 | 🔴 High | ⏳ Chưa bắt đầu | Quản lý máu, sự kiện nhận sát thương. |
 | **US-008** | Thêm trạng thái Attack cho Player, thiết lập hệ thống hitbox (Trigger Collider) | Combat | 3 | 🔴 High | ⏳ Chưa bắt đầu | Tương tác tấn công cận chiến/tầm xa. |
 | **US-009** | Xây dựng EnemyBase với máy trạng thái đơn giản: Patrol, Chase và Attack | Enemy | 3 | 🔴 High | ⏳ Chưa bắt đầu | Lớp cơ sở (Base class) cho mọi loại quái. |
@@ -53,5 +53,6 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 🪵 NHẬT KÝ THAY ĐỔI (CHANGE LOG)
+*   **2026-06-21**: Đánh dấu **US-006** (PlayerController & State Machine di chuyển) là **Hoàn thành** sau khi kiểm tra mã nguồn thực tế đã được triển khai đầy đủ.
 *   **2026-06-20**: Khởi tạo file lộ trình theo dõi tiến độ (`Project_Roadmap_Tracker.md`). Đánh dấu **US-002**, **US-003**, và **US-004** là **Hoàn thành**.
 *   **2026-06-20 (tiếp tục)**: Triển khai hoàn tất **US-001** (tạo cấu trúc thư mục code) và **US-005** (viết mã nguồn GameManager Singleton).

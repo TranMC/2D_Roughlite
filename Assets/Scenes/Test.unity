@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 322200483}
   - component: {fileID: 322200482}
   - component: {fileID: 322200481}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TempPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,6 +352,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 379095747870737000, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3077451853919894609, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.18
@@ -360,13 +364,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5699054443768927260, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
-      propertyPath: fallMultiplier
-      value: 1
+    - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 5699054443768927260, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
-      propertyPath: groundCheckRadius
-      value: 0.2
+    - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7681128376416596358, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_LocalPosition.x

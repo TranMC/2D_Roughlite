@@ -164,12 +164,12 @@ MonoBehaviour:
   jumpForce: 12
   airControlFactor: 0.8
   cutJumpHeightFactor: 0.5
-  fallMultiplier: 2.5
+  fallMultiplier: 1
   groundCheckPoint: {fileID: 3077451853919894609}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   coyoteTime: 0.15
   jumpBufferTime: 0.15
 --- !u!95 &1641182201220779459
@@ -241,3 +241,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  currentHealth: 0
+  isDead: 0

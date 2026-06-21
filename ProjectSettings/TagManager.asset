@@ -11,14 +11,14 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ground
+  - Player
+  - PlayerAttack
+  - Enemy
+  - EnemyAttack
+  - Hazzard
+  - Interactable
+  - OneWayPlatform
   - 
   - 
   - 

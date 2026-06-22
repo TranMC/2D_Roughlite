@@ -248,8 +248,8 @@ namespace Roguelite.Enemy
         /// <summary>
         /// Logic rượt đuổi: Hướng về phía Player, di chuyển nhanh hơn.
         /// Vẫn dò mép vực để không rơi xuống hố.
-        /// Nếu Player ra khỏi detectionRange → Patrol.
-        /// Nếu Player lọt vào attackRange → Attack.
+        /// Chịu trách nhiệm quản lý cooldown: chỉ cho phép chuyển Attack khi
+        /// Player trong attackRange VÀ attackCooldownTimer đã hết.
         /// </summary>
         protected virtual void ChaseLogic()
         {
@@ -269,15 +269,24 @@ namespace Roguelite.Enemy
                 return;
             }
 
-            // --- In Range: Đủ gần để tấn công ---
+            // --- Quay mặt về phía Player ---
+            FaceTarget(playerTarget.position);
+
+            // --- Trong tầm đánh ---
             if (distanceToPlayer <= attackRange)
             {
-                TransitionToState(EnemyState.Attack);
+                if (attackCooldownTimer <= 0f)
+                {
+                    // Cooldown sẵn sàng → Tấn công
+                    TransitionToState(EnemyState.Attack);
+                }
+                else
+                {
+                    // Đang hồi chiêu → Đứng chờ tại chỗ
+                    StopMovement();
+                }
                 return;
             }
-
-            // --- Hướng về phía Player ---
-            FaceTarget(playerTarget.position);
 
             // --- Dò mép vực: nếu gặp vực thì dừng, không nhảy xuống ---
             if (IsAtEdge())
@@ -291,53 +300,27 @@ namespace Roguelite.Enemy
         }
 
         // =====================================================================
-        //  ATTACK STATE – Dừng, đánh, chờ cooldown rồi quay lại Chase
+        //  ATTACK STATE – Tung đòn chớp nhoáng rồi trả quyền điều phối về Chase
         // =====================================================================
 
         /// <summary>
-        /// Logic tấn công: Dừng di chuyển, thực hiện đòn đánh nếu hết cooldown.
-        /// Sau khi đánh xong (hết attackCooldown) → chuyển Chase.
+        /// Logic tấn công kiểu "fire-and-forget":
+        /// Dừng di chuyển → Tung đòn → Đặt cooldown → Trả về Chase NGAY LẬP TỨC.
+        /// Việc chờ cooldown là trách nhiệm của ChaseLogic(), không phải ở đây.
         /// </summary>
         protected virtual void AttackLogic()
         {
-            // Dừng di chuyển khi đang tấn công
+            // 1. Khóa di chuyển
             StopMovement();
 
-            // Quay mặt về phía Player nếu còn target
-            if (playerTarget != null)
-            {
-                FaceTarget(playerTarget.position);
-            }
+            // 2. Thực hiện đòn đánh
+            PerformAttack();
 
-            // Cooldown đã hết → Thực hiện tấn công
-            if (attackCooldownTimer <= 0f)
-            {
-                PerformAttack();
-                attackCooldownTimer = attackCooldown;
-            }
+            // 3. Đặt thời gian hồi chiêu
+            attackCooldownTimer = attackCooldown;
 
-            // Sau khi đặt cooldown, kiểm tra chuyển state
-            // Attack End: hết cooldown → quay lại Chase
-            if (attackCooldownTimer <= 0f)
-            {
-                TransitionToState(EnemyState.Chase);
-                return;
-            }
-
-            // Nếu Player đã ra khỏi attackRange trong lúc chờ cooldown → Chase
-            if (playerTarget != null)
-            {
-                float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
-                if (distanceToPlayer > attackRange && attackCooldownTimer <= 0f)
-                {
-                    TransitionToState(EnemyState.Chase);
-                }
-            }
-            else
-            {
-                // Mất target hoàn toàn → Patrol
-                TransitionToState(EnemyState.Patrol);
-            }
+            // 4. Trả quyền điều phối về Chase ngay lập tức
+            TransitionToState(EnemyState.Chase);
         }
 
         /// <summary>

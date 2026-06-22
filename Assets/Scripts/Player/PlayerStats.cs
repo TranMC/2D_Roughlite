@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
+using Roguelite.Combat;
 
 namespace Roguelite.Player
 {
     /// <summary>
     /// Quản lý lượng máu (HP) và các sự kiện Hit, Dead của người chơi.
     /// </summary>
-    public class PlayerStats : MonoBehaviour
+    public class PlayerStats : MonoBehaviour, IDamageable
     {
         [Header("Health Settings")]
         [Tooltip("Lượng máu tối đa của nhân vật.")]
@@ -53,6 +54,16 @@ namespace Roguelite.Player
         /// <param name="damage">Lượng sát thương nhận vào</param>
         public void TakeDamage(float damage)
         {
+            TakeDamage(damage, Vector2.zero);
+        }
+
+        /// <summary>
+        /// Gây sát thương lên nhân vật chính kèm theo lực đẩy (Knockback).
+        /// </summary>
+        /// <param name="damage">Lượng sát thương nhận vào</param>
+        /// <param name="knockback">Lực đẩy áp dụng</param>
+        public void TakeDamage(float damage, Vector2 knockback)
+        {
             if (isDead || damage <= 0f) return;
 
             currentHealth -= damage;
@@ -60,6 +71,16 @@ namespace Roguelite.Player
 
             Debug.Log($"[PlayerStats] Nhân vật nhận {damage} sát thương. Máu hiện tại: {currentHealth}/{maxHealth}");
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+            // Áp dụng lực đẩy (Knockback) nếu có
+            if (playerController != null && knockback != Vector2.zero)
+            {
+                if (playerController.Rb != null)
+                {
+                    // Đặt vận tốc tức thời hoặc dùng AddForce (Có thể tinh chỉnh thêm trong trạng thái bị trúng đòn)
+                    playerController.Rb.velocity = new Vector2(knockback.x, playerController.Rb.velocity.y + knockback.y);
+                }
+            }
 
             if (currentHealth <= 0f)
             {
@@ -72,7 +93,7 @@ namespace Roguelite.Player
                 // Kích hoạt Animator trigger hit nếu có
                 if (playerController != null && playerController.Animator != null)
                 {
-                    playerController.Animator.SetTrigger("hit");
+                    playerController.Animator.SetTrigger(AnimationStrings.hitTrigger);
                 }
             }
         }
@@ -118,8 +139,8 @@ namespace Roguelite.Player
                 // Kích hoạt Animator trigger die và đặt bool isDead thành true để khóa trạng thái
                 if (playerController.Animator != null)
                 {
-                    playerController.Animator.SetTrigger("die");
-                    playerController.Animator.SetBool("isDead", true);
+                    playerController.Animator.SetTrigger(AnimationStrings.dieTrigger);
+                    playerController.Animator.SetBool(AnimationStrings.isDead, true);
                 }
             }
 

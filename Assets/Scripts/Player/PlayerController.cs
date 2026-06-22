@@ -84,10 +84,10 @@ namespace Roguelite.Player
             // Khởi tạo máy trạng thái và các state tương ứng với chuỗi Animator bool
             StateMachine = new PlayerStateMachine();
             
-            IdleState = new PlayerIdleState(this, StateMachine, "isIdle");
-            MoveState = new PlayerMoveState(this, StateMachine, "isMoving");
-            JumpState = new PlayerJumpState(this, StateMachine, "isJumping");
-            FallState = new PlayerFallState(this, StateMachine, "isFalling");
+            IdleState = new PlayerIdleState(this, StateMachine, AnimationStrings.isIdle);
+            MoveState = new PlayerMoveState(this, StateMachine, AnimationStrings.isMoving);
+            JumpState = new PlayerJumpState(this, StateMachine, AnimationStrings.isJumping);
+            FallState = new PlayerFallState(this, StateMachine, AnimationStrings.isFalling);
         }
 
         private void Start()
@@ -118,7 +118,7 @@ namespace Roguelite.Player
         {
             if (Animator != null)
             {
-                Animator.SetBool("isGrounded", IsGrounded());
+                Animator.SetBool(AnimationStrings.isGrounded, IsGrounded());
             }
         }
 

@@ -30,29 +30,6 @@ public class PlayerController : MonoBehaviour
     [Header("Attack Settings")]
     public float attackMovementMultiplier = 0f; // 0 = no movement during attack, 1 = full movement
 
-    // [Header("Healing Settings")]
-    // public int healAmount = 30;
-    // public int maxHealingItems = 5;
-    // [SerializeField] private int _healingItemCount = 3;
-    // public float healingAnimationDuration = 1.1f; // Duration to lock movement
-    // private bool isHealing = false;
-
-    // [Header("Dash Settings")]
-    // public float dashSpeed = 15f;
-    // public float dashDuration = 0.2f;
-    // public float dashCooldown = 1f;
-    // private bool isDashing = false;
-    // private bool canDash = true;
-    // private float dashTimeLeft = 0f;
-    // private float dashCooldownTimer = 0f;
-
-    // public int HealingItemCount
-    // {
-    //     get { return _healingItemCount; }
-    //     set { _healingItemCount = value; } // Changed from private to public for checkpoint system
-    // }
-
-
     Vector2 moveInput;
     TouchingDirections touchingDirections;
     PlayerStats playerStats;
@@ -153,27 +130,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // public bool IsHealing
-    // {
-    //     get { return isHealing; }
-    // }
-
-    // public bool IsDashing
-    // {
-    //     get { return isDashing; }
-    //     private set
-    //     {
-    //         isDashing = value;
-    //         animator.SetBool(AnimationStrings.isDashing, value);
-    //     }
-    // }
-
-
-
-
-
-
-
 
     // Hướng mặt của nhân vật
     public bool _isFacingRight = true;
@@ -212,45 +168,14 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // Handle dash cooldown
-        // if (!canDash)
-        // {
-        //     dashCooldownTimer -= Time.deltaTime;
-        //     if (dashCooldownTimer <= 0f)
-        //     {
-        //         canDash = true;
-        //         if (logActions)
-        //         {
-        //             DebugLogger.Log("Dash ready!", MODULE_NAME, DebugLogger.LogType.Info);
-        //         }
-        //     }
-        // }
-
-        // // Handle dash duration
-        // if (IsDashing)
-        // {
-        //     dashTimeLeft -= Time.deltaTime;
-        //     if (dashTimeLeft <= 0f)
-        //     {
-        //         EndDash();
-        //     }
-        // }
     }
 
     // Cập nhật vật lý mỗi khung hình cố định
     private void FixedUpdate()
     {
-        // Handle dash movement
-        // if (IsDashing)
-        // {
-        //     float dashDirection = IsFacingRight ? 1f : -1f;
-        //     rb.velocity = new Vector2(dashDirection * dashSpeed, 0f);
-        //     return;
-        // }
 
         float moveSpeed = CurrentMoveSpeed;
         if (IsAttacking) moveSpeed *= attackMovementMultiplier;
-        // if (IsHealing) moveSpeed = 0; // Block movement during healing
         if(playerStats == null || !playerStats.LockVelocity)
             rb.velocity = new Vector2(moveInput.x * moveSpeed, rb.velocity.y);
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
@@ -396,145 +321,10 @@ public class PlayerController : MonoBehaviour
         DebugLogger.Log($"Debug config updated - Movement:{movement}, Actions:{actions}, States:{stateChanges}", MODULE_NAME);
     }
 
-    // public void onHealing(InputAction.CallbackContext context)
-    // {
-    //     // Debug: Check if input is received
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log($"onHealing called - started:{context.started} performed:{context.performed} canceled:{context.canceled}", MODULE_NAME, DebugLogger.LogType.Info);
-    //         DebugLogger.Log($"Conditions - IsAlive:{IsAlive} CanMove:{CanMove} IsHealing:{isHealing} Items:{_healingItemCount}", MODULE_NAME, DebugLogger.LogType.Info);
-    //     }
-
-    //     if (context.started && IsAlive && CanMove && !isHealing)
-    //     {
-    //         if (_healingItemCount <= 0)
-    //         {
-    //             isHealing = true;
-    //             animator.SetTrigger(AnimationStrings.emptyHealTrigger);
-    //             StartCoroutine(HealingAnimationLock(healingAnimationDuration));
-                
-    //             if (logActions)
-    //             {
-    //                 DebugLogger.LogWarning("No healing items left!", MODULE_NAME);
-    //             }
-    //             return;
-    //         }
-
-    //         if (playerStats.Heal(healAmount))
-    //         {
-    //             _healingItemCount--;
-    //             isHealing = true;
-    //             animator.SetTrigger(AnimationStrings.healTrigger);
-    //             StartCoroutine(HealingAnimationLock(healingAnimationDuration));
-                
-    //             if (logActions)
-    //             {
-    //                 DebugLogger.Log($"HEAL triggered! +{healAmount} HP. Items left: {_healingItemCount}/{maxHealingItems}", MODULE_NAME, DebugLogger.LogType.Success);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             if (logActions)
-    //             {
-    //                 DebugLogger.LogWarning("Already at full health!", MODULE_NAME);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // private IEnumerator HealingAnimationLock(float duration)
-    // {
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log($"Healing animation started, movement locked for {duration}s", MODULE_NAME, DebugLogger.LogType.Info);
-    //     }
-
-    //     yield return new WaitForSeconds(duration);
-        
-    //     isHealing = false;
-        
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log("Healing animation ended, can move and heal again", MODULE_NAME);
-    //     }
-    // }
-
-    // public void AddHealingItem(int amount = 1)
-    // {
-    //     int oldCount = _healingItemCount;
-    //     _healingItemCount = Mathf.Min(_healingItemCount + amount, maxHealingItems);
-        
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log($"Added {_healingItemCount - oldCount} healing item(s). Total: {_healingItemCount}/{maxHealingItems}", MODULE_NAME, DebugLogger.LogType.Success);
-    //     }
-    // }
 
     public void onPause(InputAction.CallbackContext context)
     {
 
     }
 
-    // public void onDash(InputAction.CallbackContext context)
-    // {
-    //     if (context.started && IsAlive && CanMove && canDash && !IsDashing && !isHealing)
-    //     {
-    //         StartDash();
-    //     }
-    //     else if (context.started && logActions)
-    //     {
-    //         // Log reason for not dashing
-    //         if (!IsAlive)
-    //         {
-    //             DebugLogger.LogWarning("Cannot dash: Not alive", MODULE_NAME);
-    //         }
-    //         else if (!CanMove)
-    //         {
-    //             DebugLogger.LogWarning("Cannot dash: Movement disabled", MODULE_NAME);
-    //         }
-    //         else if (!canDash)
-    //         {
-    //             DebugLogger.LogWarning($"Cannot dash: Cooldown ({dashCooldownTimer:F1}s remaining)", MODULE_NAME);
-    //         }
-    //         else if (IsDashing)
-    //         {
-    //             DebugLogger.LogWarning("Cannot dash: Already dashing", MODULE_NAME);
-    //         }
-    //         // else if (isHealing)
-    //         // {
-    //         //     DebugLogger.LogWarning("Cannot dash: Currently healing", MODULE_NAME);
-    //         // }
-    //     }
-    // }
-
-    // private void StartDash()
-    // {
-    //     IsDashing = true;
-    //     canDash = false;
-    //     dashTimeLeft = dashDuration;
-    //     dashCooldownTimer = dashCooldown;
-    //     animator.SetTrigger(AnimationStrings.dashTrigger);
-
-    //     // Optionally make player invincible during dash
-    //     // playerStats.isInvincible = true;
-
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log($"DASH! Direction: {(IsFacingRight ? "RIGHT" : "LEFT")}, Speed: {dashSpeed}", MODULE_NAME, DebugLogger.LogType.Success);
-    //     }
-    // }
-
-    // private void EndDash()
-    // {
-    //     IsDashing = false;
-    //     rb.velocity = new Vector2(0f, rb.velocity.y); // Reset horizontal velocity
-
-    //     // Optionally remove invincibility
-    //     // playerStats.isInvincible = false;
-
-    //     if (logActions)
-    //     {
-    //         DebugLogger.Log("Dash ended", MODULE_NAME);
-    //     }
-    // }
 }

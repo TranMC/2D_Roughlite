@@ -5,7 +5,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Giai đoạn xây dựng Core Gameplay & Player Controller.
+*   **Trạng thái hiện tại**: Đã hoàn thiện Player Controller, Enemy State Machine & khắc phục xong các lỗi vật lý/Animator khi chết hoặc nhận sát thương.
 *   **Tổng số Story Points (SP)**: 50 SP.
 *   **Đã hoàn thành**: 20 / 50 SP (40%).
 *   **Đang thực hiện**: 0 / 50 SP (0%).
@@ -53,6 +53,4 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 🪵 NHẬT KÝ THAY ĐỔI (CHANGE LOG)
-*   **2026-06-21**: Triển khai hoàn tất **US-007** (Tạo `PlayerStats` để quản lý HP, Hit, Dead). Đánh dấu **US-006** (PlayerController & State Machine di chuyển) là **Hoàn thành** sau khi kiểm tra mã nguồn thực tế đã được triển khai đầy đủ.
-*   **2026-06-20**: Khởi tạo file lộ trình theo dõi tiến độ (`Project_Roadmap_Tracker.md`). Đánh dấu **US-002**, **US-003**, và **US-004** là **Hoàn thành**.
-*   **2026-06-20 (tiếp tục)**: Triển khai hoàn tất **US-001** (tạo cấu trúc thư mục code) và **US-005** (viết mã nguồn GameManager Singleton).
+Xem chi tiết toàn bộ lịch sử thay đổi và cập nhật của dự án tại tệp tin [CHANGELOG.md](https://github.com/TranMC/2D_Roughlite/CHANGELOG.md).

@@ -10,6 +10,7 @@ namespace Roguelite.Enemy
     // =====================================================================
     public enum EnemyState
     {
+        Idle,
         Patrol,
         Chase,
         Attack,
@@ -45,6 +46,12 @@ namespace Roguelite.Enemy
 
         [Tooltip("Tốc độ di chuyển khi tuần tra (thường chậm hơn moveSpeed).")]
         [SerializeField] protected float patrolSpeed = 2f;
+
+        [Tooltip("Thời gian đứng yên nghỉ ngơi trong khi tuần tra (giây).")]
+        [SerializeField] protected float idleDuration = 2f;
+
+        [Tooltip("Thời gian di chuyển tuần tra tối đa trước khi nghỉ (giây).")]
+        [SerializeField] protected float patrolDuration = 3f;
 
         [Header("===== Detection & Attack Settings =====")]
         [Tooltip("Phạm vi phát hiện Player để chuyển từ Patrol sang Chase.")]
@@ -104,6 +111,12 @@ namespace Roguelite.Enemy
         /// <summary>Bộ đếm cooldown tấn công (đếm ngược về 0).</summary>
         protected float attackCooldownTimer;
 
+        /// <summary>Bộ đếm thời gian nghỉ ngơi.</summary>
+        protected float idleTimer;
+
+        /// <summary>Bộ đếm thời gian di chuyển tuần tra.</summary>
+        protected float patrolTimer;
+
         /// <summary>Tham chiếu tới Transform của Player (cache khi detect).</summary>
         protected Transform playerTarget;
 
@@ -143,8 +156,8 @@ namespace Roguelite.Enemy
             isDead = false;
             attackCooldownTimer = 0f;
 
-            // Bắt đầu ở trạng thái Tuần tra
-            TransitionToState(EnemyState.Patrol);
+            // Bắt đầu ở trạng thái Idle
+            TransitionToState(EnemyState.Idle);
         }
 
         protected virtual void Update()
@@ -160,6 +173,9 @@ namespace Roguelite.Enemy
             // Điều phối logic theo State Machine
             switch (CurrentState)
             {
+                case EnemyState.Idle:
+                    IdleLogic();
+                    break;
                 case EnemyState.Patrol:
                     PatrolLogic();
                     break;
@@ -176,15 +192,19 @@ namespace Roguelite.Enemy
                     // Đã khóa toàn bộ logic
                     break;
             }
+
+            // Tự động đồng bộ tham số isMoving của Animator dựa trên vận tốc Rigidbody2D thực tế
+            if (anim != null && rb != null)
+            {
+                bool isMovingReal = Mathf.Abs(rb.velocity.x) > 0.1f;
+                anim.SetBool("isMoving", isMovingReal);
+            }
         }
 
         // =====================================================================
         //  STATE MACHINE – CHUYỂN TRẠNG THÁI
         // =====================================================================
 
-        /// <summary>
-        /// Chuyển sang trạng thái mới. Gọi Exit ở state cũ và Enter ở state mới.
-        /// </summary>
         protected virtual void TransitionToState(EnemyState newState)
         {
             if (isDead && newState != EnemyState.Dead) return;
@@ -199,63 +219,82 @@ namespace Roguelite.Enemy
             OnStateEnter(newState, previousState);
         }
 
-        /// <summary>
-        /// Được gọi khi THOÁT khỏi một trạng thái. Override để dọn dẹp logic riêng.
-        /// </summary>
         protected virtual void OnStateExit(EnemyState exitingState)
         {
             // Lớp con có thể override để thêm logic exit tùy chỉnh
         }
 
-        /// <summary>
-        /// Được gọi khi BẮT ĐẦU một trạng thái mới. Override để khởi tạo logic riêng.
-        /// </summary>
         protected virtual void OnStateEnter(EnemyState enteringState, EnemyState previousState)
         {
-            // Lớp con có thể override để thêm animation trigger, SFX, v.v.
+            // Khởi tạo bộ đếm thời gian khi chuyển trạng thái
+            if (enteringState == EnemyState.Idle)
+            {
+                idleTimer = idleDuration;
+                StopMovement();
+            }
+            else if (enteringState == EnemyState.Patrol)
+            {
+                patrolTimer = patrolDuration;
+            }
         }
 
         // =====================================================================
         //  PATROL STATE – Tuần tra qua lại, dò mép vực & tường
         // =====================================================================
 
-        /// <summary>
-        /// Logic tuần tra: Di chuyển theo facingDirection, dò mép vực và tường.
-        /// Nếu phát hiện Player trong detectionRange → chuyển Chase.
-        /// </summary>
-        protected virtual void PatrolLogic()
+        protected virtual void IdleLogic()
         {
-            // --- Dò mép vực và tường → Flip nếu cần ---
-            if (IsAtEdge() || IsWallAhead())
+            StopMovement();
+
+            if (idleTimer > 0f)
+            {
+                idleTimer -= Time.deltaTime;
+            }
+            else
             {
                 Flip();
+                TransitionToState(EnemyState.Patrol);
+                return;
             }
 
-            // --- Di chuyển tuần tra ---
-            MoveHorizontal(patrolSpeed);
-
-            // --- Kiểm tra phát hiện Player ---
             if (DetectPlayer())
             {
                 TransitionToState(EnemyState.Chase);
             }
         }
 
-        // =====================================================================
-        //  CHASE STATE – Rượt đuổi Player, vẫn dò mép vực
-        // =====================================================================
+        protected virtual void PatrolLogic()
+        {
+            if (IsAtEdge() || IsWallAhead())
+            {
+                TransitionToState(EnemyState.Idle);
+                return;
+            }
 
-        /// <summary>
-        /// Logic rượt đuổi: Hướng về phía Player, di chuyển nhanh hơn.
-        /// Vẫn dò mép vực để không rơi xuống hố.
-        /// Chịu trách nhiệm quản lý cooldown: chỉ cho phép chuyển Attack khi
-        /// Player trong attackRange VÀ attackCooldownTimer đã hết.
-        /// </summary>
+            if (patrolTimer > 0f)
+            {
+                patrolTimer -= Time.deltaTime;
+            }
+            else
+            {
+                TransitionToState(EnemyState.Idle);
+                return;
+            }
+
+            MoveHorizontal(patrolSpeed);
+
+            if (DetectPlayer())
+            {
+                TransitionToState(EnemyState.Chase);
+            }
+        }
+
         protected virtual void ChaseLogic()
         {
-            if (playerTarget == null)
+            if (playerTarget == null || !IsTargetAlive())
             {
-                TransitionToState(EnemyState.Patrol);
+                playerTarget = null;
+                TransitionToState(EnemyState.Idle);
                 return;
             }
 
@@ -265,7 +304,7 @@ namespace Roguelite.Enemy
             if (distanceToPlayer > detectionRange)
             {
                 playerTarget = null;
-                TransitionToState(EnemyState.Patrol);
+                TransitionToState(EnemyState.Idle);
                 return;
             }
 
@@ -299,15 +338,6 @@ namespace Roguelite.Enemy
             MoveHorizontal(moveSpeed);
         }
 
-        // =====================================================================
-        //  ATTACK STATE – Tung đòn chớp nhoáng rồi trả quyền điều phối về Chase
-        // =====================================================================
-
-        /// <summary>
-        /// Logic tấn công kiểu "fire-and-forget":
-        /// Dừng di chuyển → Tung đòn → Đặt cooldown → Trả về Chase NGAY LẬP TỨC.
-        /// Việc chờ cooldown là trách nhiệm của ChaseLogic(), không phải ở đây.
-        /// </summary>
         protected virtual void AttackLogic()
         {
             // 1. Khóa di chuyển
@@ -323,10 +353,6 @@ namespace Roguelite.Enemy
             TransitionToState(EnemyState.Chase);
         }
 
-        /// <summary>
-        /// Thực hiện đòn tấn công: Tìm Player trong attackRange và gọi TakeDamage qua IDamageable.
-        /// Override ở lớp con để thêm animation, SFX, projectile, v.v.
-        /// </summary>
         protected virtual void PerformAttack()
         {
             if (playerTarget == null) return;
@@ -352,19 +378,11 @@ namespace Roguelite.Enemy
         //  HIT STATE – Nhận sát thương (IDamageable Implementation)
         // =====================================================================
 
-        /// <summary>
-        /// Gây sát thương lên quái vật (không có knockback).
-        /// Có thể bị gọi từ BẤT KỲ state nào → ngắt hành động ngay lập tức.
-        /// </summary>
         public void TakeDamage(float damage)
         {
             TakeDamage(damage, Vector2.zero);
         }
 
-        /// <summary>
-        /// Gây sát thương lên quái vật kèm knockback.
-        /// NGAY LẬP TỨC ngắt hành động hiện tại, trừ máu, chuyển sang Hit state.
-        /// </summary>
         public void TakeDamage(float damage, Vector2 knockback)
         {
             if (isDead || damage <= 0f) return;
@@ -404,10 +422,6 @@ namespace Roguelite.Enemy
             hitCoroutine = StartCoroutine(HitStaggerCoroutine());
         }
 
-        /// <summary>
-        /// Coroutine mô phỏng thời gian khựng lại (stagger) khi bị trúng đòn.
-        /// Sau khi hết stagger: nếu HP > 0 → Chase (aggro), nếu HP <= 0 → Dead.
-        /// </summary>
         protected virtual IEnumerator HitStaggerCoroutine()
         {
             // Dừng di chuyển trong lúc bị hit
@@ -443,10 +457,6 @@ namespace Roguelite.Enemy
         //  DEAD STATE – Khóa logic, cleanup
         // =====================================================================
 
-        /// <summary>
-        /// Xử lý khi quái chết: khóa mọi logic, dừng vật lý, phát event.
-        /// Override để thêm animation chết, drop loot, VFX, v.v.
-        /// </summary>
         protected virtual void HandleDeath()
         {
             if (isDead) return;
@@ -476,9 +486,9 @@ namespace Roguelite.Enemy
             // Phát sự kiện chết
             OnDied?.Invoke();
 
-            // Vô hiệu hóa Collider để không cản trở
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null)
+            // Vô hiệu hóa tất cả các Collider để tránh nhận sát thương hoặc cản trở tiếp
+            Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+            foreach (Collider2D col in colliders)
             {
                 col.enabled = false;
             }
@@ -487,10 +497,6 @@ namespace Roguelite.Enemy
             OnDeathFinalize();
         }
 
-        /// <summary>
-        /// Hook cuối cùng sau khi chết. Override để Destroy, Disable, drop items, v.v.
-        /// Mặc định: Disable GameObject sau 2 giây (chờ animation).
-        /// </summary>
         protected virtual void OnDeathFinalize()
         {
             StartCoroutine(DisableAfterDelay(2f));
@@ -506,18 +512,12 @@ namespace Roguelite.Enemy
         //  MOVEMENT HELPERS
         // =====================================================================
 
-        /// <summary>
-        /// Di chuyển ngang theo facingDirection với tốc độ chỉ định.
-        /// </summary>
         protected virtual void MoveHorizontal(float speed)
         {
             if (rb == null) return;
             rb.velocity = new Vector2(facingDirection * speed, rb.velocity.y);
         }
 
-        /// <summary>
-        /// Dừng di chuyển ngang ngay lập tức (giữ nguyên vận tốc dọc cho trọng lực).
-        /// </summary>
         protected virtual void StopMovement()
         {
             if (rb == null) return;
@@ -529,9 +529,27 @@ namespace Roguelite.Enemy
         // =====================================================================
 
         /// <summary>
-        /// Phát hiện Player trong phạm vi detectionRange bằng Physics2D.OverlapCircle.
-        /// Nếu tìm thấy → cache playerTarget và trả về true.
+        /// Kiểm tra xem Player target còn sống hay không.
         /// </summary>
+        protected virtual bool IsTargetAlive()
+        {
+            if (playerTarget == null) return false;
+
+            Roguelite.Player.PlayerStats stats = playerTarget.GetComponent<Roguelite.Player.PlayerStats>();
+            if (stats != null && stats.IsDead)
+            {
+                return false;
+            }
+
+            PlayerController pc = playerTarget.GetComponent<PlayerController>();
+            if (pc != null && !pc.IsAlive)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         protected virtual bool DetectPlayer()
         {
             Collider2D playerCollider = Physics2D.OverlapCircle(
@@ -542,6 +560,19 @@ namespace Roguelite.Enemy
 
             if (playerCollider != null)
             {
+                // Chỉ nhận diện nếu Player còn sống
+                Roguelite.Player.PlayerStats stats = playerCollider.GetComponent<Roguelite.Player.PlayerStats>();
+                if (stats != null && stats.IsDead)
+                {
+                    return false;
+                }
+
+                PlayerController pc = playerCollider.GetComponent<PlayerController>();
+                if (pc != null && !pc.IsAlive)
+                {
+                    return false;
+                }
+
                 playerTarget = playerCollider.transform;
                 return true;
             }
@@ -549,10 +580,6 @@ namespace Roguelite.Enemy
             return false;
         }
 
-        /// <summary>
-        /// Dò mép vực phía trước: bắn Raycast xuống dưới từ edgeCheckPoint.
-        /// Trả về true nếu KHÔNG có mặt đất phía trước (= sắp rơi xuống vực).
-        /// </summary>
         protected virtual bool IsAtEdge()
         {
             Vector2 checkPosition;
@@ -578,10 +605,6 @@ namespace Roguelite.Enemy
             return hit.collider == null;
         }
 
-        /// <summary>
-        /// Dò tường phía trước: bắn Raycast ngang theo facingDirection.
-        /// Trả về true nếu có tường chắn phía trước.
-        /// </summary>
         protected virtual bool IsWallAhead()
         {
             Vector2 origin = transform.position;
@@ -595,9 +618,6 @@ namespace Roguelite.Enemy
         //  FLIP & FACE TARGET
         // =====================================================================
 
-        /// <summary>
-        /// Lật hướng quay mặt của quái vật (đổi localScale.x – đồng nhất với PlayerController).
-        /// </summary>
         protected virtual void Flip()
         {
             facingDirection *= -1;
@@ -606,9 +626,6 @@ namespace Roguelite.Enemy
             transform.localScale = scale;
         }
 
-        /// <summary>
-        /// Quay mặt về phía một vị trí mục tiêu. Flip nếu cần.
-        /// </summary>
         protected virtual void FaceTarget(Vector3 targetPosition)
         {
             float directionToTarget = targetPosition.x - transform.position.x;

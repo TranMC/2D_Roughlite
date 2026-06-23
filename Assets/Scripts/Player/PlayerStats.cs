@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Roguelite.Combat;
@@ -101,6 +102,7 @@ namespace Roguelite.Player
                 playerController.Animator.SetBool(AnimationStrings.isAlive, true);
                 playerController.Animator.SetBool(AnimationStrings.isDead, false);
             }
+            LockVelocity = false; // Đảm bảo mở khóa di chuyển khi bắt đầu game
         }
 
         private void Update()
@@ -112,6 +114,7 @@ namespace Roguelite.Player
                 {
                     isInvincible = false;
                     timeSinceHit = 0f;
+                    LockVelocity = false; // Mở khóa di chuyển cho Player sau khi hết bất tử/stagger
 
                     if (logInvincibility)
                     {
@@ -260,11 +263,35 @@ namespace Roguelite.Player
                 playerController.SetVelocityX(0f);
                 playerController.enabled = false;
 
-                // Dừng mô phỏng vật lý của Player nếu có Rigidbody2D
+                // Kiểm tra trạng thái chạm đất thực tế trước khi tắt TouchingDirections
+                TouchingDirections touchingDirections = GetComponent<TouchingDirections>();
+                bool wasGrounded = touchingDirections != null && touchingDirections.IsGrounded;
+
+                if (touchingDirections != null)
+                {
+                    touchingDirections.enabled = false;
+                }
+
+                // Xử lý mô phỏng vật lý: Cho phép rơi tự do nếu đang ở trên không
                 if (playerController.Rb != null)
                 {
-                    playerController.Rb.velocity = Vector2.zero;
-                    playerController.Rb.simulated = false;
+                    if (wasGrounded)
+                    {
+                        playerController.Rb.velocity = Vector2.zero;
+                        playerController.Rb.simulated = false;
+
+                        Collider2D col = GetComponent<Collider2D>();
+                        if (col != null)
+                        {
+                            col.enabled = false;
+                        }
+                    }
+                    else
+                    {
+                        // Chỉ khóa di chuyển ngang để rơi tự do theo trục đứng
+                        playerController.Rb.velocity = new Vector2(0f, playerController.Rb.velocity.y);
+                        StartCoroutine(HandlePhysicsAfterDeath());
+                    }
                 }
 
                 // Kích hoạt Animator trigger die và đặt bool isDead thành true để khóa trạng thái
@@ -273,6 +300,13 @@ namespace Roguelite.Player
                     playerController.Animator.SetTrigger(AnimationStrings.dieTrigger);
                     playerController.Animator.SetBool(AnimationStrings.isDead, true);
                     playerController.Animator.SetBool(AnimationStrings.isAlive, false);
+
+                    // Reset các tham số di chuyển/rơi để tránh Animator tự động quay về trạng thái nhảy/rơi từ Any State
+                    playerController.Animator.SetBool(AnimationStrings.isGrounded, true);
+                    playerController.Animator.SetFloat(AnimationStrings.yVelocity, 0f);
+                    playerController.Animator.SetBool(AnimationStrings.isMoving, false);
+                    playerController.Animator.SetBool(AnimationStrings.isRunning, false);
+                    playerController.Animator.SetBool(AnimationStrings.isJumping, false);
                 }
             }
 
@@ -280,6 +314,32 @@ namespace Roguelite.Player
             if (Core.GameManager.Instance != null)
             {
                 Core.GameManager.Instance.ChangeState(Core.GameState.GameOver);
+            }
+        }
+
+        /// <summary>
+        /// Coroutine quản lý vật lý của người chơi sau khi chết trên không:
+        /// Cho phép người chơi rơi xuống đất rồi mới tắt mô phỏng vật lý.
+        /// </summary>
+        private IEnumerator HandlePhysicsAfterDeath()
+        {
+            // Chờ một khoảng thời gian ngắn để nhân vật bắt đầu rơi (tránh việc đứng yên lúc đầu có velocity.y = 0)
+            yield return new WaitForSeconds(0.15f);
+
+            // Chờ đến khi vận tốc rơi theo trục Y xấp xỉ bằng 0 (đã chạm đất)
+            yield return new WaitUntil(() => playerController == null || playerController.Rb == null || Mathf.Abs(playerController.Rb.velocity.y) < 0.1f);
+
+            if (playerController != null && playerController.Rb != null)
+            {
+                playerController.Rb.velocity = Vector2.zero;
+                playerController.Rb.simulated = false;
+            }
+
+            // Vô hiệu hóa Collider để các đối tượng khác có thể đi xuyên qua xác Player
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null)
+            {
+                col.enabled = false;
             }
         }
 

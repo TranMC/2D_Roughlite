@@ -5,11 +5,11 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Đã hoàn thiện Player Controller, Enemy State Machine & khắc phục xong các lỗi vật lý/Animator khi chết hoặc nhận sát thương.
-*   **Tổng số Story Points (SP)**: 50 SP.
-*   **Đã hoàn thành**: 20 / 50 SP (40%).
-*   **Đang thực hiện**: 0 / 50 SP (0%).
-*   **Chưa bắt đầu**: 30 / 50 SP (60%).
+*   **Trạng thái hiện tại**: Đã hoàn tất hệ thống chiến đấu cơ bản (Combat) và chuẩn bị bước vào giai đoạn phát triển Level Generation (E04) cùng Upgrade System (E05).
+*   **Tổng số Story Points (SP)**: 81 SP.
+*   **Đã hoàn thành**: 29 / 81 SP (36%).
+*   **Đang thực hiện**: 0 / 81 SP (0%).
+*   **Chưa bắt đầu**: 52 / 81 SP (64%).
 
 ---
 
@@ -35,7 +35,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-006** | Xây dựng PlayerController và State Machine xử lý di chuyển (Idle, Move, Jump, Fall) bằng Rigidbody2D | Player | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện PlayerController, PlayerStateMachine và các trạng thái di chuyển (Idle, Move, Jump, Fall) sử dụng Rigidbody2D. |
 | **US-007** | Tạo PlayerStats để quản lí HP của player và các trạng thái Hit, Dead | Player | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo PlayerStats quản lý HP, sự kiện nhận sát thương (Hit) và vô hiệu hóa điều khiển / kích hoạt GameManager GameOver khi chết (Dead). |
-| **US-008** | Thêm trạng thái Attack cho Player, thiết lập hệ thống hitbox (Trigger Collider) | Combat | 3 | 🔴 High | ⏳ Chưa bắt đầu | Tương tác tấn công cận chiến/tầm xa. |
+| **US-008** | Thêm trạng thái Attack cho Player, thiết lập hệ thống hitbox (Trigger Collider) | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo module `Attack.cs` quản lý hitbox trigger collider và đăng ký input `onAttack` kích hoạt hoạt ảnh tấn công của Player. |
 | **US-009** | Xây dựng EnemyBase với máy trạng thái đơn giản: Patrol, Chase và Attack | Enemy | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo `EnemyBase.cs` abstract class với State Machine 5 trạng thái, tích hợp IDamageable. |
 
 ---
@@ -45,10 +45,46 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-010** | Ghép nối TakeDamage giữa Player và Enemy, xử lý Knockback và hủy quái vật khi HP <= 0 | Combat | 3 | 🔴 High | ⏳ Chưa bắt đầu | Vòng lặp tương tác combat hoàn chỉnh. |
+| **US-010** | Ghép nối TakeDamage giữa Player và Enemy, xử lý Knockback và hủy quái vật khi HP <= 0 | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã kết nối `TakeDamage` qua giao diện `IDamageable` giữa `PlayerStats` và `EnemyBase` qua `Attack.cs`, áp dụng lực đẩy lùi (Knockback) và vô hiệu hóa/hủy thực thể khi HP <= 0. |
 | **US-011** | Tạo RoomManager, dùng Collider2D ở cửa để nhận diện Player bước vào và khóa phòng | Room System | 3 | 🔴 High | ⏳ Chưa bắt đầu | Quản lý logic cửa và kích hoạt trạng thái chiến đấu phòng. |
 | **US-012** | Cấu hình Enemy Spawner để tự động sinh quái vật tại các vị trí định sẵn khi phòng bị khóa | Room System | 2 | 🔴 High | ⏳ Chưa bắt đầu | Tự động hóa việc spawn quái. |
 | **US-013** | Đếm lượng quái trong phòng; tự động chuyển trạng thái Cleared và mở cửa khi quái bị tiêu diệt hết | Room System | 3 | 🔴 High | ⏳ Chưa bắt đầu | Kết thúc thử thách trong phòng và mở lối đi tiếp. |
+
+---
+
+### 🧱 Epic E04: Thiết kế & Tạo Màn chơi bán ngẫu nhiên (Semi-random Level Gen)
+*Mục tiêu: Thiết kế các Room Prefab và xây dựng giải thuật ghép phòng ngẫu nhiên cho màn chơi.*
+
+| ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **US-014** | Thiết kế các Room Prefab cơ bản (Start, Combat, Reward, Boss) với Tilemap, Collider và các vị trí spawn quái | Level | 3 | 🔴 High | ⏳ Chưa bắt đầu | Cấu hình các prefab phòng hoàn chỉnh. |
+| **US-015** | Cài đặt hệ thống sinh map bán ngẫu nhiên (Semi-random), tự động ghép nối các Room Prefab theo luồng chạy của người chơi | Architecture | 5 | 🔴 High | ⏳ Chưa bắt đầu | Phát triển thuật toán sinh màn chơi. |
+| **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Architecture | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Thêm đa dạng quái vật và giao diện tạm dừng game. |
+| **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ⏳ Chưa bắt đầu | Chuyển cảnh mượt mà giữa các phòng bằng Cinemachine/Camera transition. |
+
+---
+
+### 🧬 Epic E05: Upgrade System & Meta Progression
+*Mục tiêu: Phát triển hệ thống nâng cấp chỉ số tạm thời (Perks) và lưu trữ tài nguyên nâng cấp vĩnh viễn.*
+
+| ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **US-018** | Tạo cấu trúc ScriptableObject để quản lý dữ liệu cấu hình của các loại Perk tạm thời (Tăng HP, Tăng Damage, Tốc đánh) | Data | 3 | 🔴 High | ⏳ Chưa bắt đầu | Data-driven configuration cho Perks. |
+| **US-019** | Xây dựng màn hình UI Reward hiển thị ngẫu nhiên các lựa chọn Perk nâng cấp cho Player sau khi clear Room | UI | 3 | 🔴 High | ⏳ Chưa bắt đầu | Giao diện lựa chọn phần thưởng ngẫu nhiên. |
+| **US-020** | Lập trình UpgradeManager xử lý cộng dồn chỉ số từ Perk vào PlayerStats và tự động reset trạng thái sau khi kết thúc Run (Dead/Win) | System | 3 | 🔴 High | ⏳ Chưa bắt đầu | Quản lý tác dụng của Perk trong run chơi. |
+| **US-021** | Xây dựng hệ thống quản lý tài nguyên Meta-progression thu thập được để mở khóa nâng cấp vĩnh viễn ở Main Menu | Progression | 5 | 🟡 Medium | ⏳ Chưa bắt đầu | Nâng cấp vĩnh viễn ngoài màn hình chính. |
+
+---
+
+### 👹 Epic E06: Boss Fight & UX Polish & Save/Load System
+*Mục tiêu: Thiết kế Boss chiến đấu, hệ thống lưu game JSON và hoàn thiện trải nghiệm người dùng toàn diện.*
+
+| ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **US-022** | Lập trình AI cho Boss dựa trên EnemyBase với các State chiến đấu phức tạp hơn (VD: Attack diện rộng, Enrage khi máu thấp) | Enemy | 5 | 🔴 High | ⏳ Chưa bắt đầu | Boss AI hành vi đặc trưng. |
+| **US-023** | Tích hợp Boss Room vào khâu Level Generation và cấu hình thanh HP Bar chuyên dụng hiển thị trên UI khi đối đầu Boss | Boss | 3 | 🔴 High | ⏳ Chưa bắt đầu | Giao diện thanh máu Boss và chèn phòng Boss ở cuối hành trình. |
+| **US-024** | Cài đặt hệ thống Save/Load dữ liệu (JSON) để lưu trữ vĩnh viễn tiến trình mở khóa nâng cấp và tài nguyên của người chơi | Architecture | 5 | 🔴 High | ⏳ Chưa bắt đầu | Lưu/tải dữ liệu cục bộ an toàn. |
+| **US-025** | Hoàn thiện luồng UX toàn game: Kết nối Main Menu vào vòng lặp Run, hiển thị thông số chi tiết ở màn hình Result (Victory/Defeat) | UI | 3 | 🔴 High | ⏳ Chưa bắt đầu | Hoàn thiện vòng lặp chơi đầy đủ và giao diện kết thúc màn. |
 
 ---
 

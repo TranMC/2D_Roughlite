@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Roguelite.Core;
 using Roguelite.Player;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(PlayerStats))]
@@ -183,9 +184,18 @@ public class PlayerController : MonoBehaviour
 
 
 
+    private bool IsGameplayInputAllowed =>
+        GameManager.Instance == null || GameManager.Instance.CurrentState == GameState.Gameplay;
+
     // Xử lý di chuyển dựa trên input
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!IsGameplayInputAllowed)
+        {
+            moveInput = Vector2.zero;
+            IsMoving = false;
+            return;
+        }
 
         moveInput = context.ReadValue<Vector2>();
         if(IsAlive)
@@ -232,6 +242,8 @@ public class PlayerController : MonoBehaviour
     // Xử lý chạy dựa trên input
     public void onRun(InputAction.CallbackContext context)
     {
+        if (!IsGameplayInputAllowed) return;
+
         if (context.started)
         {
             IsRunning = true;
@@ -254,6 +266,8 @@ public class PlayerController : MonoBehaviour
     // Xử lý nhảy dựa trên input
     public void onJump(InputAction.CallbackContext context)
     {
+        if (!IsGameplayInputAllowed) return;
+
         if (context.started && touchingDirections.IsGrounded && CanMove)
         {
             animator.SetTrigger(AnimationStrings.jumpTrigger);
@@ -284,6 +298,8 @@ public class PlayerController : MonoBehaviour
     // Xử lý tấn công dựa trên input
     public void onAttack(InputAction.CallbackContext context)
     {
+        if (!IsGameplayInputAllowed) return;
+
         if (context.started)
         {
             animator.SetTrigger(AnimationStrings.attackTrigger);

@@ -2,6 +2,30 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [2026-06-29]
+
+### ⚙️ Tinh chỉnh AI của Enemy (Enemy Base & Combat Refactor)
+*   **Tách biệt cấu hình sát thương**: Loại bỏ các thuộc tính sát thương/knockback trùng lặp trực tiếp trên `EnemyBase.cs`. Đòn đánh và sát thương nay được quản lý độc lập bởi component `Attack.cs`, giúp dễ dàng thiết lập các đòn đánh khác nhau cho cùng một Enemy.
+*   **Thêm giới hạn tuần tra (Patrol Range)**:
+    *   Tích hợp biến `patrolAnchor` (Transform) và `patrolRange` (float) để giới hạn phạm vi tuần tra trái-phải của quái vật xung quanh tâm tuần tra (`patrolCenter`).
+    *   Vẽ visual Gizmos (đoạn thẳng màu xanh lam có vạch chặn) trực tiếp trên Scene View để căn chỉnh phạm vi tuần tra dễ dàng.
+    *   Hoàn toàn tương thích với hệ thống sinh quái vật tự động (US-012).
+
+### 🏠 Hệ thống Phòng & Spawner (US-012 & US-013)
+*   **Tách biệt EnemySpawner**: Tạo mới script `EnemySpawner.cs` quản lý cấu hình và logic sinh quái vật, giúp phân tách rõ trách nhiệm với `RoomManager.cs`.
+*   **Tự động sinh quái vật khi khóa phòng (US-012)**: Tích hợp Spawner vào RoomManager để sinh quái vật tự động tại các tọa độ định sẵn ngay khi Player đi vào phòng.
+*   **Tự động đếm và mở cửa phòng (US-013)**: Spawner tự động theo dõi sự kiện chết `OnDied` của các quái vật được sinh ra, báo về RoomManager mở cửa phòng (`OnRoomCleared()`) ngay khi toàn bộ quái vật bị tiêu diệt sạch.
+*   **Tối ưu hóa cấu hình bằng tọa độ Vector2 Offset**: Sử dụng các tọa độ Vector2 Offset (lệch so với tâm phòng) thay vì dùng Transform giúp thiết kế màn chơi nhanh chóng mà không làm rác Hierarchy của Scene.
+
+### 🛠️ Trải nghiệm Editor (Custom Editor)
+*   **Tạo EnemySpawnerEditor.cs**: Script Custom Editor (nằm trong thư mục `Editor`) hiển thị các vòng tròn nhãn dán định vị và **Position Handles** (mũi tên kéo thả bằng chuột) trực tiếp trên Scene View để thiết kế điểm spawn/patrol của quái trực quan không cần gõ tọa độ thủ công.
+
+### 🧹 Dọn dẹp Project
+*   **Xóa DetectionZone.cs**: Loại bỏ script `DetectionZone.cs` dư thừa không còn sử dụng trong hệ thống AI.
+
+### 📋 Cập nhật Lộ trình phát triển (Roadmap Sync)
+*   **Đồng bộ US-016**: Cập nhật trạng thái **US-016** thành Hoàn thành trên Roadmap do trong dự án đã xây dựng sẵn 7 loại `Enemy Prefabs` cùng hệ thống Menu tạm dừng (`PauseMenuManager.cs`).
+
 ---
 
 ## [2026-06-24]

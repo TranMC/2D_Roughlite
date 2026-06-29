@@ -20,6 +20,10 @@ namespace Roguelite.RoomSystem
         [Tooltip("Layer dùng để nhận diện Player (phải trùng với Layer gán trên Player GameObject).")]
         [SerializeField] private LayerMask playerLayer;
 
+        [Header("===== Spawner Settings =====")]
+        [Tooltip("Tham chiếu tới EnemySpawner của phòng (Tự động tìm kiếm trên cùng GameObject nếu để trống).")]
+        [SerializeField] private EnemySpawner enemySpawner;
+
         #endregion
 
         #region ====== RUNTIME STATE ======
@@ -46,6 +50,27 @@ namespace Roguelite.RoomSystem
 
             // Đảm bảo Collider là trigger để phát hiện va chạm không cản trở vật lý
             triggerCollider.isTrigger = true;
+
+            // Tự động tìm kiếm EnemySpawner trên cùng GameObject nếu chưa gán
+            if (enemySpawner == null)
+            {
+                enemySpawner = GetComponent<EnemySpawner>();
+            }
+
+            // Đăng ký sự kiện hoàn thành dọn phòng
+            if (enemySpawner != null)
+            {
+                enemySpawner.OnAllEnemiesCleared += OnRoomCleared;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            // Hủy đăng ký sự kiện tránh rò rỉ bộ nhớ
+            if (enemySpawner != null)
+            {
+                enemySpawner.OnAllEnemiesCleared -= OnRoomCleared;
+            }
         }
 
         // =====================================================================
@@ -102,13 +127,20 @@ namespace Roguelite.RoomSystem
         // =====================================================================
 
         /// <summary>
-        /// Sinh quái vật trong phòng. Hiện tại là đầu chờ (stub) –
-        /// sẽ được ghép nối với hệ thống EnemySpawner ở task kế tiếp.
+        /// Sinh quái vật trong phòng thông qua EnemySpawner.
         /// </summary>
         private void SpawnEnemies()
         {
-            // TODO: Ghép nối với EnemySpawner để sinh quái tại các vị trí định sẵn
-            Debug.Log($"[RoomManager] Đã khóa phòng, chuẩn bị sinh quái!");
+            if (enemySpawner != null)
+            {
+                Debug.Log($"[RoomManager] Phòng {gameObject.name} bị khóa, yêu cầu EnemySpawner sinh quái...");
+                enemySpawner.SpawnEnemies();
+            }
+            else
+            {
+                Debug.LogWarning($"[RoomManager] Không tìm thấy EnemySpawner cho phòng {gameObject.name}! Tự động hoàn thành.");
+                OnRoomCleared();
+            }
         }
 
         // =====================================================================

@@ -168,6 +168,27 @@ namespace Roguelite.Enemy
             TransitionToState(EnemyState.Idle);
         }
 
+        /// <summary>
+        /// Gán điểm neo tuần tra mới cho quái vật (dùng khi Spawn từ RoomManager hoặc Spawner).
+        /// </summary>
+        /// <param name="anchor">Transform của điểm neo mới</param>
+        public void SetPatrolAnchor(Transform anchor)
+        {
+            patrolAnchor = anchor;
+            // Cập nhật lại patrolCenter tương ứng
+            patrolCenter = anchor != null ? (Vector2)anchor.position : (Vector2)transform.position;
+        }
+
+        /// <summary>
+        /// Gán trực tiếp tâm tuần tra mới cho quái vật bằng tọa độ Vector2 thế giới.
+        /// </summary>
+        /// <param name="center">Tọa độ tâm tuần tra thế giới mới</param>
+        public void SetPatrolCenter(Vector2 center)
+        {
+            patrolAnchor = null; // Hủy anchor Transform nếu có
+            patrolCenter = center;
+        }
+
         protected virtual void Update()
         {
             if (isDead) return;

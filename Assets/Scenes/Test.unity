@@ -1516,6 +1516,10 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 461169030}
+    - target: {fileID: 1636414840518233708, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: invincibilityTimer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_Name
       value: Player

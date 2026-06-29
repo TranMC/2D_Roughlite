@@ -190,11 +190,12 @@ MonoBehaviour:
   moveSpeed: 3
   patrolSpeed: 2
   idleDuration: 2
-  patrolDuration: 3
+  patrolDuration: 5
+  patrolAnchor: {fileID: 0}
+  patrolRange: 8.05
   detectionRange: 4
   attackRange: 2.71
   attackCooldown: 2
-  defaultAttack: {fileID: 0}
   hitStaggerDuration: 1
   edgeCheckPoint: {fileID: 4683285965165184285}
   edgeCheckDistance: 1.5

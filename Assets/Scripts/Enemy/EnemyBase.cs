@@ -53,6 +53,12 @@ namespace Roguelite.Enemy
         [Tooltip("Thời gian di chuyển tuần tra tối đa trước khi nghỉ (giây).")]
         [SerializeField] protected float patrolDuration = 3f;
 
+        [Tooltip("Điểm neo tuần tra. Nếu để trống, quái sẽ tự động lấy vị trí lúc Start làm tâm tuần tra.")]
+        [SerializeField] protected Transform patrolAnchor;
+
+        [Tooltip("Khoảng cách tối đa quái vật có thể tuần tra so với tâm tuần tra.")]
+        [SerializeField] protected float patrolRange = 5f;
+
         [Header("===== Detection & Attack Settings =====")]
         [Tooltip("Phạm vi phát hiện Player để chuyển từ Patrol sang Chase.")]
         [SerializeField] protected float detectionRange = 8f;
@@ -113,6 +119,9 @@ namespace Roguelite.Enemy
         /// <summary>Bộ đếm thời gian di chuyển tuần tra.</summary>
         protected float patrolTimer;
 
+        /// <summary>Tâm tuần tra thực tế (lấy từ patrolAnchor hoặc vị trí lúc Start).</summary>
+        protected Vector2 patrolCenter;
+
         /// <summary>Tham chiếu tới Transform của Player (cache khi detect).</summary>
         protected Transform playerTarget;
 
@@ -151,6 +160,9 @@ namespace Roguelite.Enemy
             currentHP = maxHP;
             isDead = false;
             attackCooldownTimer = 0f;
+
+            // Thiết lập tâm tuần tra dựa trên patrolAnchor
+            patrolCenter = patrolAnchor != null ? (Vector2)patrolAnchor.position : (Vector2)transform.position;
 
             // Bắt đầu ở trạng thái Idle
             TransitionToState(EnemyState.Idle);
@@ -265,6 +277,22 @@ namespace Roguelite.Enemy
             {
                 TransitionToState(EnemyState.Idle);
                 return;
+            }
+
+            // --- GIỚI HẠN PHẠM VI TUẦN TRA (Patrol Range) ---
+            float currentX = transform.position.x;
+            float targetCenterX = patrolCenter.x;
+            float distanceTravelled = Mathf.Abs(currentX - targetCenterX);
+
+            // Nếu đi quá phạm vi và đang di chuyển theo hướng đi ra xa tâm tuần tra hơn
+            if (distanceTravelled >= patrolRange)
+            {
+                bool isMovingAway = (currentX - targetCenterX) * facingDirection > 0;
+                if (isMovingAway)
+                {
+                    TransitionToState(EnemyState.Idle);
+                    return;
+                }
             }
 
             if (patrolTimer > 0f)
@@ -626,6 +654,19 @@ namespace Roguelite.Enemy
 
         protected virtual void OnDrawGizmosSelected()
         {
+            // Phạm vi tuần tra Patrol Range (xanh lam)
+            Gizmos.color = new Color(0f, 0.5f, 1f, 0.6f);
+            Vector3 centerPos = patrolAnchor != null ? patrolAnchor.position : transform.position;
+            if (Application.isPlaying)
+            {
+                centerPos = new Vector3(patrolCenter.x, patrolCenter.y, transform.position.z);
+            }
+            Vector3 leftBound = centerPos + Vector3.left * patrolRange;
+            Vector3 rightBound = centerPos + Vector3.right * patrolRange;
+            Gizmos.DrawLine(leftBound, rightBound);
+            Gizmos.DrawWireCube(leftBound, new Vector3(0.1f, 0.6f, 0f));
+            Gizmos.DrawWireCube(rightBound, new Vector3(0.1f, 0.6f, 0f));
+
             // Vòng tròn Detection Range (xanh lá)
             Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
             Gizmos.DrawWireSphere(transform.position, detectionRange);

@@ -63,11 +63,7 @@ namespace Roguelite.Enemy
         [Tooltip("Thời gian hồi giữa hai lần tấn công (giây).")]
         [SerializeField] protected float attackCooldown = 1f;
 
-        [Tooltip("Sát thương mỗi đòn đánh.")]
-        [SerializeField] protected float attackDamage = 10f;
 
-        [Tooltip("Lực đẩy (Knockback) áp dụng lên Player khi đánh trúng.")]
-        [SerializeField] protected Vector2 attackKnockback = new Vector2(5f, 2f);
 
         [Header("===== Hit Stagger Settings =====")]
         [Tooltip("Thời gian khựng lại khi bị trúng đòn (giây).")]
@@ -355,23 +351,7 @@ namespace Roguelite.Enemy
 
         protected virtual void PerformAttack()
         {
-            if (playerTarget == null) return;
-
-            // Kiểm tra khoảng cách lần cuối trước khi gây sát thương
-            float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
-            if (distanceToPlayer > attackRange) return;
-
-            // Lấy IDamageable từ Player và gây sát thương
-            IDamageable damageable = playerTarget.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                // Tính hướng knockback dựa trên facingDirection
-                Vector2 deliveredKnockback = new Vector2(
-                    attackKnockback.x * facingDirection,
-                    attackKnockback.y
-                );
-                damageable.TakeDamage(attackDamage, deliveredKnockback);
-            }
+            // Để trống: Sát thương được thực hiện tự động qua Collider (Attack component) được bật/tắt trong Animation
         }
 
         // =====================================================================

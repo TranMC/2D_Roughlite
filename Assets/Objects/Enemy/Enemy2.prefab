@@ -262,6 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3635989159131019898}
   - component: {fileID: 6433853929305768537}
+  - component: {fileID: 4358144251290413819}
   m_Layer: 10
   m_Name: Enemy2_Attack1
   m_TagString: Untagged
@@ -337,6 +338,21 @@ PolygonCollider2D:
       - {x: 1.3204433, y: -0.69966507}
       - {x: 2.1337533, y: -0.2651344}
   m_UseDelaunayMesh: 0
+--- !u!114 &4358144251290413819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512452817426501982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf97646dfd54dc449acdaa5d68b49875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logAttackHits: 1
+  attackDamage: 10
+  knockback: {x: 0, y: 0}
 --- !u!1 &7966153308944719229
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,19 +547,18 @@ MonoBehaviour:
   idleDuration: 5
   patrolDuration: 2
   detectionRange: 5
-  attackRange: 1.5
+  attackRange: 2.29
   attackCooldown: 3
-  attackDamage: 10
-  attackKnockback: {x: 5, y: 2}
+  defaultAttack: {fileID: 0}
   hitStaggerDuration: 1
   edgeCheckPoint: {fileID: 5419346048746722771}
   edgeCheckDistance: 1.5
   wallCheckDistance: 1.86
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   enableDebug: 1
   logBehavior: 1

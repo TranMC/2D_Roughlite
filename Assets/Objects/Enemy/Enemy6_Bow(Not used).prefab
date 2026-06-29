@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5011139780862160049}
   - component: {fileID: 6682051759536362859}
   m_Layer: 0
-  m_Name: Enemy6
+  m_Name: Enemy6_Bow(Not used)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,6 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8023504571092760793}
+  - {fileID: 5112474290524155484}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2852908971178339179
@@ -174,7 +175,7 @@ MonoBehaviour:
   attackCooldown: 4
   attackDamage: 10
   attackKnockback: {x: 1, y: 1}
-  hitStaggerDuration: 0.3
+  hitStaggerDuration: 1
   edgeCheckPoint: {fileID: 8023504571092760793}
   edgeCheckDistance: 1.5
   wallCheckDistance: 1.86
@@ -284,3 +285,34 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &9103326302141661999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5112474290524155484}
+  m_Layer: 0
+  m_Name: Enemy6_Attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5112474290524155484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103326302141661999}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7314525067124969346}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

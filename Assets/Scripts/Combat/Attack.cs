@@ -12,12 +12,12 @@ namespace Roguelite.Combat
         [SerializeField] private bool logAttackHits = true;
 
         [Header("Attack Settings")]
-        [SerializeField] private int attackDamage = 10;
+        [SerializeField] private float attackDamage = 10f;
         [SerializeField] private Vector2 knockback = Vector2.zero;
 
         private Collider2D attackCollider;
 
-        public int AttackDamage
+        public float AttackDamage
         {
             get => attackDamage;
             set => attackDamage = value;

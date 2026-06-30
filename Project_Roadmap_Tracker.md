@@ -47,8 +47,8 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-010** | Ghép nối TakeDamage giữa Player và Enemy, xử lý Knockback và hủy quái vật khi HP <= 0 | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã kết nối `TakeDamage` qua giao diện `IDamageable` giữa `PlayerStats` và `EnemyBase` qua `Attack.cs`, áp dụng lực đẩy lùi (Knockback) và vô hiệu hóa/hủy thực thể khi HP <= 0. |
 | **US-011** | Tạo RoomManager, dùng Collider2D ở cửa để nhận diện Player bước vào và khóa phòng | Room System | 3 | 🔴 High | ✅ Hoàn thành | Quản lý logic cửa và kích hoạt trạng thái chiến đấu phòng. |
-| **US-012** | Cấu hình Enemy Spawner để tự động sinh quái vật tại các vị trí định sẵn khi phòng bị khóa | Room System | 2 | 🔴 High | ✅ Hoàn thành | Đã tách biệt `EnemySpawner.cs` sinh quái vật theo các tọa độ Vector2 Offset (tự động căn chỉnh bằng kéo thả Gizmos trong Scene View). |
-| **US-013** | Đếm lượng quái trong phòng; tự động chuyển trạng thái Cleared và mở cửa khi quái bị tiêu diệt hết | Room System | 3 | 🔴 High | ✅ Hoàn thành | Spawner đếm số quái còn sống và kích hoạt sự kiện mở cửa của RoomManager ngay khi quái bị diệt hết. |
+| **US-012** | Cấu hình Enemy Spawner để tự động sinh quái vật tại các vị trí định sẵn khi phòng bị khóa | Room System | 2 | 🔴 High | ✅ Hoàn thành | Hệ thống `EnemySpawner.cs` có thể customize vị trí sinh quái, tự vẽ gizmoz để dễ dàng kéo thả vị trí sinh quái kết hợp cùng `RoomManager.cs`. |
+| **US-013** | Đếm lượng quái trong phòng; tự động chuyển trạng thái Cleared và mở cửa khi quái bị tiêu diệt hết | Room System | 3 | 🔴 High | ✅ Hoàn thành | `RoomManager.cs` kết hợp chung với `EnemySpawner.cs` trong mỗi phòng, đảm bảo tính độc lập giữa các phòng và chắc chắn điều kiện mở phòng (tiêu diệt hết quái). |
 
 ---
 
@@ -59,7 +59,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-014** | Thiết kế các Room Prefab cơ bản (Start, Combat, Reward, Boss) với Tilemap, Collider và các vị trí spawn quái | Level | 3 | 🔴 High | ⏳ Chưa bắt đầu | Cấu hình các prefab phòng hoàn chỉnh. |
 | **US-015** | Cài đặt hệ thống sinh map bán ngẫu nhiên (Semi-random), tự động ghép nối các Room Prefab theo luồng chạy của người chơi | Architecture | 5 | 🔴 High | ⏳ Chưa bắt đầu | Phát triển thuật toán sinh màn chơi. |
-| **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Architecture | 3 | 🟡 Medium | ✅ Hoàn thành | Đã có sẵn 7 loại Enemy Prefab (`Enemy1` đến `Enemy7`) và script `PauseMenuManager.cs` điều phối giao diện tạm dừng/tùy chọn hoàn chỉnh. |
+| **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Architecture | 3 | 🟡 Medium | ✅ Hoàn thành | Đã có sẵn 7 loại Enemy Prefab (`Enemy1` đến `Enemy7`) và script `PauseMenuManager.cs` điều phối giao diện tạm dừng/tùy chọn cơ bản. |
 | **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ⏳ Chưa bắt đầu | Chuyển cảnh mượt mà giữa các phòng bằng Cinemachine/Camera transition. |
 
 ---

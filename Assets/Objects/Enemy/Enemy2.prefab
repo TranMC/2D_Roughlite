@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3059450183187156141}
   - component: {fileID: 3006556990101413164}
+  - component: {fileID: 959705106144552806}
   m_Layer: 10
   m_Name: Enemy2_Attack3
   m_TagString: Untagged
@@ -88,6 +89,21 @@ PolygonCollider2D:
       - {x: 2.00109, y: -0.76511186}
       - {x: 2.3955402, y: -0.0949727}
   m_UseDelaunayMesh: 0
+--- !u!114 &959705106144552806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255106344264888002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf97646dfd54dc449acdaa5d68b49875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logAttackHits: 1
+  attackDamage: 10
+  knockback: {x: 0, y: 0}
 --- !u!1 &1272440097379264901
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7743362202018814789}
   - component: {fileID: 8657280144788443263}
+  - component: {fileID: 6050210591298522442}
   m_Layer: 10
   m_Name: Enemy2_Attack2
   m_TagString: Untagged
@@ -252,6 +269,21 @@ PolygonCollider2D:
       - {x: 1.2419068, y: -0.6211287}
       - {x: 1.806519, y: -0.17350888}
   m_UseDelaunayMesh: 0
+--- !u!114 &6050210591298522442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6585730466740167197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf97646dfd54dc449acdaa5d68b49875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logAttackHits: 1
+  attackDamage: 10
+  knockback: {x: 0, y: 0}
 --- !u!1 &7512452817426501982
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,10 +578,11 @@ MonoBehaviour:
   patrolSpeed: 2
   idleDuration: 5
   patrolDuration: 2
+  patrolAnchor: {fileID: 0}
+  patrolRange: 5
   detectionRange: 5
-  attackRange: 2.29
+  attackRange: 2
   attackCooldown: 3
-  defaultAttack: {fileID: 0}
   hitStaggerDuration: 1
   edgeCheckPoint: {fileID: 5419346048746722771}
   edgeCheckDistance: 1.5

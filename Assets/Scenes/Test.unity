@@ -1892,7 +1892,7 @@ MonoBehaviour:
   startRoomPrefab: {fileID: 3002743426912733071, guid: ebe16d390ab53e940b994396bbb87490, type: 3}
   combatRoomPrefabs:
   - {fileID: 3200933418676977678, guid: d2cc15de362810045baf19d6203a4d94, type: 3}
-  rewardRoomPrefab: {fileID: 2801302353373872100, guid: edbde3e2f3c1f6547bcd1527c45e463c, type: 3}
+  rewardRoomPrefab: {fileID: 3200933418676977678, guid: aaf47d8d05497d14b9deaf8367834208, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2cc15de362810045baf19d6203a4d94, type: 3}
   totalRooms: 8
   roomLayer:
@@ -2271,7 +2271,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5176755624324773893, guid: 6324e25dc996a6347b15b27ead72063c, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6324e25dc996a6347b15b27ead72063c, type: 3}

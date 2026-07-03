@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8474545753849602072}
   - component: {fileID: 8966583114777258820}
   - component: {fileID: 5003467350534565186}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy3_Attack1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 411077364177090598}
   - component: {fileID: 1321157968904608618}
   - component: {fileID: 7073864576601671089}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy3_Attack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 2672712311648124737}
   - component: {fileID: 7997478965554248105}
   - component: {fileID: 3927419315761638889}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy3_Attack3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

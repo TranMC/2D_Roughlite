@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 1489510545254139372}
   - component: {fileID: 1579845328494810307}
   - component: {fileID: 9111023885429824756}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy4_Attack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 4156710598224337203}
   - component: {fileID: 8214328260552662216}
   - component: {fileID: 6019441197041850467}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy4_Attack3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 6812527785160916787}
   - component: {fileID: 8225966663724115941}
   - component: {fileID: 6635715952948486475}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy4_Attack1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

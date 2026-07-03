@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 2737103030754456279}
   - component: {fileID: 4883146579246402247}
   - component: {fileID: 6825227994959003833}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy5_Attack2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 2609975613171830146}
   - component: {fileID: 5705751853543480101}
   - component: {fileID: 8166170240595391780}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy5_Attack3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 1698943158835188437}
   - component: {fileID: 8929954995777926022}
   - component: {fileID: 6282205127572507997}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy5_Attack1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

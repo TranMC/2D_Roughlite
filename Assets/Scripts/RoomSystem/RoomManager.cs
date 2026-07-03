@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Roguelite.RoomSystem
@@ -12,9 +13,13 @@ namespace Roguelite.RoomSystem
     {
         #region ====== SERIALIZE FIELDS ======
 
+        [Header("===== Room Type Settings =====")]
+        [Tooltip("Loại của căn phòng này (Start, Combat, Reward, Boss).")]
+        public RoomType roomType = RoomType.Combat;
+
         [Header("===== Door Settings =====")]
-        [Tooltip("Mảng các GameObject cửa. Khi khóa phòng: SetActive(true) để chặn lối đi. Khi mở: SetActive(false).")]
-        [SerializeField] private GameObject[] doors;
+        [Tooltip("Danh sách các RoomDoor của phòng. Tự động tìm kiếm ở các object con nếu để trống.")]
+        [SerializeField] private RoomDoor[] roomDoors;
 
         [Header("===== Layer Settings =====")]
         [Tooltip("Layer dùng để nhận diện Player (phải trùng với Layer gán trên Player GameObject).")]
@@ -23,6 +28,10 @@ namespace Roguelite.RoomSystem
         [Header("===== Spawner Settings =====")]
         [Tooltip("Tham chiếu tới EnemySpawner của phòng (Tự động tìm kiếm trên cùng GameObject nếu để trống).")]
         [SerializeField] private EnemySpawner enemySpawner;
+
+        [Header("===== Space / Collision Settings =====")]
+        [Tooltip("Collider đại diện cho kích thước vật lý của phòng để kiểm tra chồng lấn (Overlap Box).")]
+        [SerializeField] private Collider2D roomBoundsCollider;
 
         #endregion
 
@@ -50,6 +59,18 @@ namespace Roguelite.RoomSystem
 
             // Đảm bảo Collider là trigger để phát hiện va chạm không cản trở vật lý
             triggerCollider.isTrigger = true;
+
+            // Tự động tìm kiếm các RoomDoor con nếu chưa được gán trong Inspector
+            if (roomDoors == null || roomDoors.Length == 0)
+            {
+                roomDoors = GetComponentsInChildren<RoomDoor>();
+            }
+
+            // Tự động gán roomBoundsCollider nếu chưa gán
+            if (roomBoundsCollider == null)
+            {
+                roomBoundsCollider = GetComponent<Collider2D>();
+            }
 
             // Tự động tìm kiếm EnemySpawner trên cùng GameObject nếu chưa gán
             if (enemySpawner == null)
@@ -82,8 +103,10 @@ namespace Roguelite.RoomSystem
             // Bỏ qua nếu phòng đã bị khóa (tránh kích hoạt lần 2)
             if (isRoomLocked) return;
 
+            // Start Room không tự động khóa khi Player bắt đầu game
+            if (roomType == RoomType.Start) return;
+
             // Kiểm tra Layer của đối tượng va chạm có nằm trong playerLayer không
-            // Dùng bitwise shift để so sánh đúng chuẩn LayerMask
             if (((1 << collision.gameObject.layer) & playerLayer) == 0) return;
 
             // Player đã bước vào phòng → Kích hoạt chuỗi sự kiện
@@ -92,7 +115,7 @@ namespace Roguelite.RoomSystem
         }
 
         // =====================================================================
-        //  [BƯỚC 2] LOCK DOORS – Khóa tất cả các cửa
+        //  [BƯỚC 2] LOCK DOORS – Khóa tất cả các cửa có kết nối
         // =====================================================================
 
         /// <summary>
@@ -104,26 +127,29 @@ namespace Roguelite.RoomSystem
             // Đánh dấu phòng đã khóa
             isRoomLocked = true;
 
-            // Bật tất cả các cửa lên để chặn lối đi
-            for (int i = 0; i < doors.Length; i++)
+            // Khóa toàn bộ các cửa đang có kết nối hoạt động
+            if (roomDoors != null)
             {
-                if (doors[i] != null)
+                for (int i = 0; i < roomDoors.Length; i++)
                 {
-                    doors[i].SetActive(true);
+                    if (roomDoors[i] != null)
+                    {
+                        roomDoors[i].SetGateActive(true);
+                    }
                 }
             }
 
             // Tắt Collider nhận diện của RoomManager – không cần quét nữa
             triggerCollider.enabled = false;
 
-            Debug.Log($"[RoomManager] Phòng {gameObject.name} đã bị khóa! Tổng cộng {doors.Length} cửa đã đóng.");
+            Debug.Log($"[RoomManager] Phòng {gameObject.name} đã bị khóa! Cửa chặn đã đóng để chiến đấu.");
 
             // [BƯỚC 3] Chuyển tiếp sang sinh quái
             SpawnEnemies();
         }
 
         // =====================================================================
-        //  [BƯỚC 3] SPAWN ENEMIES – Sinh quái (đầu chờ cho Task sau)
+        //  [BƯỚC 3] SPAWN ENEMIES – Sinh quái
         // =====================================================================
 
         /// <summary>
@@ -156,28 +182,64 @@ namespace Roguelite.RoomSystem
             // [BƯỚC 5] Room Cleared
             Debug.Log($"[RoomManager] Phòng {gameObject.name} đã được dọn sạch!");
 
-            // [BƯỚC 6] Reward/Upgrade (đầu chờ cho Task sau)
-            // TODO: Ghép nối với hệ thống Reward/Upgrade
+            // [BƯỚC 6] Reward/Upgrade
+            // TODO: Ghép nối với hệ thống Reward/Upgrade (US-019, US-020)
             Debug.Log($"[RoomManager] Chuẩn bị trao thưởng...");
 
-            // [BƯỚC 7] Open Doors – Tắt các cửa để mở lối đi
+            // [BƯỚC 7] Open Doors – Mở các cửa chặn để mở lối đi tiếp
             OpenDoors();
         }
 
         /// <summary>
-        /// Mở tất cả các cửa bằng cách tắt GameObject.
+        /// Mở các cửa chặn bằng cách vô hiệu hóa gateObject.
         /// </summary>
         private void OpenDoors()
         {
-            for (int i = 0; i < doors.Length; i++)
+            if (roomDoors != null)
             {
-                if (doors[i] != null)
+                for (int i = 0; i < roomDoors.Length; i++)
                 {
-                    doors[i].SetActive(false);
+                    if (roomDoors[i] != null)
+                    {
+                        roomDoors[i].SetGateActive(false);
+                    }
                 }
             }
 
             Debug.Log($"[RoomManager] Tất cả cửa phòng {gameObject.name} đã mở!");
+        }
+
+        // =====================================================================
+        //  PUBLIC HELPER METHODS FOR GENERATOR
+        // =====================================================================
+
+        /// <summary>
+        /// Lấy toàn bộ RoomDoor trong phòng này.
+        /// </summary>
+        public RoomDoor[] GetDoors()
+        {
+            if (roomDoors == null || roomDoors.Length == 0)
+            {
+                roomDoors = GetComponentsInChildren<RoomDoor>();
+            }
+            return roomDoors;
+        }
+
+        /// <summary>
+        /// Lấy vùng bao (Bounds) vật lý của phòng để kiểm tra đè lấn.
+        /// </summary>
+        public Bounds GetRoomBounds()
+        {
+            if (roomBoundsCollider != null)
+            {
+                return roomBoundsCollider.bounds;
+            }
+            // Fallback nếu không gán
+            if (triggerCollider != null)
+            {
+                return triggerCollider.bounds;
+            }
+            return new Bounds(transform.position, Vector3.zero);
         }
     }
 }

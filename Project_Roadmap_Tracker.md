@@ -60,7 +60,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | **US-014** | Thiết kế các Room Prefab cơ bản (Start, Combat, Reward, Boss) với Tilemap, Collider và các vị trí spawn quái | Level | 3 | 🔴 High | ⏳ Chưa bắt đầu | Cấu hình các prefab phòng hoàn chỉnh. |
 | **US-015** | Cài đặt hệ thống sinh map bán ngẫu nhiên (Semi-random), tự động ghép nối các Room Prefab theo luồng chạy của người chơi | Architecture | 5 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện giải thuật ghép nối cửa (Doorway Alignment) tự động không chồng lấn. |
 | **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Architecture | 3 | 🟡 Medium | ✅ Hoàn thành | Đã có sẵn 7 loại Enemy Prefab (`Enemy1` đến `Enemy7`) và script `PauseMenuManager.cs` điều phối giao diện tạm dừng/tùy chọn cơ bản. |
-| **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ⏳ Chưa bắt đầu | Chuyển cảnh mượt mà giữa các phòng bằng Cinemachine/Camera transition. |
+| **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ⏳ Đang thực hiện | Đã có Cinemachine camera, có thể bám theo người chơi, chưa lock theo phòng. |
 
 ---
 

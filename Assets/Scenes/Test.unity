@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1371029259}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 7.137692
+    OrthographicSize: 8.17
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -310,7 +310,7 @@ Transform:
   m_GameObject: {fileID: 281045089}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.740022, y: 1.339978, z: -10}
+  m_LocalPosition: {x: -1.0900221, y: 0.46997803, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TrackedObjectOffset: {x: 3.97, y: 1.8, z: 0}
+  m_TrackedObjectOffset: {x: 5.62, y: 0.93, z: 0}
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -596,7 +596,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.137692
+  orthographic size: 8.17
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -621,7 +621,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.740022, y: 1.339978, z: -10}
+  m_LocalPosition: {x: -1.0900221, y: 0.46997803, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -805,7 +805,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &545453354
 RectTransform:
@@ -1145,7 +1145,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &956498594
 RectTransform:
@@ -1600,6 +1600,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
@@ -1890,9 +1894,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startRoomPrefab: {fileID: 3002743426912733071, guid: ebe16d390ab53e940b994396bbb87490, type: 3}
   combatRoomPrefabs:
+  - {fileID: 3200933418676977678, guid: aaf47d8d05497d14b9deaf8367834208, type: 3}
   - {fileID: 3200933418676977678, guid: d2cc15de362810045baf19d6203a4d94, type: 3}
-  rewardRoomPrefab: {fileID: 3200933418676977678, guid: aaf47d8d05497d14b9deaf8367834208, type: 3}
-  bossRoomPrefab: {fileID: 3200933418676977678, guid: d2cc15de362810045baf19d6203a4d94, type: 3}
+  - {fileID: 3200933418676977678, guid: 5daa8d41fcae67848b96912008d743e7, type: 3}
+  rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
+  bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
   totalRooms: 8
   roomLayer:
     serializedVersion: 2
@@ -1907,7 +1913,7 @@ Transform:
   m_GameObject: {fileID: 1740652943}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -961.7064, y: -537.68097, z: -90.064476}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

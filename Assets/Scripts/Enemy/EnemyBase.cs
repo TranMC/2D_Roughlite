@@ -448,16 +448,23 @@ namespace Roguelite.Enemy
 
             // --- Chuyển sang Hit state và bắt đầu Coroutine stagger ---
             TransitionToState(EnemyState.Hit);
-            hitCoroutine = StartCoroutine(HitStaggerCoroutine());
+            bool hasKnockback = (knockback != Vector2.zero);
+            hitCoroutine = StartCoroutine(HitStaggerCoroutine(hasKnockback));
         }
 
-        protected virtual IEnumerator HitStaggerCoroutine()
+        protected virtual IEnumerator HitStaggerCoroutine(bool hasKnockback = false)
         {
-            // Dừng di chuyển trong lúc bị hit
-            StopMovement();
+            // Dừng di chuyển trong lúc bị hit nếu không có lực đẩy lùi
+            if (!hasKnockback)
+            {
+                StopMovement();
+            }
 
             // Chờ hết thời gian stagger
             yield return new WaitForSeconds(hitStaggerDuration);
+
+            // Dừng di chuyển ngang sau khi hết stagger
+            StopMovement();
 
             hitCoroutine = null;
 

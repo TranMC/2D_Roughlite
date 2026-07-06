@@ -314,8 +314,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logAttackHits: 1
-  attackDamage: 10
-  knockback: {x: 0, y: 0}
+  attackDamage: 14
+  knockback: {x: 2, y: 0}
 --- !u!1 &7596490990374155236
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,8 +419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logAttackHits: 1
-  attackDamage: 10
-  knockback: {x: 0, y: 0}
+  attackDamage: 13
+  knockback: {x: 3, y: 0}
 --- !u!1 &8908674412873145577
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,4 +525,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logAttackHits: 1
   attackDamage: 10
-  knockback: {x: 0, y: 0}
+  knockback: {x: 2, y: 0}

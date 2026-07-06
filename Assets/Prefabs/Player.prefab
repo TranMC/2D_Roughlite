@@ -237,7 +237,7 @@ MonoBehaviour:
       m_Calls: []
   isDead: 0
   isInvincible: 0
-  invincibilityTimer: 0.25
+  invincibilityTimer: 2
 --- !u!114 &285976679450404119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,8 +434,8 @@ MonoBehaviour:
   logStateChanges: 1
   walkSpeed: 5
   runSpeed: 10
-  jumpImpulse: 11
-  airWalkSpeed: 3
+  jumpImpulse: 10
+  airWalkSpeed: 4
   attackMovementMultiplier: 0
   _isMoving: 0
   _isRunning: 0
@@ -584,7 +584,7 @@ GameObject:
   m_Component:
   - component: {fileID: 974144799054435123}
   - component: {fileID: 3409559805845061405}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: AirAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,8 +752,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logAttackHits: 1
-  attackDamage: 10
-  knockback: {x: 0, y: 0}
+  attackDamage: 13
+  knockback: {x: 3, y: 0}
 --- !u!1 &8686809240685874628
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,5 +850,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logAttackHits: 1
-  attackDamage: 10
-  knockback: {x: 0, y: 0}
+  attackDamage: 15
+  knockback: {x: 5, y: 0}

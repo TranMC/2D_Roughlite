@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     Vector2 moveInput;
     TouchingDirections touchingDirections;
     PlayerStats playerStats;
+    private bool _wasGrounded = true;
 
     public float CurrentMoveSpeed
     {
@@ -127,7 +128,7 @@ public class PlayerController : MonoBehaviour
         get
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            return stateInfo.IsName("Attack") || stateInfo.IsName("Attack1") || stateInfo.IsName("Attack2") || stateInfo.IsName("Combo");
+            return stateInfo.IsName("Attack") || stateInfo.IsName("Attack1") || stateInfo.IsName("Attack2") || stateInfo.IsName("Combo") || stateInfo.IsName("AirAttack");
         }
     }
 
@@ -169,6 +170,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // Reset trigger tấn công khi vừa chạm đất để tránh tự động kích hoạt đòn đánh mặt đất
+        if (touchingDirections.IsGrounded && !_wasGrounded)
+        {
+            animator.ResetTrigger(AnimationStrings.attackTrigger);
+            animator.ResetTrigger(Roguelite.Player.AnimationStrings.airAttackTrigger);
+        }
+        _wasGrounded = touchingDirections.IsGrounded;
     }
 
     // Cập nhật vật lý mỗi khung hình cố định
@@ -302,11 +310,25 @@ public class PlayerController : MonoBehaviour
 
         if (context.started)
         {
-            animator.SetTrigger(AnimationStrings.attackTrigger);
-            
-            if (logActions)
+            if (touchingDirections.IsGrounded)
             {
-                DebugLogger.Log("ATTACK triggered!", MODULE_NAME, DebugLogger.LogType.Info);
+                animator.SetTrigger(AnimationStrings.attackTrigger);
+                animator.ResetTrigger(Roguelite.Player.AnimationStrings.airAttackTrigger);
+                
+                if (logActions)
+                {
+                    DebugLogger.Log("GROUND ATTACK triggered!", MODULE_NAME, DebugLogger.LogType.Info);
+                }
+            }
+            else
+            {
+                animator.SetTrigger(Roguelite.Player.AnimationStrings.airAttackTrigger);
+                animator.ResetTrigger(AnimationStrings.attackTrigger);
+                
+                if (logActions)
+                {
+                    DebugLogger.Log("AIR ATTACK triggered!", MODULE_NAME, DebugLogger.LogType.Info);
+                }
             }
         }
     }

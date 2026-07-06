@@ -2,6 +2,24 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [2026-07-06]
+
+### 🏃 Nhân vật chính (Player) & Chiến đấu (Combat)
+*   **Air Attack riêng biệt cho Player**: 
+    *   Tách biệt đòn đánh trên không (Air Attack) và đòn đánh dưới đất (Ground Attack) dựa trên trạng thái `touchingDirections.IsGrounded`.
+    *   Sử dụng trigger riêng biệt `airAttack` để kích hoạt hoạt ảnh trên không.
+    *   Đăng ký hằng số `airAttackTrigger` trong `Roguelite.Player.AnimationStrings` và giải quyết xung đột trùng tên class `AnimationStrings` bằng cách gọi đường dẫn namespace đầy đủ trong `PlayerController.cs`.
+*   **Cơ chế chống kích hoạt đệm (Anti-buffering)**:
+    *   Tự động reset cả hai trigger `attack` và `airAttack` ngay khi Player vừa chạm đất từ trên không để tránh tự động kích hoạt đòn đánh mặt đất ngoài ý muốn khi vừa tiếp đất.
+    *   Cập nhật thuộc tính `IsAttacking` để bao gồm cả trạng thái `"AirAttack"`, đảm bảo hệ thống di chuyển được đồng bộ chính xác khi đang tấn công trên không.
+
+### ⚙️ AI của Enemy (Enemy Base & Combat)
+*   **Sửa lỗi Knockback của Enemy**:
+    *   Khắc phục lỗi lực đẩy lùi (Knockback) của Enemy không hoạt động do hàm `StopMovement()` ở đầu coroutine `HitStaggerCoroutine()` đặt vận tốc ngang về `0f` ngay lập tức.
+    *   Cập nhật `HitStaggerCoroutine` nhận tham số `hasKnockback` (mặc định là `false`). Nếu có knockback, Enemy sẽ không dừng di chuyển ngang ngay lập tức để lực đẩy có tác dụng, và chỉ gọi `StopMovement()` để dừng chuyển động sau khi kết thúc thời gian stagger.
+
+---
+
 ## [2026-06-29]
 
 ### ⚙️ Tinh chỉnh AI của Enemy (Enemy Base & Combat Refactor)

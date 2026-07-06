@@ -27,5 +27,6 @@ namespace Roguelite.Player
         public static readonly string emptyHealTrigger = "emptyHeal";
         public static readonly string dashTrigger = "dash";
         public static readonly string isDashing = "isDashing";
+        public static readonly string airAttackTrigger = "airAttack";
     }
 }

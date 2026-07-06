@@ -35,7 +35,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-006** | Xây dựng PlayerController và State Machine xử lý di chuyển (Idle, Move, Jump, Fall) bằng Rigidbody2D | Player | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện PlayerController, PlayerStateMachine và các trạng thái di chuyển (Idle, Move, Jump, Fall) sử dụng Rigidbody2D. |
 | **US-007** | Tạo PlayerStats để quản lí HP của player và các trạng thái Hit, Dead | Player | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo PlayerStats quản lý HP, sự kiện nhận sát thương (Hit) và vô hiệu hóa điều khiển / kích hoạt GameManager GameOver khi chết (Dead). |
-| **US-008** | Thêm trạng thái Attack cho Player, thiết lập hệ thống hitbox (Trigger Collider) | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo module `Attack.cs` quản lý hitbox trigger collider và đăng ký input `onAttack` kích hoạt hoạt ảnh tấn công của Player. |
+| **US-008** | Thêm trạng thái Attack cho Player, thiết lập hệ thống hitbox (Trigger Collider) | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo module `Attack.cs` quản lý hitbox trigger collider và đăng ký input `onAttack` kích hoạt hoạt ảnh tấn công của Player. Đã bổ sung đòn Air Attack riêng biệt và cơ chế chống kích hoạt đệm khi tiếp đất. |
 | **US-009** | Xây dựng EnemyBase với máy trạng thái đơn giản: Patrol, Chase và Attack | Enemy | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo `EnemyBase.cs` abstract class với State Machine 5 trạng thái, tích hợp IDamageable. |
 
 ---
@@ -45,7 +45,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-010** | Ghép nối TakeDamage giữa Player và Enemy, xử lý Knockback và hủy quái vật khi HP <= 0 | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã kết nối `TakeDamage` qua giao diện `IDamageable` giữa `PlayerStats` và `EnemyBase` qua `Attack.cs`, áp dụng lực đẩy lùi (Knockback) và vô hiệu hóa/hủy thực thể khi HP <= 0. |
+| **US-010** | Ghép nối TakeDamage giữa Player và Enemy, xử lý Knockback và hủy quái vật khi HP <= 0 | Combat | 3 | 🔴 High | ✅ Hoàn thành | Đã kết nối `TakeDamage` qua giao diện `IDamageable` giữa `PlayerStats` và `EnemyBase` qua `Attack.cs`, áp dụng lực đẩy lùi (Knockback) và vô hiệu hóa/hủy thực thể khi HP <= 0. Khắc phục lỗi knockback của Enemy bị triệt tiêu do StopMovement. |
 | **US-011** | Tạo RoomManager, dùng Collider2D ở cửa để nhận diện Player bước vào và khóa phòng | Room System | 3 | 🔴 High | ✅ Hoàn thành | Quản lý logic cửa và kích hoạt trạng thái chiến đấu phòng. |
 | **US-012** | Cấu hình Enemy Spawner để tự động sinh quái vật tại các vị trí định sẵn khi phòng bị khóa | Room System | 2 | 🔴 High | ✅ Hoàn thành | Hệ thống `EnemySpawner.cs` có thể customize vị trí sinh quái, tự vẽ gizmoz để dễ dàng kéo thả vị trí sinh quái kết hợp cùng `RoomManager.cs`. |
 | **US-013** | Đếm lượng quái trong phòng; tự động chuyển trạng thái Cleared và mở cửa khi quái bị tiêu diệt hết | Room System | 3 | 🔴 High | ✅ Hoàn thành | `RoomManager.cs` kết hợp chung với `EnemySpawner.cs` trong mỗi phòng, đảm bảo tính độc lập giữa các phòng và chắc chắn điều kiện mở phòng (tiêu diệt hết quái). |
@@ -57,10 +57,10 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-014** | Thiết kế các Room Prefab cơ bản (Start, Combat, Reward, Boss) với Tilemap, Collider và các vị trí spawn quái | Level | 3 | 🔴 High | ⏳ Chưa bắt đầu | Cấu hình các prefab phòng hoàn chỉnh. |
+| **US-014** | Thiết kế các Room Prefab cơ bản (Start, Combat, Reward, Boss) với Tilemap, Collider và các vị trí spawn quái | Level | 3 | 🔴 High | ✅ Hoàn thành | Cấu hình các prefab phòng hoàn chỉnh. |
 | **US-015** | Cài đặt hệ thống sinh map bán ngẫu nhiên (Semi-random), tự động ghép nối các Room Prefab theo luồng chạy của người chơi | Architecture | 5 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện giải thuật ghép nối cửa (Doorway Alignment) tự động không chồng lấn. |
 | **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Architecture | 3 | 🟡 Medium | ✅ Hoàn thành | Đã có sẵn 7 loại Enemy Prefab (`Enemy1` đến `Enemy7`) và script `PauseMenuManager.cs` điều phối giao diện tạm dừng/tùy chọn cơ bản. |
-| **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ⏳ Đang thực hiện | Đã có Cinemachine camera, có thể bám theo người chơi, chưa lock theo phòng. |
+| **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng | Gameplay | 3 | 🔴 High | ✅ Hoàn thành | Đã có Cinemachine camera, có thể bám theo người chơi, tuy nhiên chưa lock theo từng phòng, chưa đảm bảo 100% sẽ không bị quay ngoài map. |
 
 ---
 

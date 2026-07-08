@@ -1587,6 +1587,22 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[18].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 461169030}
+    - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: runSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: walkSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: jumpImpulse
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: airWalkSpeed
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1610,6 +1626,10 @@ PrefabInstance:
     - target: {fileID: 5473817790128322941, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_Offset.y
       value: -0.9889294
+      objectReference: {fileID: 0}
+    - target: {fileID: 6951296986269504407, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
+      propertyPath: m_GravityScale
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7681128376416596358, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_LocalPosition.x

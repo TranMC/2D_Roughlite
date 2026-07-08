@@ -75,6 +75,7 @@ namespace Roguelite.Player
         }
 
         private PlayerController playerController;
+        private Coroutine lockVelocityCoroutine;
 
         private void Awake()
         {
@@ -207,6 +208,12 @@ namespace Roguelite.Player
                     playerController.Animator.SetTrigger(AnimationStrings.hitTrigger);
                 }
                 LockVelocity = true;
+
+                if (lockVelocityCoroutine != null)
+                {
+                    StopCoroutine(lockVelocityCoroutine);
+                }
+                lockVelocityCoroutine = StartCoroutine(ResetLockVelocityAfterHit());
 
                 if (logInvincibility)
                 {
@@ -341,6 +348,42 @@ namespace Roguelite.Player
             {
                 col.enabled = false;
             }
+        }
+
+        /// <summary>
+        /// Coroutine quản lý mở khóa di chuyển của người chơi sau khi hết trạng thái bị trúng đòn (Hurt).
+        /// Mở khóa di chuyển ngay khi kết thúc hoặc bắt đầu chuyển trạng thái ra khỏi Hurt animation.
+        /// </summary>
+        private IEnumerator ResetLockVelocityAfterHit()
+        {
+            Animator animator = playerController != null ? playerController.Animator : null;
+            if (animator == null)
+            {
+                LockVelocity = false;
+                yield break;
+            }
+
+            // 1. Chờ cho đến khi Animator chuyển sang trạng thái "Hurt"
+            // Giới hạn thời gian chờ tối đa 0.2 giây đề phòng trigger bị bỏ qua
+            float timeout = 0.2f;
+            float elapsed = 0f;
+            while (elapsed < timeout && !animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // 2. Chờ cho đến khi bắt đầu chuyển tiếp ra khỏi trạng thái "Hurt" hoặc kết thúc nó hoàn toàn
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
+            {
+                while (animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt") && !animator.IsInTransition(0))
+                {
+                    yield return null;
+                }
+            }
+
+            LockVelocity = false;
+            lockVelocityCoroutine = null;
         }
 
         // --- CÁC HÀM HỖ TRỢ TEST TỪ INSPECTOR (RIGHT-CLICK) ---

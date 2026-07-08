@@ -161,8 +161,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8440171826737757456}
-  - component: {fileID: 1256780850848083218}
   - component: {fileID: 7848770538338402027}
+  - component: {fileID: -8751388023322600998}
   m_Layer: 3
   m_Name: Room_Combat1
   m_TagString: Untagged
@@ -189,8 +189,30 @@ Transform:
   - {fileID: 6563784452536935224}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1256780850848083218
-BoxCollider2D:
+--- !u!114 &7848770538338402027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3223717696486680930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 1
+  roomDoors:
+  - {fileID: 2970315191368304200}
+  - {fileID: 4798768345928122670}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  enemySpawner: {fileID: 8772244755346779498}
+  roomBoundsCollider: {fileID: -8751388023322600998}
+  playerVirtualCamera: {fileID: 0}
+--- !u!60 &-8751388023322600998
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -218,10 +240,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 49.01, y: 3.53}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -231,30 +253,14 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 96.6, y: 35.7}
-  m_EdgeRadius: 0
---- !u!114 &7848770538338402027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3223717696486680930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomType: 1
-  roomDoors:
-  - {fileID: 2970315191368304200}
-  - {fileID: 4798768345928122670}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  enemySpawner: {fileID: 8772244755346779498}
-  roomBoundsCollider: {fileID: 1256780850848083218}
+  m_Points:
+    m_Paths:
+    - - {x: 94.44504, y: 20.140026}
+      - {x: 2.3435373, y: 21.017897}
+      - {x: 2.5499253, y: -13.0460825}
+      - {x: 94.091515, y: -12.104771}
+      - {x: 93.98413, y: 1.5641005}
+  m_UseDelaunayMesh: 0
 --- !u!1 &3967545983305141815
 GameObject:
   m_ObjectHideFlags: 0

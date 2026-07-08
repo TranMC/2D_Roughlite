@@ -1027,7 +1027,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 5
-      m_TileSpriteIndex: 7
+      m_TileSpriteIndex: 11
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1037,7 +1037,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 4
-      m_TileSpriteIndex: 6
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1396,18 +1396,18 @@ Tilemap:
     m_Data: {fileID: 68232135, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
   - m_RefCount: 24
     m_Data: {fileID: -1907421237, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 808180275, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 229345430, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 2
     m_Data: {fileID: 1377230148, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
   - m_RefCount: 2
     m_Data: {fileID: -1824986610, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 808180275, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 229345430, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
   - m_RefCount: 2
     m_Data: {fileID: 15441081, guid: 3d8812b400ed3b54f86956c5cd65e918, type: 3}
   - m_RefCount: 2
@@ -1787,8 +1787,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1924975417350048817}
-  - component: {fileID: 244823591751733968}
   - component: {fileID: 6878007169119337231}
+  - component: {fileID: 4918154100156429526}
   m_Layer: 3
   m_Name: Room2
   m_TagString: Untagged
@@ -1816,8 +1816,30 @@ Transform:
   - {fileID: 5325432578925372802}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &244823591751733968
-BoxCollider2D:
+--- !u!114 &6878007169119337231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3200933418676977678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 1
+  roomDoors:
+  - {fileID: 1845852949780601730}
+  - {fileID: 8574828831208852875}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  enemySpawner: {fileID: 4732293645589519419}
+  roomBoundsCollider: {fileID: 4918154100156429526}
+  playerVirtualCamera: {fileID: 0}
+--- !u!60 &4918154100156429526
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1848,7 +1870,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.075157166, y: -0.006015539}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1858,30 +1880,14 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 25.321243, y: 14.2399025}
-  m_EdgeRadius: 0
---- !u!114 &6878007169119337231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3200933418676977678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomType: 1
-  roomDoors:
-  - {fileID: 1845852949780601730}
-  - {fileID: 8574828831208852875}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  enemySpawner: {fileID: 4732293645589519419}
-  roomBoundsCollider: {fileID: 244823591751733968}
+  m_Points:
+    m_Paths:
+    - - {x: 11.50002, y: 11.302099}
+      - {x: -12.6906595, y: 11.569451}
+      - {x: -12.710723, y: -13.986121}
+      - {x: 11.464888, y: -14.034039}
+      - {x: 11.396908, y: 1.2194352}
+  m_UseDelaunayMesh: 0
 --- !u!1 &4230341102403872287
 GameObject:
   m_ObjectHideFlags: 0

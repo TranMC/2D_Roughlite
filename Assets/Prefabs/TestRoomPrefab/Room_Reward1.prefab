@@ -104,8 +104,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2626231997729885111}
-  - component: {fileID: 4959102133669715527}
   - component: {fileID: 2154435574540923304}
+  - component: {fileID: 4520001680704770909}
   m_Layer: 3
   m_Name: Room_Reward1
   m_TagString: Untagged
@@ -131,8 +131,30 @@ Transform:
   - {fileID: 9092327402274135884}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &4959102133669715527
-BoxCollider2D:
+--- !u!114 &2154435574540923304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960799844176705317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomType: 2
+  roomDoors:
+  - {fileID: 3984966294908130570}
+  - {fileID: 6088659294235933412}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  enemySpawner: {fileID: 0}
+  roomBoundsCollider: {fileID: 4520001680704770909}
+  playerVirtualCamera: {fileID: 0}
+--- !u!60 &4520001680704770909
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -160,10 +182,10 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -24.8, y: 5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -173,30 +195,14 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 81.79, y: 33.8}
-  m_EdgeRadius: 0
---- !u!114 &2154435574540923304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960799844176705317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomType: 2
-  roomDoors:
-  - {fileID: 3984966294908130570}
-  - {fileID: 6088659294235933412}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  enemySpawner: {fileID: 0}
-  roomBoundsCollider: {fileID: 4959102133669715527}
+  m_Points:
+    m_Paths:
+    - - {x: 12.108505, y: 21.574608}
+      - {x: -66.64439, y: 21.563189}
+      - {x: -66.516106, y: -11.393232}
+      - {x: 12.007185, y: -11.63776}
+      - {x: 11.976684, y: 0.21057504}
+  m_UseDelaunayMesh: 0
 --- !u!1 &3477159137698927467
 GameObject:
   m_ObjectHideFlags: 0
@@ -6216,7 +6222,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 15
-      m_TileSpriteIndex: 15
+      m_TileSpriteIndex: 17
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -8803,12 +8809,12 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 4
     m_Data: {fileID: 1644381003, guid: e86c462786e96fe48a9ff6aacb956b4c, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: -1469510724, guid: e86c462786e96fe48a9ff6aacb956b4c, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   - m_RefCount: 49
     m_Data: {fileID: -57203450, guid: e86c462786e96fe48a9ff6aacb956b4c, type: 3}
   - m_RefCount: 110

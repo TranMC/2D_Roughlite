@@ -255,6 +255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 281045091}
   - component: {fileID: 281045090}
+  - component: {fileID: 281045092}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -317,6 +318,22 @@ Transform:
   - {fileID: 447807644}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &281045092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281045089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BoundingShape2D: {fileID: 0}
+  m_Damping: 3
+  m_MaxWindowSize: 0
+  m_Padding: 0
 --- !u!1 &388701448
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,12 +465,12 @@ MonoBehaviour:
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_CameraDistance: 10
-  m_DeadZoneWidth: 0.173
-  m_DeadZoneHeight: 0.181
+  m_DeadZoneWidth: 0.095
+  m_DeadZoneHeight: 0.095
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
-  m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneWidth: 0.317
+  m_SoftZoneHeight: 0.343
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
@@ -1593,7 +1610,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: walkSpeed
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: jumpImpulse
@@ -1601,7 +1618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2152392908269816835, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: airWalkSpeed
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4201934938828041213, guid: 0f1a7c99f5aa9664792d28a699d7859a, type: 3}
       propertyPath: m_Name
@@ -1923,9 +1940,10 @@ MonoBehaviour:
   - {fileID: 3200933418676977678, guid: 5daa8d41fcae67848b96912008d743e7, type: 3}
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   - {fileID: 4269573084806665363, guid: 7d62749a1d369664dba8a688392f00ef, type: 3}
+  - {fileID: 1960799844176705317, guid: 82e8f3da63bb65a4c8cc350b26dac74b, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
-  totalRooms: 8
+  totalRooms: 9
   roomLayer:
     serializedVersion: 2
     m_Bits: 8

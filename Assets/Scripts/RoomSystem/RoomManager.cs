@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Cinemachine;
 
 namespace Roguelite.RoomSystem
 {
@@ -33,6 +34,10 @@ namespace Roguelite.RoomSystem
         [Tooltip("Collider đại diện cho kích thước vật lý của phòng để kiểm tra chồng lấn (Overlap Box).")]
         [SerializeField] private Collider2D roomBoundsCollider;
 
+        [Header("===== Cinemachine Settings =====")]
+        [Tooltip("Tham chiếu tới Cinemachine Virtual Camera chính của Player.")]
+        [SerializeField] private CinemachineVirtualCamera playerVirtualCamera;
+
         #endregion
 
         #region ====== RUNTIME STATE ======
@@ -46,6 +51,11 @@ namespace Roguelite.RoomSystem
         /// Cache Collider2D nhận diện Player của RoomManager (tắt sau khi kích hoạt).
         /// </summary>
         private Collider2D triggerCollider;
+
+        /// <summary>
+        /// Cache component CinemachineConfiner2D để giới hạn phạm vi camera.
+        /// </summary>
+        private CinemachineConfiner2D cameraConfiner;
 
         #endregion
 
@@ -82,6 +92,18 @@ namespace Roguelite.RoomSystem
             if (enemySpawner != null)
             {
                 enemySpawner.OnAllEnemiesCleared += OnRoomCleared;
+            }
+
+            // Tự động tìm kiếm Cinemachine Virtual Camera trên Scene nếu chưa được gán (hữu ích khi phòng là Prefab)
+            if (playerVirtualCamera == null)
+            {
+                playerVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            }
+
+            // Cache Cinemachine Confiner từ Virtual Camera
+            if (playerVirtualCamera != null)
+            {
+                cameraConfiner = playerVirtualCamera.GetComponent<CinemachineConfiner2D>();
             }
         }
 
@@ -137,6 +159,13 @@ namespace Roguelite.RoomSystem
                         roomDoors[i].SetGateActive(true);
                     }
                 }
+            }
+
+            // Khóa camera vào ranh giới phòng
+            if (cameraConfiner != null && roomBoundsCollider != null)
+            {
+                cameraConfiner.m_BoundingShape2D = roomBoundsCollider;
+                cameraConfiner.InvalidateCache();
             }
 
             // Tắt Collider nhận diện của RoomManager – không cần quét nữa
@@ -204,6 +233,13 @@ namespace Roguelite.RoomSystem
                         roomDoors[i].SetGateActive(false);
                     }
                 }
+            }
+
+            // Giải phóng camera khi phòng đã mở
+            if (cameraConfiner != null)
+            {
+                cameraConfiner.m_BoundingShape2D = null;
+                cameraConfiner.InvalidateCache();
             }
 
             Debug.Log($"[RoomManager] Tất cả cửa phòng {gameObject.name} đã mở!");

@@ -6,7 +6,7 @@
 | :--- | :--- | :--- | :---: | :--- |
 | **Dự án** | ⚔️ 2D ROUGHLITE MANAGEMENT — UNITY GAME PROJECT | - | - | - |
 | **Thông tin** | Roguelite 2D | Unity 2D | - | Lịch trình 3 tháng |
-| **Quy mô** | 6 Epics | 25 User Stories | **81 SP** | Phân chia thành các giai đoạn thực hiện |
+| **Quy mô** | 9 Epics | 49 User Stories | **149 SP** | Phân chia thành các giai đoạn thực hiện |
 | **TECH STACK ĐỀ XUẤT** | | | | |
 | **Game Engine** | Unity 2022.3 LTS (2022.3.62f2) + C# | - | - | Ưu tiên Unity 2D/URP; dễ demo và build WebGL/Windows |
 | **Render/Visual** | URP 2D Renderer, Tilemap, Sprite/Placeholder | - | - | Asset nhân vật, khu vực có thể dùng free/mua; trọng tâm là gameflow |
@@ -48,15 +48,39 @@
 | **E04** | **US-015** | Cài đặt hệ thống sinh map bán ngẫu nhiên (Semi-random), tự động ghép nối các Room Prefab theo luồng chạy của người chơi. | Tháng 7 | Architecture | 5 | 🔴 High | Algorithm, Level |
 | **E04** | **US-016** | Xây dựng các loại Enemy prefab khác nhau, xây dựng Pause menu UI cơ bản | Tháng 7 | Architecture | 3 | 🟡 Medium | UI, Enemy |
 | **E04** | **US-017** | Xử lý logic dịch chuyển và kết nối giữa các cửa (Doors), đảm bảo camera và Player di chuyển mượt mà qua các phòng. | Tháng 7 | Gameplay | 3 | 🔴 High | Engine, Camera |
-| **E05** | **US-018** | Tạo cấu trúc ScriptableObject để quản lý dữ liệu cấu hình của các loại Perk tạm thời (Tăng HP, Tăng Damage, Tốc đánh). | Tháng 7 | Data | 3 | 🔴 High | Data, System |
-| **E05** | **US-019** | Xây dựng màn hình UI Reward hiển thị ngẫu nhiên các lựa chọn Perk nâng cấp cho Player sau khi clear Room. | Tháng 7 | UI | 3 | 🔴 High | UI, Gameplay |
-| **E05** | **US-020** | Lập trình UpgradeManager xử lý cộng dồn chỉ số từ Perk vào PlayerStats và tự động reset trạng thái sau khi kết thúc Run (Dead/Win). | Tháng 7 | System | 3 | 🔴 High | Logic, Stats |
-| **E05** | **US-021** | Xây dựng hệ thống quản lý tài nguyên Meta-progression thu thập được để mở khóa nâng cấp vĩnh viễn ở Main Menu. | Tháng 7 | Progression | 5 | 🟡 Medium | System, Data |
-| **E06** | **US-022** | Lập trình AI cho Boss dựa trên EnemyBase với các State chiến đấu phức tạp hơn (VD: Attack diện rộng, Enrage khi máu thấp). | Tháng 7 | Enemy | 5 | 🔴 High | AI, Boss |
-| **E06** | **US-023** | Tích hợp Boss Room vào khâu Level Generation và cấu hình thanh HP Bar chuyên dụng hiển thị trên UI khi đối đầu Boss. | Tháng 7 | Boss | 3 | 🔴 High | UI, Level |
-| **E06** | **US-024** | Cài đặt hệ thống Save/Load dữ liệu (JSON) để lưu trữ vĩnh viễn tiến trình mở khóa nâng cấp và tài nguyên của người chơi. | Tháng 7 | Architecture | 5 | 🔴 High | Save/Load, Data |
-| **E06** | **US-025** | Hoàn thiện luồng UX toàn game: Kết nối Main Menu vào vòng lặp Run, hiển thị thông số chi tiết ở màn hình Result (Victory/Defeat). | Tháng 7 | UI | 3 | 🔴 High | UX, HUD |
-| - | - | **TỔNG STORY POINTS** | - | - | **81** | - | - |
+| **E05** | **US-018** | Định nghĩa PerkData (ScriptableObject): id, tên, icon, loại effect (Stat modifier / Special behavior), giá trị, rarity (Common/Rare/Epic), quy tắc stack (stackable hay unique-only) | Tháng 7 | Data | 3 | 🔴 High | Data, System |
+| **E05** | **US-019** | Xây dựng PerkPool + random có trọng số theo rarity, loại trừ perk đã đạt max stack khỏi vòng random | Tháng 7 | System | 3 | 🔴 High | Logic, Random |
+| **E05** | **US-020** | UI Reward Card: hiển thị 3 lựa chọn Perk kèm icon, mô tả, màu theo rarity; chọn bằng click hoặc phím 1/2/3 | Tháng 7 | UI | 3 | 🔴 High | UI, Gameplay |
+| **E05** | **US-021** | PerkEffectApplier tách riêng khỏi UpgradeManager: xử lý áp effect theo loại (cộng thẳng / nhân hệ số / effect đặc biệt như lifesteal, thorns) | Tháng 7 | System | 3 | 🟡 Medium | Logic, Stats |
+| **E05** | **US-022** | UpgradeManager quản lý danh sách Perk active trong run, tự động clear khi Run kết thúc (Dead/Win), lưu lịch sử Perk để hiển thị ở màn Result | Tháng 7 | System | 5 | 🔴 High | Logic, Stats |
+| **E06** | **US-023** | BossBase kế thừa EnemyBase, thêm Phase theo ngưỡng % HP; dùng lại animation clip có sẵn của asset (Idle/Move/Attack/Hit), chỉ đổi tốc độ playback và scale theo phase | Tháng 7 | Enemy | 5 | 🔴 High | AI, Boss |
+| **E06** | **US-024** | Bộ 2 attack pattern phân biệt bằng hitbox và timing khác nhau trên cùng 1 animation clip (VD: cùng clip "swing" nhưng 1 pattern có hitbox dài+chậm, 1 pattern hitbox ngắn+nhanh liên hoàn) | Tháng 7 | Enemy | 5 | 🔴 High | AI, Combat |
+| **E06** | **US-025** | Enrage ở Phase cuối: tăng tốc độ tấn công/di chuyển + đổi màu sprite (tint) bằng Material/Shader Graph để báo hiệu | Tháng 7 | Enemy | 3 | 🟢 Low | AI, Boss |
+| **E06** | **US-026** | BossHealthBar UI: tên boss, thanh máu chia phase, hiệu ứng flash/shake UI khi chuyển phase (dùng animation UI thuần code, không cần icon custom) | Tháng 7 | UI | 3 | 🟡 Medium | UI, Boss |
+| **E06** | **US-027** | Tích hợp Boss Room vào level generation, khóa cửa khi vào; thêm ambient VFX (particle có sẵn trong Unity/asset free) và SFX riêng cho arena để tạo cảm giác khác biệt thay vì tileset riêng | Tháng 7 | Room System | 3 | 🟡 Medium | Level, Boss |
+| **E07** | **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Tháng 7 | Data | 3 | 🟡 Medium | Save/Load, Data |
+| **E07** | **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Tháng 7 | Architecture | 3 | 🔴 High | Save/Load |
+| **E07** | **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Tháng 7 | Architecture | 2 | 🔴 High | Save/Load |
+| **E07** | **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Tháng 7 | Architecture | 3 | 🟡 Medium | Save/Load |
+| **E07** | **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | Tháng 7 | System | 2 | 🔴 High | Save/Load, Settings |
+| **E07** | **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Tháng 7 | Architecture | 2 | 🟡 Medium | Save/Load, QA |
+| **E07** | **US-034** | Basic integrity check (checksum/hash đơn giản) để phát hiện file save bị chỉnh tay | Tháng 7 | Architecture | 3 | 🔴 High | Save/Load, QA |
+| **E08** | **US-035** | WeaponData (ScriptableObject): damage, attack speed, range, kích thước/hình hitbox, reference VFX & SFX | Tháng 7 | Data | 3 | 🔴 High | Data, Combat |
+| **E08** | **US-036** | WeaponManager: quản lý vũ khí đang trang bị, chuyển đổi giữa các vũ khí đã unlock | Tháng 7 | Player | 3 | 🔴 High | Engine, Combat |
+| **E08** | **US-037** | Hitbox runtime switching: thay đổi kích thước/hình dạng/thời điểm bật hitbox theo WeaponData trên cùng 1 animation clip | Tháng 7 | Combat | 3 | 🔴 High | Engine, Combat |
+| **E08** | **US-038** | Vũ khí cận chiến nhanh (VD: kiếm): hitbox ngắn, tốc độ cao, kèm VFX tia lửa nhỏ + SFX riêng | Tháng 7 | Player | 3 | 🔴 High | Combat, VFX |
+| **E08** | **US-039** | Vũ khí cận chiến nặng (VD: búa): hitbox lớn, tốc độ chậm, kèm screen shake + particle bụi/impact khi trúng | Tháng 7 | Player | 3 | 🔴 High | Combat, VFX |
+| **E08** | **US-040** | Vũ khí tầm xa (VD: cung): logic bắn projectile riêng (spawn, di chuyển, va chạm, destroy), dùng lại sprite projectile có sẵn | Tháng 7 | Combat | 5 | 🔴 High | Engine, Combat |
+| **E08** | **US-041** | Liên kết Weapon Unlock với nâng cấp vĩnh viễn (mở khóa bằng tài nguyên tại Main Menu), icon dùng sprite có sẵn | Tháng 7 | Progression | 3 | 🔴 High | System, Data |
+| **E08** | **US-042** | UI hotbar hiển thị vũ khí hiện tại + phím tắt chuyển đổi (VD: Q/scroll) + icon cooldown nếu có | Tháng 7 | UI | 3 | 🔴 High | UI, Combat |
+| **E09** | **US-043** | Meta-currency rơi ra từ enemy/boss đã hạ trong run, cấu hình theo từng loại enemy | Tháng 7 | System | 3 | 🔴 High | Data, Progression |
+| **E09** | **US-044** | Bonus tài nguyên cho các mốc đặc biệt (VD: lần đầu hạ 1 loại boss, clear toàn bộ room 1 run) | Tháng 7 | System | 2 | 🔴 High | Data, Progression |
+| **E09** | **US-045** | Màn hình Upgrade vĩnh viễn ở Main Menu: danh sách nâng cấp, giá tiền, trạng thái đã mua/chưa mua | Tháng 7 | UI | 3 | 🔴 High | UI, Progression |
+| **E09** | **US-046** | PermanentUpgradeManager: áp toàn bộ chỉ số vĩnh viễn đã mua vào PlayerStats khi bắt đầu run mới | Tháng 7 | System | 3 | 🔴 High | Logic, Save/Load |
+| **E09** | **US-047** | Upgrade dạng nhiều bậc (VD: Max HP cấp 1/2/3, giá tăng dần theo bậc) thay vì mua 1 lần duy nhất | Tháng 7 | System | 3 | 🔴 High | Data, Progression |
+| **E09** | **US-048** | Phản hồi khi mua thành công: SFX xác nhận + hiệu ứng UI (tween scale/flash), không cần asset hình ảnh mới | Tháng 7 | UI | 2 | 🔴 High | UI, VFX |
+| **E09** | **US-049** | Kiểm thử tích hợp: đảm bảo Permanent Upgrade đồng bộ đúng với SaveData qua nhiều lần chơi/tắt-mở game | Tháng 7 | System | 2 | 🔴 High | QA, Save/Load |
+| - | - | **TỔNG STORY POINTS** | - | - | **149** | - | - |
 
 ---
 
@@ -69,8 +93,11 @@
 | **E02** | Core Roguelite Gameplay Loop | Xây dựng nhân vật, di chuyển cơ bản, trạng thái máu và quái đơn giản | 12 SP |
 | **E03** | Player Combat & Basic Enemy System | Đấu quái, hệ thống khóa phòng (Room System) và cơ chế sinh quái | 11 SP |
 | **E04** | Thiết kế & Tạo Màn chơi bán ngẫu nhiên (Semi-random Level Gen) | Thiết kế Room Prefab, giải thuật sinh map bán ngẫu nhiên, kết nối cửa phòng và camera mượt mà | 14 SP |
-| **E05** | Upgrade System & Meta Progression | Cấu hình Perks tạm thời (ScriptableObject), UI Reward nâng cấp, hệ thống nâng cấp vĩnh viễn ở Menu | 14 SP |
-| **E06** | Boss Fight & UX Polish & Save/Load | AI Boss nâng cao, tích hợp phòng Boss, hệ thống lưu game JSON và hoàn thiện luồng UX/UI toàn game | 16 SP |
+| **E05** | Upgrade System & Meta Progression | Cấu hình Perks (ScriptableObject), PerkPool có trọng số, UI Reward Card, PerkEffectApplier tách biệt và UpgradeManager | 17 SP |
+| **E06** | Boss Fight & Arena | AI Boss phân chia phase, attack patterns, thanh HP UI chuyên dụng, cơ chế Enrage và tích hợp Boss Room | 19 SP |
+| **E07** | Save/Load System | Thiết kế SaveData, triển khai SaveManager lưu trữ JSON, quản lý file lỗi/chỉnh sửa trái phép | 18 SP |
+| **E08** | Weapon System | Quản lý WeaponData ScriptableObject, WeaponManager đổi vũ khí, hitbox runtime và projectile tầm xa | 26 SP |
+| **E09** | Meta-currency & Permanent Upgrades | Tích lũy meta-currency, nâng cấp vĩnh viễn nhiều bậc tại Main Menu, áp chỉ số vào PlayerStats | 18 SP |
 
 ---
 
@@ -163,27 +190,72 @@
 
 | Story ID | User Story | Module | Tags | SP | Ghi chú / Acceptance Criteria |
 | :--- | :--- | :--- | :--- | :---: | :--- |
-| **US-018** | Tạo cấu trúc ScriptableObject để quản lý dữ liệu cấu hình của các loại Perk tạm thời (Tăng HP, Tăng Damage, Tốc đánh). | Data | Data, System | 3 | Tạo data-driven cho danh sách nâng cấp lâm thời trong run chơi. |
-| **US-019** | Xây dựng màn hình UI Reward hiển thị ngẫu nhiên các lựa chọn Perk nâng cấp cho Player sau khi clear Room. | UI | UI, Gameplay | 3 | UI hiển thị thẻ bài lựa chọn phần thưởng ngẫu nhiên. |
-| **US-020** | Lập trình UpgradeManager xử lý cộng dồn chỉ số từ Perk vào PlayerStats và tự động reset trạng thái sau khi kết thúc Run (Dead/Win). | System | Logic, Stats | 3 | Quản lý logic nâng cấp chỉ số động trong suốt một run chơi. |
-| **US-021** | Xây dựng hệ thống quản lý tài nguyên Meta-progression thu thập được để mở khóa nâng cấp vĩnh viễn ở Main Menu. | Progression | System, Data | 5 | Tạo cơ chế tích lũy tài nguyên sau khi kết thúc run và giao diện nâng cấp vĩnh viễn. |
-| - | - | **TỔNG STORY POINTS** | - | **14** | |
+| **US-018** | Định nghĩa PerkData (ScriptableObject): id, tên, icon, loại effect (Stat modifier / Special behavior), giá trị, rarity (Common/Rare/Epic), quy tắc stack (stackable hay unique-only) | Data | Data, System | 3 | Tạo ScriptableObject cấu hình chi tiết cho các Perk với đầy đủ thuộc tính và quy tắc stack. |
+| **US-019** | Xây dựng PerkPool + random có trọng số theo rarity, loại trừ perk đã đạt max stack khỏi vòng random | System | Logic, Random | 3 | Lập trình bể PerkPool hỗ trợ weighted random theo tỷ lệ rarity và bộ lọc bỏ các Perk đã tối đa lượt nâng cấp. |
+| **US-020** | UI Reward Card: hiển thị 3 lựa chọn Perk kèm icon, mô tả, màu theo rarity; chọn bằng click hoặc phím 1/2/3 | UI | UI, Gameplay | 3 | Giao diện lựa chọn Perk chuyên nghiệp, hỗ trợ tương tác chuột và phím tắt số 1/2/3. |
+| **US-021** | PerkEffectApplier tách riêng khỏi UpgradeManager: xử lý áp effect theo loại (cộng thẳng / nhân hệ số / effect đặc biệt như lifesteal, thorns) | System | Logic, Stats | 3 | Tách riêng lớp applier chịu trách nhiệm tính toán và cộng dồn các kiểu chỉ số phức tạp hoặc hiệu ứng đặc biệt. |
+| **US-022** | UpgradeManager quản lý danh sách Perk active trong run, tự động clear khi Run kết thúc (Dead/Win), lưu lịch sử Perk để hiển thị ở màn Result | System | Logic, Stats | 5 | Lớp quản lý vòng đời Perk hoạt động trong màn chơi, tự động reset chỉ số và lưu lại vết thông tin Perks đã chọn. |
+| - | - | **TỔNG STORY POINTS** | - | **17** | |
 
 ---
 
 ## Sheet: E06
-### 👹 Epic E06: Boss Fight & UX Polish & Save/Load System (Tháng 7 | Độ ưu tiên: 🔴 High)
+### 👹 Epic E06: Boss Fight & Arena (Tháng 7 | Độ ưu tiên: 🔴 High)
 
 | Story ID | User Story | Module | Tags | SP | Ghi chú / Acceptance Criteria |
 | :--- | :--- | :--- | :--- | :---: | :--- |
-| **US-022** | Lập trình AI cho Boss dựa trên EnemyBase với các State chiến đấu phức tạp hơn (VD: Attack diện rộng, Enrage khi máu thấp). | Enemy | AI, Boss | 5 | Xây dựng AI Boss có cơ chế chia pha (Phase) và các kỹ năng tấn công diện rộng. |
-| **US-023** | Tích hợp Boss Room vào khâu Level Generation và cấu hình thanh HP Bar chuyên dụng hiển thị trên UI khi đối đầu Boss. | Boss | UI, Level | 3 | Tích hợp phòng trùm cuối và UI thanh máu Boss động trên HUD. |
-| **US-024** | Cài đặt hệ thống Save/Load dữ liệu (JSON) để lưu trữ vĩnh viễn tiến trình mở khóa nâng cấp và tài nguyên của người chơi. | Architecture | Save/Load, Data | 5 | Hệ thống lưu trữ dữ liệu vĩnh viễn xuống bộ nhớ thiết bị. |
-| **US-025** | Hoàn thiện luồng UX toàn game: Kết nối Main Menu vào vòng lặp Run, hiển thị thông số chi tiết ở màn hình Result (Victory/Defeat). | UI | UX, HUD | 3 | Đồng bộ hóa toàn bộ luồng trải nghiệm người chơi từ menu, bắt đầu run, kết thúc run. |
-| - | - | **TỔNG STORY POINTS** | - | **16** | |
+| **US-023** | BossBase kế thừa EnemyBase, thêm Phase theo ngưỡng % HP; dùng lại animation clip có sẵn của asset (Idle/Move/Attack/Hit), chỉ đổi tốc độ playback và scale theo phase | Enemy | AI, Boss | 5 | Tạo lớp `BossBase.cs` thừa kế `EnemyBase.cs`, kiểm tra ngưỡng HP để chuyển đổi Phase động. |
+| **US-024** | Bộ 2 attack pattern phân biệt bằng hitbox và timing khác nhau trên cùng 1 animation clip (VD: cùng clip "swing" nhưng 1 pattern có hitbox dài+chậm, 1 pattern hitbox ngắn+nhanh liên hoàn) | Enemy | AI, Combat | 5 | Triển khai cơ chế tùy biến hitbox và thời điểm kích hoạt hitbox cho các chuỗi đòn đánh của Boss. |
+| **US-025** | Enrage ở Phase cuối: tăng tốc độ tấn công/di chuyển + đổi màu sprite (tint) bằng Material/Shader Graph để báo hiệu | Enemy | AI, Boss | 3 | Áp dụng hiệu ứng đồ họa (Shader/Material) và điều chỉnh tốc độ di chuyển/tấn công khi Boss enrage. |
+| **US-026** | BossHealthBar UI: tên boss, thanh máu chia phase, hiệu ứng flash/shake UI khi chuyển phase (dùng animation UI thuần code, không cần icon custom) | UI | UI, Boss | 3 | UI hiển thị thanh HP đặc biệt cho Boss kèm hiệu ứng chuyển pha sinh động. |
+| **US-027** | Tích hợp Boss Room vào level generation, khóa cửa khi vào; thêm ambient VFX (particle có sẵn trong Unity/asset free) và SFX riêng cho arena để tạo cảm giác khác biệt thay vì tileset riêng | Room System | Level, Boss | 3 | Tích hợp phòng Boss vào hệ thống sinh màn, tự động khóa cửa và kích hoạt hiệu ứng VFX/SFX khi bắt đầu đấu Boss. |
+| - | - | **TỔNG STORY POINTS** | - | **19** | |
 
 ---
 
-## Sheet: E07 đến E13 (Chưa định hình)
+## Sheet: E07
+### 💾 Epic E07: Save/Load System (Tháng 7 | Độ ưu tiên: 🔴 High)
 
-Các Epic từ E07 đến E13 hiện chưa có User Story chi tiết và sẽ được phân rã ở các giai đoạn sau của dự án.
+| Story ID | User Story | Module | Tags | SP | Ghi chú / Acceptance Criteria |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Data | Save/Load, Data | 3 | Xây dựng các struct/class chứa dữ liệu save có thuộc tính `[System.Serializable]`. |
+| **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Architecture | Save/Load | 3 | Tạo `SaveManager` ghi dữ liệu đã được serialize thành JSON xuống ổ đĩa. |
+| **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Architecture | Save/Load | 2 | Tự động kiểm tra và khởi tạo file lưu trữ mặc định nếu chưa tồn tại ở startup. |
+| **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Architecture | Save/Load | 3 | Đăng ký sự kiện tự động lưu tại các điểm mốc quan trọng của gameflow. |
+| **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | System | Save/Load, Settings | 2 | Tách biệt cấu hình thiết lập hệ thống và tiến trình chơi game thành 2 file lưu trữ độc lập. |
+| **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Architecture | Save/Load, QA | 2 | Bắt ngoại lệ khi đọc file lỗi và tự động khôi phục cấu hình mặc định để tránh crash game. |
+| **US-034** | Basic integrity check (checksum/hash đơn giản) để phát hiện file save bị chỉnh tay | Architecture | Save/Load, QA | 3 | Triển khai mã hóa băm hoặc checksum đơn giản để bảo mật file save không bị sửa đổi tùy tiện. |
+| - | - | **TỔNG STORY POINTS** | - | **18** | |
+
+---
+
+## Sheet: E08
+### ⚔️ Epic E08: Weapon System (Tháng 7 | Độ ưu tiên: 🔴 High)
+
+| Story ID | User Story | Module | Tags | SP | Ghi chú / Acceptance Criteria |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| **US-035** | WeaponData (ScriptableObject): damage, attack speed, range, kích thước/hình hitbox, reference VFX & SFX | Data | Data, Combat | 3 | Tạo ScriptableObject định nghĩa toàn bộ thuộc tính cấu hình cho từng vũ khí. |
+| **US-036** | WeaponManager: quản lý vũ khí đang trang bị, chuyển đổi giữa các vũ khí đã unlock | Player | Engine, Combat | 3 | Quản lý kho vũ khí của người chơi và cho phép chuyển đổi nhanh trong trận đấu. |
+| **US-037** | Hitbox runtime switching: thay đổi kích thước/hình dạng/thời điểm bật hitbox theo WeaponData trên cùng 1 animation clip | Combat | Engine, Combat | 3 | Đồng bộ hóa thay đổi hitbox runtime dựa trên thông số của vũ khí hiện tại đang sử dụng. |
+| **US-038** | Vũ khí cận chiến nhanh (VD: kiếm): hitbox ngắn, tốc độ cao, kèm VFX tia lửa nhỏ + SFX riêng | Player | Combat, VFX | 3 | Tích hợp vũ khí tấn công nhanh với các hiệu ứng âm thanh/hình ảnh tương ứng. |
+| **US-039** | Vũ khí cận chiến nặng (VD: búa): hitbox lớn, tốc độ chậm, kèm screen shake + particle bụi/impact khi trúng | Player | Combat, VFX | 3 | Tích hợp vũ khí tấn công chậm có lực sát thương lớn kèm hiệu ứng rung màn hình và bụi hạt. |
+| **US-040** | Vũ khí tầm xa (VD: cung): logic bắn projectile riêng (spawn, di chuyển, va chạm, destroy), dùng lại sprite projectile có sẵn | Combat | Engine, Combat | 5 | Lập trình logic đạn bay (Projectile) hoàn chỉnh bao gồm tốc độ bay và xử lý va chạm. |
+| **US-041** | Liên kết Weapon Unlock với nâng cấp vĩnh viễn (mở khóa bằng tài nguyên tại Main Menu), icon dùng sprite có sẵn | Progression | System, Data | 3 | Tích hợp mở khóa vũ khí mới vào hệ thống nâng cấp vĩnh viễn ngoài Menu. |
+| **US-042** | UI hotbar hiển thị vũ khí hiện tại + phím tắt chuyển đổi (VD: Q/scroll) + icon cooldown nếu có | UI | UI, Combat | 3 | Thiết kế thanh Hotbar trên HUD hiển thị vũ khí đang dùng và hỗ trợ phím tắt chuyển đổi nhanh. |
+| - | - | **TỔNG STORY POINTS** | - | **26** | |
+
+---
+
+## Sheet: E09
+### 🪙 Epic E09: Meta-currency & Permanent Upgrades (Tháng 7 | Độ ưu tiên: 🔴 High)
+
+| Story ID | User Story | Module | Tags | SP | Ghi chú / Acceptance Criteria |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| **US-043** | Meta-currency rơi ra từ enemy/boss đã hạ trong run, cấu hình theo từng loại enemy | System | Data, Progression | 3 | Thiết lập cơ chế rơi tài nguyên (meta-currency) từ kẻ thù khi bị tiêu diệt. |
+| **US-044** | Bonus tài nguyên cho các mốc đặc biệt (VD: lần đầu hạ 1 loại boss, clear toàn bộ room 1 run) | System | Data, Progression | 2 | Tặng thêm tài nguyên cho người chơi khi đạt được các thành tựu cụ thể trong quá trình chơi. |
+| **US-045** | Màn hình Upgrade vĩnh viễn ở Main Menu: danh sách nâng cấp, giá tiền, trạng thái đã mua/chưa mua | UI | UI, Progression | 3 | Xây dựng giao diện menu nâng cấp vĩnh viễn rõ ràng, trực quan cho người chơi. |
+| **US-046** | PermanentUpgradeManager: áp toàn bộ chỉ số vĩnh viễn đã mua vào PlayerStats khi bắt đầu run mới | System | Logic, Save/Load | 3 | Đồng bộ hóa các chỉ số nâng cấp vĩnh viễn đã lưu vào thực thể Player khi khởi tạo run chơi mới. |
+| **US-047** | Upgrade dạng nhiều bậc (VD: Max HP cấp 1/2/3, giá tăng dần theo bậc) thay vì mua 1 lần duy nhất | System | Data, Progression | 3 | Thiết lập cấu trúc nâng cấp lũy tiến theo từng cấp độ và tăng dần chi phí mua. |
+| **US-048** | Phản hồi khi mua thành công: SFX xác nhận + hiệu ứng UI (tween scale/flash), không cần asset hình ảnh mới | UI | UI, VFX | 2 | Tạo hiệu ứng thị giác và âm thanh phản hồi sống động khi người chơi thực hiện giao dịch nâng cấp thành công. |
+| **US-049** | Kiểm thử tích hợp: đảm bảo Permanent Upgrade đồng bộ đúng với SaveData qua nhiều lần chơi/tắt-mở game | System | QA, Save/Load | 2 | Đảm bảo tính nhất quán dữ liệu nâng cấp vĩnh viễn xuyên suốt vòng đời ứng dụng. |
+| - | - | **TỔNG STORY POINTS** | - | **18** | |

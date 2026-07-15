@@ -15,6 +15,7 @@ namespace Roguelite.Combat
         [SerializeField] private float attackDamage = 10f;
         [SerializeField] private Vector2 knockback = Vector2.zero;
 
+        private float baseAttackDamage;
         private Collider2D attackCollider;
 
         public float AttackDamage
@@ -34,6 +35,17 @@ namespace Roguelite.Combat
             attackCollider = GetComponent<Collider2D>();
             // Đảm bảo Collider là trigger để phát hiện va chạm không cản trở vật lý
             attackCollider.isTrigger = true;
+
+            // Lưu trữ sát thương cơ bản ban đầu
+            baseAttackDamage = attackDamage;
+        }
+
+        /// <summary>
+        /// Áp dụng bổ trợ để thay đổi sát thương đòn đánh động.
+        /// </summary>
+        public void ApplyDamageModifier(float flatBonus, float percentBonus)
+        {
+            attackDamage = (baseAttackDamage + flatBonus) * (1f + percentBonus);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

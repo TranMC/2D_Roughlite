@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     public float jumpImpulse = 10f;
     public float airWalkSpeed = 3f;
 
+    private float baseWalkSpeed;
+    private float baseRunSpeed;
+    private float baseJumpImpulse;
+
     [Header("Attack Settings")]
     public float attackMovementMultiplier = 0f; // 0 = no movement during attack, 1 = full movement
 
@@ -165,6 +169,11 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         touchingDirections = GetComponent<TouchingDirections>();
         playerStats = GetComponent<PlayerStats>();
+
+        // Lưu trữ các giá trị gốc ban đầu
+        baseWalkSpeed = walkSpeed;
+        baseRunSpeed = runSpeed;
+        baseJumpImpulse = jumpImpulse;
    }
 
 
@@ -359,6 +368,33 @@ public class PlayerController : MonoBehaviour
         DebugLogger.Log($"Debug config updated - Movement:{movement}, Actions:{actions}, States:{stateChanges}", MODULE_NAME);
     }
 
+
+    /// <summary>
+    /// Áp dụng các bổ trợ (modifiers) để thay đổi tốc độ di chuyển của người chơi.
+    /// </summary>
+    public void ApplySpeedModifiers(float walkFlat, float walkPercent, float runFlat, float runPercent)
+    {
+        walkSpeed = (baseWalkSpeed + walkFlat) * (1f + walkPercent);
+        runSpeed = (baseRunSpeed + runFlat) * (1f + runPercent);
+        
+        if (enableDebug)
+        {
+            DebugLogger.Log($"Walk speed modified: {walkSpeed}, Run speed modified: {runSpeed}", MODULE_NAME);
+        }
+    }
+
+    /// <summary>
+    /// Áp dụng các bổ trợ để thay đổi lực nhảy của người chơi.
+    /// </summary>
+    public void ApplyJumpModifiers(float jumpFlat, float jumpPercent)
+    {
+        jumpImpulse = (baseJumpImpulse + jumpFlat) * (1f + jumpPercent);
+        
+        if (enableDebug)
+        {
+            DebugLogger.Log($"Jump impulse modified: {jumpImpulse}", MODULE_NAME);
+        }
+    }
 
     public void onPause(InputAction.CallbackContext context)
     {

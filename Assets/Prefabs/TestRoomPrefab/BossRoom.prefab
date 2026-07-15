@@ -9863,16 +9863,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesToSpawn:
-  - enemyPrefab: {fileID: 7904457905887386949, guid: bb75d15f89bd4354083b26e3a83fcb2c, type: 3}
+  - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
     spawnOffset: {x: 10.159552, y: 10.762323}
-    useCustomPatrolCenter: 0
-    patrolCenterOffset: {x: 0, y: 0}
-  - enemyPrefab: {fileID: 7966153308944719229, guid: d590d2230e7e8124eadb57edb464ea1d, type: 3}
-    spawnOffset: {x: -12.062661, y: 5.9246235}
-    useCustomPatrolCenter: 0
-    patrolCenterOffset: {x: 0, y: 0}
-  - enemyPrefab: {fileID: 2147229217342972384, guid: c8cff163c9759d140a21a637d2f28f63, type: 3}
-    spawnOffset: {x: 1.0147352, y: 10.762324}
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
 --- !u!1 &3200933418676977678
@@ -9925,7 +9917,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ac7c84a85deac4ca405c093dcf77d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomType: 1
+  roomType: 3
   roomDoors:
   - {fileID: 1845852949780601730}
   - {fileID: 0}
@@ -9943,7 +9935,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3200933418676977678}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

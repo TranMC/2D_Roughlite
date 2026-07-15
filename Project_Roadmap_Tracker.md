@@ -5,11 +5,11 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), cùng hệ thống Menu Tạm dừng & Prefabs Quái vật (US-016 thuộc Epic E04) và giải thuật Semi-random Level Gen (US-015, US-017). Dự án chuẩn bị bước vào giai đoạn phát triển hệ thống Perk & Nâng cấp (E05) và Boss Fight (E06).
+*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), cùng hệ thống Menu Tạm dừng & Prefabs Quái vật (US-016 thuộc Epic E04), giải thuật Semi-random Level Gen (US-015, US-017), và định nghĩa PerkData (US-018). Dự án chuẩn bị bước vào giai đoạn phát triển hệ thống Perk & Nâng cấp (E05) và Boss Fight (E06).
 *   **Tổng số Story Points (SP)**: 149 SP.
-*   **Đã hoàn thành**: 51 / 149 SP (34%).
+*   **Đã hoàn thành**: 54 / 149 SP (36%).
 *   **Đang thực hiện**: 0 / 149 SP (0%).
-*   **Chưa bắt đầu**: 98 / 149 SP (66%).
+*   **Chưa bắt đầu**: 95 / 149 SP (64%).
 
 ---
 
@@ -69,7 +69,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-018** | Định nghĩa PerkData (ScriptableObject): id, tên, icon, loại effect (Stat modifier / Special behavior), giá trị, rarity, quy tắc stack | Data | 3 | 🔴 High | ⏳ Chưa bắt đầu | Định nghĩa cấu hình Perks dưới dạng ScriptableObject. |
+| **US-018** | Định nghĩa PerkData (ScriptableObject): id, tên, icon, loại effect (Stat modifier / Special behavior), giá trị, rarity, quy tắc stack | Data | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện lớp PerkData kế thừa ScriptableObject và cấu hình các thuộc tính. |
 | **US-019** | Xây dựng PerkPool + random có trọng số theo rarity, loại trừ perk đã đạt max stack khỏi vòng random | System | 3 | 🔴 High | ⏳ Chưa bắt đầu | Bể chứa Perk, chọn ngẫu nhiên có trọng số và loại bỏ perk max stack. |
 | **US-020** | UI Reward Card: hiển thị 3 lựa chọn Perk kèm icon, mô tả, màu theo rarity; chọn bằng click hoặc phím 1/2/3 | UI | 3 | 🔴 High | ⏳ Chưa bắt đầu | Giao diện chọn Perk hỗ trợ chuột và bàn phím. |
 | **US-021** | PerkEffectApplier tách riêng khỏi UpgradeManager: xử lý áp effect theo loại (cộng thẳng / nhân hệ số / effect đặc biệt) | System | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Tách biệt logic xử lý và áp dụng các hiệu ứng chỉ số của Perk. |

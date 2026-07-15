@@ -28,6 +28,8 @@ namespace Roguelite.Player
         [Tooltip("Lượng máu hiện tại của nhân vật.")]
         [SerializeField] private float currentHealth;
 
+        private float baseMaxHealth;
+
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
 
@@ -81,6 +83,9 @@ namespace Roguelite.Player
         {
             // Lấy tham chiếu tới bộ điều khiển nhân vật chính
             playerController = GetComponent<PlayerController>();
+
+            // Lưu giá trị max health cơ bản ban đầu
+            baseMaxHealth = maxHealth;
 
             // Đăng ký module debug
             DebugLogger.SetModuleDebug(MODULE_NAME, enableDebug);
@@ -249,6 +254,32 @@ namespace Roguelite.Player
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
             healthChanged?.Invoke(currentHealth, maxHealth);
             return true;
+        }
+
+        /// <summary>
+        /// Áp dụng các bổ trợ (modifiers) để cập nhật lại Max Health của người chơi.
+        /// </summary>
+        /// <param name="flatBonus">Lượng HP cộng thẳng</param>
+        /// <param name="percentBonus">Tỷ lệ HP cộng thêm (ví dụ: 0.1 cho +10%)</param>
+        public void ApplyMaxHealthModifier(float flatBonus, float percentBonus)
+        {
+            float oldMaxHealth = maxHealth;
+            maxHealth = (baseMaxHealth + flatBonus) * (1f + percentBonus);
+
+            // Điều chỉnh máu hiện tại tăng thêm khi tăng Max Health để không làm hụt HP của người chơi
+            if (maxHealth > oldMaxHealth)
+            {
+                currentHealth += (maxHealth - oldMaxHealth);
+            }
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+            if (logHealthChanges)
+            {
+                DebugLogger.Log($"Max Health modified! {oldMaxHealth} -> {maxHealth}. Current Health: {currentHealth}", MODULE_NAME, DebugLogger.LogType.Info);
+            }
+
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            healthChanged?.Invoke(currentHealth, maxHealth);
         }
 
         /// <summary>

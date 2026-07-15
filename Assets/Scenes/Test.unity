@@ -643,7 +643,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.03, y: 0, z: 0}
 --- !u!114 &519420033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1941,6 +1941,8 @@ MonoBehaviour:
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   - {fileID: 4269573084806665363, guid: 7d62749a1d369664dba8a688392f00ef, type: 3}
   - {fileID: 1960799844176705317, guid: 82e8f3da63bb65a4c8cc350b26dac74b, type: 3}
+  - {fileID: 1428315393449339630, guid: b8fd7f7c0af15b7458a2fea4ba26ff68, type: 3}
+  - {fileID: 4108774716247879394, guid: 27285f0f5dcc9ae42837639cf95830c9, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
   totalRooms: 9

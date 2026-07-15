@@ -141,6 +141,9 @@ namespace Roguelite.Enemy
         /// <summary>Sự kiện khi quái chết.</summary>
         public event Action OnDied;
 
+        /// <summary>Sự kiện tĩnh phát ra khi có bất kỳ quái vật nào chết (dùng cho các hệ thống bổ trợ như Perk).</summary>
+        public static event Action<EnemyBase> OnAnyEnemyDied;
+
         #endregion
 
         // =====================================================================
@@ -521,6 +524,7 @@ namespace Roguelite.Enemy
 
             // Phát sự kiện chết
             OnDied?.Invoke();
+            OnAnyEnemyDied?.Invoke(this);
 
             // Vô hiệu hóa tất cả các Collider để tránh nhận sát thương hoặc cản trở tiếp
             Collider2D[] colliders = GetComponentsInChildren<Collider2D>();

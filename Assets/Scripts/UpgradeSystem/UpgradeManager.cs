@@ -97,6 +97,32 @@ namespace Roguelite.UpgradeSystem
         }
 
         /// <summary>
+        /// Giảm stack hoặc xóa hoàn toàn một Perk khỏi danh sách active.
+        /// </summary>
+        public void RemovePerk(PerkData perk)
+        {
+            if (perk == null) return;
+
+            if (activePerks.ContainsKey(perk))
+            {
+                if (activePerks[perk] > 1)
+                {
+                    activePerks[perk]--;
+                    Debug.Log($"[UpgradeManager] Giảm 1 stack Perk '{perk.PerkName}': {activePerks[perk]}/{perk.MaxStack}");
+                }
+                else
+                {
+                    activePerks.Remove(perk);
+                    Debug.Log($"[UpgradeManager] Đã xóa hoàn toàn Perk '{perk.PerkName}'");
+                }
+
+                // Áp dụng lại để cập nhật chỉ số Player
+                ApplyPerksToCurrentPlayer();
+            }
+        }
+
+
+        /// <summary>
         /// Áp dụng lại toàn bộ active perks lên Player hiện tại.
         /// </summary>
         public void ApplyPerksToCurrentPlayer()
@@ -243,6 +269,7 @@ namespace Roguelite.UpgradeSystem
         {
             activePerks.Clear();
             Debug.Log("[UpgradeManager] Đã dọn dẹp sạch sẽ danh sách Active Perks.");
+            ApplyPerksToCurrentPlayer(); // Reset chỉ số Player về mặc định
         }
 
         // --- LISTENERS ---

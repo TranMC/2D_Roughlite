@@ -1,4 +1,6 @@
 using UnityEngine;
+using Roguelite.UpgradeSystem;
+using Roguelite.Player;
 
 namespace Roguelite.Combat
 {
@@ -66,6 +68,56 @@ namespace Roguelite.Combat
                 {
                     string attackerName = parentTransform != null ? parentTransform.name : gameObject.name;
                     Debug.Log($"[Attack] {attackerName} va chạm gây sát thương lên {collision.name}: {attackDamage} dmg, Knockback: {deliveredKnockback}");
+                }
+
+                // --- HÚT MÁU (LIFESTEAL) ---
+                // Nếu kẻ tấn công (parent của component này) có PlayerStats -> Player là người gây sát thương
+                PlayerStats attackerStats = parentTransform != null ? parentTransform.GetComponent<PlayerStats>() : null;
+                if (attackerStats != null && !attackerStats.IsDead)
+                {
+                    if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("lifesteal", out int lifestealStack))
+                    {
+                        float lifestealPercent = 0.05f; // Mặc định 5%
+                        foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                        {
+                            if (kvp.Key.SpecialBehaviorKey == "lifesteal")
+                            {
+                                lifestealPercent = kvp.Key.EffectValue;
+                                break;
+                            }
+                        }
+                        float healAmount = attackDamage * lifestealPercent * lifestealStack;
+                        attackerStats.Heal(healAmount);
+                        Debug.Log($"[Lifesteal] Kích hoạt: Player gây {attackDamage} damage, hồi {healAmount} HP.");
+                    }
+                }
+
+                // --- PHẢN SÁT THƯƠNG (THORNS) ---
+                // Nếu nạn nhân bị trúng đòn (collision) có PlayerStats -> Player là người nhận sát thương
+                PlayerStats victimStats = collision.GetComponent<PlayerStats>();
+                if (victimStats != null && !victimStats.IsDead)
+                {
+                    if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("thorns", out int thornsStack))
+                    {
+                        float thornsPercent = 0.1f; // Mặc định phản 10%
+                        foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                        {
+                            if (kvp.Key.SpecialBehaviorKey == "thorns")
+                            {
+                                thornsPercent = kvp.Key.EffectValue;
+                                break;
+                            }
+                        }
+                        float thornsDamage = attackDamage * thornsPercent * thornsStack;
+
+                        // Gây sát thương ngược lại cho kẻ tấn công (phải có IDamageable)
+                        IDamageable attackerDamageable = parentTransform != null ? parentTransform.GetComponent<IDamageable>() : null;
+                        if (attackerDamageable != null)
+                        {
+                            attackerDamageable.TakeDamage(thornsDamage);
+                            Debug.Log($"[Thorns] Kích hoạt: Player nhận {attackDamage} damage, phản lại {thornsDamage} damage lên {parentTransform.name}.");
+                        }
+                    }
                 }
             }
         }

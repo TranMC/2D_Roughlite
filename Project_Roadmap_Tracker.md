@@ -5,9 +5,9 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 ---
 
 ## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), cùng hệ thống Menu Tạm dừng & Prefabs Quái vật (US-016 thuộc Epic E04), giải thuật Semi-random Level Gen (US-015, US-017), và nền tảng hệ thống Perk & Nâng cấp (US-018, US-019, US-021, US-022). Dự án chuẩn bị bước vào phát triển giao diện Reward Card (US-020) và Boss Fight (E06).
+*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), cùng hệ thống Menu Tạm dừng & Prefabs Quái vật (US-016 thuộc Epic E04), giải thuật Semi-random Level Gen (US-015, US-017), nền tảng hệ thống Perk & Nâng cấp (US-018, US-019, US-021, US-022) và một phần nền tảng Boss Fight (US-023). Dự án chuẩn bị bước vào phát triển giao diện Reward Card (US-020) và hoàn thiện các cơ chế đòn đánh nâng cao của Boss Fight (E06).
 *   **Tổng số Story Points (SP)**: 149 SP.
-*   **Đã hoàn thành**: 65 / 149 SP (44%).
+*   **Đã hoàn thành**: 70 / 149 SP (47%).
 *   **Đang thực hiện**: 0 / 149 SP (0%).
 *   **Chưa bắt đầu**: 84 / 149 SP (56%).
 
@@ -82,7 +82,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-023** | BossBase kế thừa EnemyBase, thêm Phase theo ngưỡng % HP; dùng lại animation clip có sẵn của asset, chỉ đổi tốc độ và scale | Enemy | 5 | 🔴 High | ⏳ Chưa bắt đầu | Xây dựng lớp nền tảng cho Boss với cơ chế chia pha theo lượng HP. |
+| **US-023** | BossBase kế thừa EnemyBase, thêm Phase theo ngưỡng % HP; dùng lại animation clip có sẵn của asset, chỉ đổi tốc độ và scale | Enemy | 5 | 🔴 High | ✅ Hoàn thành | Đã xây dựng BossBase.cs và Boss.cs với cơ chế chia pha theo lượng HP và đổi màu sprite. |
 | **US-024** | Bộ 2 attack pattern phân biệt bằng hitbox và timing khác nhau trên cùng 1 animation clip | Enemy | 5 | 🔴 High | ⏳ Chưa bắt đầu | Tạo các dạng đòn đánh khác nhau trên cùng 1 animation clip. |
 | **US-025** | Enrage ở Phase cuối: tăng tốc độ tấn công/di chuyển + đổi màu sprite (tint) bằng Material/Shader Graph | Enemy | 3 | 🟢 Low | ⏳ Chưa bắt đầu | Trạng thái cuồng nộ (Enrage) khi Boss xuống pha máu cuối. |
 | **US-026** | BossHealthBar UI: tên boss, thanh máu chia phase, hiệu ứng flash/shake UI khi chuyển phase | UI | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Giao diện thanh HP của Boss hiển thị trên HUD. |

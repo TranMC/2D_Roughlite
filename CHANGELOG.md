@@ -2,6 +2,30 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [2026-07-16]
+
+### 👹 Nền tảng Boss Fight & Cơ chế Phân Phase (Epic E06)
+*   **Thiết lập BossBase.cs**: 
+    *   Tạo lớp cơ sở trừu tượng [BossBase.cs](Assets/Scripts/Enemy/BossBase.cs) kế thừa [EnemyBase.cs](Assets/Scripts/Enemy/EnemyBase.cs).
+    *   Hỗ trợ cấu hình ngưỡng chuyển Phase theo mảng phần trăm HP (`phaseThresholds`).
+    *   Lắng nghe sự kiện nhận sát thương để tự động chuyển phase và kích hoạt event `OnPhaseChanged`.
+    *   Tự động giải phóng phòng đấu Boss khi chết bằng cách tìm kiếm [RoomManager](Assets/Scripts/RoomSystem/RoomManager.cs) trong component cha và gọi `OnRoomCleared()`.
+*   **Tích hợp Boss Demo (Boss.cs)**: 
+    *   Viết [Boss.cs](Assets/Scripts/Enemy/Boss.cs) kế thừa [BossBase.cs](Assets/Scripts/Enemy/BossBase.cs).
+    *   Tự động đổi màu Sprite của Boss khi chuyển pha (Phase 1 -> Vàng, Phase 2 -> Đỏ) để báo hiệu trạng thái.
+    *   Thêm Context Menu hữu ích để test sát thương nhanh theo tỉ lệ % máu và hạ gục Boss trực tiếp trên Inspector của Unity Editor.
+
+### 🧬 Hệ thống Perk & Nâng cấp chỉ số (Epic E05)
+*   **Cấu trúc Perk ScriptableObject**: Xây dựng [PerkData.cs](Assets/Scripts/UpgradeSystem/PerkData.cs) và các cấu trúc dữ liệu liên quan để định nghĩa thuộc tính nâng cấp, quy tắc stack và độ hiếm.
+*   **Quản lý bộ chọn Perk ngẫu nhiên**: Viết [PerkPool.cs](Assets/Scripts/UpgradeSystem/PerkPool.cs) hỗ trợ thuật toán chọn ngẫu nhiên 3 Perk có trọng số theo độ hiếm và loại bỏ các Perk đã đạt giới hạn cộng dồn (Max Stack).
+*   **Áp dụng chỉ số Perk**: Viết [PerkEffectApplier.cs](Assets/Scripts/UpgradeSystem/PerkEffectApplier.cs) để tính toán, cộng dồn và áp các hiệu ứng thay đổi HP, tốc độ chạy, tốc độ đánh, sát thương... (hỗ trợ cộng thẳng flat và nhân hệ số multiplier).
+*   **Quản lý tiến trình nâng cấp trong Run**: Viết [UpgradeManager.cs](Assets/Scripts/UpgradeSystem/UpgradeManager.cs) lưu trữ các perk đang kích hoạt và ghi nhớ lịch sử nâng cấp phục vụ hiển thị kết quả cuối Run.
+
+### 🖼️ Hiệu ứng Nền chuyển động (Parallax Background)
+*   **Parallax Effect**: Viết [ParallaxEffect.cs](Assets/Scripts/UI/ParallaxEffect.cs) giúp các sprite nền di chuyển lệch tốc độ theo camera để tạo chiều sâu không gian 2D cho màn chơi.
+
+---
+
 ## [2026-07-06]
 
 ### 🏃 Nhân vật chính (Player) & Chiến đấu (Combat)

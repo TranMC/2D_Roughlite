@@ -289,7 +289,7 @@ MonoBehaviour:
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
   - enemyPrefab: {fileID: 2147229217342972384, guid: c8cff163c9759d140a21a637d2f28f63, type: 3}
-    spawnOffset: {x: 46.93969, y: 12.870338}
+    spawnOffset: {x: 50.23394, y: 19.209274}
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
 --- !u!1 &4269573084806665363
@@ -323,6 +323,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4863083996005054216}
   - {fileID: 4610846206349934644}
   - {fileID: 3605366198623994994}
   - {fileID: 7116503126618640952}
@@ -348,7 +349,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  enemySpawner: {fileID: 7529717457685884039}
+  enemySpawner: {fileID: 8849683061581851152}
   roomBoundsCollider: {fileID: 3567095677656781146}
   playerVirtualCamera: {fileID: 0}
 --- !u!60 &3567095677656781146
@@ -18839,3 +18840,60 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 6900304538956130613}
+--- !u!1 &7119867488238848081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4863083996005054216}
+  - component: {fileID: 8849683061581851152}
+  m_Layer: 6
+  m_Name: EnemySpawner (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4863083996005054216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7119867488238848081}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -52, y: -54.7, z: 90}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7226996582001607508}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8849683061581851152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7119867488238848081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb2d7c130b66cf94b898699c4a62870b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemiesToSpawn:
+  - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
+    spawnOffset: {x: 44.318157, y: 47.495846}
+    useCustomPatrolCenter: 0
+    patrolCenterOffset: {x: 0, y: 0}
+  - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
+    spawnOffset: {x: 11.440961, y: 64.95856}
+    useCustomPatrolCenter: 0
+    patrolCenterOffset: {x: 0, y: 0}
+  - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
+    spawnOffset: {x: 73.98677, y: 57.50393}
+    useCustomPatrolCenter: 0
+    patrolCenterOffset: {x: 0, y: 0}

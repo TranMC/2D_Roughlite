@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Roguelite.RoomSystem;
 
@@ -21,6 +23,28 @@ namespace Roguelite.Enemy
 
         /// <summary>Tổng số phase (bao gồm phase 0 mặc định).</summary>
         public int TotalPhases => phaseThresholds.Length + 1;
+
+        #endregion
+
+        #region ====== ATTACK PATTERNS ======
+
+        [System.Serializable]
+        public class PhasePatternGroup
+        {
+            public string phaseName;
+            public List<AttackPattern> patterns = new List<AttackPattern>();
+        }
+
+        [Header("===== Boss Attack Pattern Settings =====")]
+        [SerializeField] private List<PhasePatternGroup> phasePatterns = new List<PhasePatternGroup>();
+        [SerializeField] private BossHitboxHandler hitboxHandler;
+
+        private AttackPattern activePattern;
+        private bool isAttackingPattern = false;
+        private Coroutine attackLockCoroutine;
+
+        public AttackPattern ActivePattern => activePattern;
+        public bool IsAttackingPattern => isAttackingPattern;
 
         #endregion
 
@@ -65,6 +89,118 @@ namespace Roguelite.Enemy
         }
 
         // =====================================================================
+        //  OVERRIDDEN ENEMY BASE LOGIC
+        // =====================================================================
+
+        protected override void MoveHorizontal(float speed)
+        {
+            // Khóa hoàn toàn di chuyển khi đang ra chiêu theo pattern
+            if (isAttackingPattern)
+            {
+                StopMovement();
+                return;
+            }
+            base.MoveHorizontal(speed);
+        }
+
+        protected override void PerformAttack()
+        {
+            // Tránh kích hoạt đòn đánh mới khi đòn đánh trước chưa hết khóa di chuyển
+            if (isAttackingPattern) return;
+
+            AttackPattern pattern = GetRandomPatternForCurrentPhase();
+            if (pattern != null)
+            {
+                TriggerAttackPattern(pattern);
+            }
+            else
+            {
+                base.PerformAttack();
+            }
+        }
+
+        protected override void OnStateEnter(EnemyState enteringState, EnemyState previousState)
+        {
+            base.OnStateEnter(enteringState, previousState);
+
+            // Bị trúng đòn khựng (stagger) -> Dừng đòn đánh hiện tại ngay lập tức
+            if (enteringState == EnemyState.Hit)
+            {
+                StopActivePattern();
+            }
+        }
+
+        // =====================================================================
+        //  ATTACK PATTERN CONTROL LOGIC
+        // =====================================================================
+
+        public AttackPattern GetRandomPatternForCurrentPhase()
+        {
+            if (phasePatterns == null || phasePatterns.Count == 0) return null;
+
+            int groupIndex = Mathf.Clamp(currentPhase, 0, phasePatterns.Count - 1);
+            PhasePatternGroup group = phasePatterns[groupIndex];
+
+            if (group != null && group.patterns != null && group.patterns.Count > 0)
+            {
+                int randIndex = UnityEngine.Random.Range(0, group.patterns.Count);
+                return group.patterns[randIndex];
+            }
+
+            return null;
+        }
+
+        public void TriggerAttackPattern(AttackPattern pattern)
+        {
+            if (pattern == null) return;
+
+            activePattern = pattern;
+            isAttackingPattern = true;
+
+            // Kích hoạt/Cấu hình hitbox
+            if (hitboxHandler != null)
+            {
+                hitboxHandler.ExecuteAttack(pattern);
+            }
+
+            // Kích hoạt Animator Trigger tương ứng
+            if (anim != null && !string.IsNullOrEmpty(pattern.AnimationTrigger))
+            {
+                anim.SetTrigger(pattern.AnimationTrigger);
+            }
+
+            // Chạy đếm ngược khóa di chuyển
+            if (attackLockCoroutine != null)
+            {
+                StopCoroutine(attackLockCoroutine);
+            }
+            attackLockCoroutine = StartCoroutine(AttackLockCoroutine(pattern.AttackLockDuration));
+        }
+
+        private void StopActivePattern()
+        {
+            if (hitboxHandler != null)
+            {
+                hitboxHandler.StopAttack();
+            }
+            if (attackLockCoroutine != null)
+            {
+                StopCoroutine(attackLockCoroutine);
+                attackLockCoroutine = null;
+            }
+            isAttackingPattern = false;
+            activePattern = null;
+        }
+
+        private IEnumerator AttackLockCoroutine(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+            isAttackingPattern = false;
+            activePattern = null;
+            attackLockCoroutine = null;
+        }
+
+        // =====================================================================
         //  PHASE SYSTEM – Kiểm tra và chuyển Phase
         // =====================================================================
 
@@ -104,6 +240,9 @@ namespace Roguelite.Enemy
         /// </summary>
         protected override void HandleDeath()
         {
+            // Dừng đòn đánh hiện tại ngay khi chết
+            StopActivePattern();
+
             base.HandleDeath();
 
             // Tìm RoomManager trên parent hoặc cùng hierarchy

@@ -52,7 +52,10 @@ namespace Roguelite.Enemy
                 switch (enteringState)
                 {
                     case EnemyState.Attack:
-                        anim.SetTrigger("AI_attack");
+                        if (!IsAttackingPattern)
+                        {
+                            anim.SetTrigger("AI_attack");
+                        }
                         break;
                     case EnemyState.Dead:
                         anim.SetTrigger("AI_die");

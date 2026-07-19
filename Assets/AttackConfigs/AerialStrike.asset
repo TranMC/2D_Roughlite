@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bde40b0fabf60244b92dfc0188e6241b, type: 3}
+  m_Name: AerialStrike
+  m_EditorClassIdentifier: 
+  activateTime: 0.36666667
+  deactivateTime: 0.5006667
+  isCircle: 0
+  hitboxSize: {x: 0.9, y: 0.5}
+  hitboxOffset: {x: 0.6, y: -0.2}
+  damage: 10
+  knockback: {x: 2, y: 0}

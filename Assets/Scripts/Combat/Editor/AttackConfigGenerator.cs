@@ -22,7 +22,7 @@ namespace Roguelite.Combat.Editor
 
         private List<DetectedClip> detectedClips = new List<DetectedClip>();
 
-        [MenuItem("Roguelite/Generate Attack Configs")]
+        //[MenuItem("Roguelite/Generate Attack Configs")]
         public static void ShowWindow()
         {
             var window = GetWindow<AttackConfigGenerator>("Attack Config Generator");

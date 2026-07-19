@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8474545753849602072
 Transform:
   m_ObjectHideFlags: 0
@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 3678675054825664556}
   - component: {fileID: 1804272254905582504}
   - component: {fileID: 3950289780451791174}
+  - component: {fileID: 3926089501439594660}
   m_Layer: 0
   m_Name: Enemy3
   m_TagString: Untagged
@@ -308,6 +309,26 @@ MonoBehaviour:
     m_Bits: 64
   enableDebug: 1
   logBehavior: 1
+--- !u!114 &3926089501439594660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147229217342972384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: enemy3_attack1
+    hitboxData: {fileID: 11400000, guid: 042ceffcc4e04dc4f9e3aaa04db7e4ff, type: 2}
+  - animationStateName: enemy3_attack2
+    hitboxData: {fileID: 11400000, guid: 08874f3225861cc4ea80d2203eb4522d, type: 2}
+  - animationStateName: enemy3_attack3
+    hitboxData: {fileID: 11400000, guid: 6df084d1b85c79d48a343edf7689f63d, type: 2}
+  animator: {fileID: 1804272254905582504}
 --- !u!1 &5697894250119533656
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &411077364177090598
 Transform:
   m_ObjectHideFlags: 0
@@ -429,7 +450,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2672712311648124737
 Transform:
   m_ObjectHideFlags: 0

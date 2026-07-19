@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2310104762855899391}
   - component: {fileID: 858357958811906506}
   - component: {fileID: 5830661335590533197}
+  - component: {fileID: 5063908862801518355}
   m_Layer: 0
   m_Name: Enemy4
   m_TagString: Untagged
@@ -210,6 +211,26 @@ MonoBehaviour:
     m_Bits: 64
   enableDebug: 1
   logBehavior: 1
+--- !u!114 &5063908862801518355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243301275647639476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: enemy4_attack1
+    hitboxData: {fileID: 11400000, guid: 46fe20b914c88af469226e459073f486, type: 2}
+  - animationStateName: enemy4_attack2
+    hitboxData: {fileID: 11400000, guid: f3c266a9ced9c23438144990b7f09a88, type: 2}
+  - animationStateName: enemy4_attack3
+    hitboxData: {fileID: 11400000, guid: df49f1f1bbdbcc744917953af275ff22, type: 2}
+  animator: {fileID: 858357958811906506}
 --- !u!1 &5378589384364638675
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1489510545254139372
 Transform:
   m_ObjectHideFlags: 0
@@ -330,7 +351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4156710598224337203
 Transform:
   m_ObjectHideFlags: 0
@@ -434,7 +455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6812527785160916787
 Transform:
   m_ObjectHideFlags: 0

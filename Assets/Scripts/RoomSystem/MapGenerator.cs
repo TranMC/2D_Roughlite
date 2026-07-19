@@ -54,6 +54,36 @@ namespace Roguelite.RoomSystem
             ClearPreviousMap();
         }
 
+        [ContextMenu("Debug/Dịch chuyển tới phòng Boss")]
+        public void TeleportPlayerToBossRoom()
+        {
+            if (spawnedRooms == null || spawnedRooms.Count == 0)
+            {
+                Debug.LogWarning("[MapGenerator] Chưa có bản đồ được sinh!");
+                return;
+            }
+
+            RoomManager bossRoom = spawnedRooms.Find(r => r.roomType == RoomType.Boss);
+            if (bossRoom == null)
+            {
+                Debug.LogWarning("[MapGenerator] Không tìm thấy phòng Boss trong danh sách phòng đã sinh!");
+                return;
+            }
+
+            // Tìm Player
+            var player = FindObjectOfType<PlayerController>();
+            if (player != null)
+            {
+                // Dịch chuyển người chơi đến tâm phòng Boss
+                player.transform.position = bossRoom.transform.position;
+                Debug.Log($"[MapGenerator] Đã dịch chuyển Player tới phòng Boss tại: {bossRoom.transform.position}");
+            }
+            else
+            {
+                Debug.LogWarning("[MapGenerator] Không tìm thấy Player trong Scene!");
+            }
+        }
+
         /// <summary>
         /// Sinh bản đồ với cơ chế thử lại nếu bị kẹt (không tìm thấy không gian trống).
         /// </summary>

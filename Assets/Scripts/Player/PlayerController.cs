@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
         get
         {
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            return stateInfo.IsName("Attack") || stateInfo.IsName("Attack1") || stateInfo.IsName("Attack2") || stateInfo.IsName("Combo") || stateInfo.IsName("AirAttack");
+            return stateInfo.IsName("player_attack1") || stateInfo.IsName("player_attack2") || stateInfo.IsName("player_attack3") || stateInfo.IsName("Air Attack");
         }
     }
 

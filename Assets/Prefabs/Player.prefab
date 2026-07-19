@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 285976679450404119}
   - component: {fileID: 2152392908269816835}
   - component: {fileID: 8012567144743504470}
+  - component: {fileID: 3733895618793157169}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -476,6 +477,28 @@ MonoBehaviour:
   _isGrounded: 0
   _isOnWall: 0
   _isOnCeiling: 0
+--- !u!114 &3733895618793157169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201934938828041213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: player_attack1
+    hitboxData: {fileID: 11400000, guid: c23cbe8e4dbe81d4e8e2502363e8e22f, type: 2}
+  - animationStateName: player_attack2
+    hitboxData: {fileID: 11400000, guid: 681ac5a8894c91247a2b48159e2a1baa, type: 2}
+  - animationStateName: player_attack3
+    hitboxData: {fileID: 11400000, guid: d41da71884a948149b86f5f4d8c8226f, type: 2}
+  - animationStateName: Air Attack
+    hitboxData: {fileID: 11400000, guid: 16a2f4ce990f75646a59b497cbfec08a, type: 2}
+  animator: {fileID: 1641182201220779459}
 --- !u!1 &5146295657505998755
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,7 +516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3845503214041031792
 Transform:
   m_ObjectHideFlags: 0
@@ -591,7 +614,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &974144799054435123
 Transform:
   m_ObjectHideFlags: 0
@@ -689,7 +712,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5283341702899062955
 Transform:
   m_ObjectHideFlags: 0
@@ -787,7 +810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2700635851241092895
 Transform:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebbdacdddc09cb242bf1a3a6526bea2c, type: 3}
+  m_Name: Enemy4_Attack2_HitboxData
+  m_EditorClassIdentifier: 
+  frameEntries:
+  - frameIndex: 9
+    hitboxChildName: Enemy4_Attack2
+    damageOverride: 0
+    knockbackOverride: {x: 0, y: 0}
+    autoDeactivateTime: 0

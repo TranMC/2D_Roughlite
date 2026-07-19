@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3059450183187156141
 Transform:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7743362202018814789
 Transform:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3635989159131019898
 Transform:
   m_ObjectHideFlags: 0
@@ -322,6 +322,7 @@ GameObject:
   - component: {fileID: 6059604539078205184}
   - component: {fileID: 7159802206912957513}
   - component: {fileID: 7677316128055693629}
+  - component: {fileID: 7059403179275448364}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Untagged
@@ -517,3 +518,23 @@ MonoBehaviour:
     m_Bits: 64
   enableDebug: 1
   logBehavior: 1
+--- !u!114 &7059403179275448364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7966153308944719229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: enemy2_attack1
+    hitboxData: {fileID: 11400000, guid: e13c1a1b4809de149ab0fae35579025b, type: 2}
+  - animationStateName: enemy2_attack2
+    hitboxData: {fileID: 11400000, guid: de1bfe5eb7775ad4a872378da76661b2, type: 2}
+  - animationStateName: enemy2_attack3
+    hitboxData: {fileID: 11400000, guid: 415d91ff8ccfa664eb21ca2173c6c548, type: 2}
+  animator: {fileID: 7159802206912957513}

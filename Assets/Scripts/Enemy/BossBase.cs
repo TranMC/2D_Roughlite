@@ -37,7 +37,7 @@ namespace Roguelite.Enemy
 
         [Header("===== Boss Attack Pattern Settings =====")]
         [SerializeField] private List<PhasePatternGroup> phasePatterns = new List<PhasePatternGroup>();
-        [SerializeField] private BossHitboxHandler hitboxHandler;
+        [SerializeField] private EntityHitboxHandler hitboxHandler;
 
         private AttackPattern activePattern;
         private bool isAttackingPattern = false;

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4706441489268122162}
   - component: {fileID: 9390819179256791}
   - component: {fileID: 4421535445034707876}
+  - component: {fileID: 1531238469146051528}
   m_Layer: 0
   m_Name: Enemy5
   m_TagString: Untagged
@@ -209,6 +210,26 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1531238469146051528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334390616905777803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: enemy5_attack1
+    hitboxData: {fileID: 11400000, guid: 571e259cbcf6e55459168b8ce62a9b84, type: 2}
+  - animationStateName: enemy5_attack2
+    hitboxData: {fileID: 11400000, guid: db5f771c945f54542a849d7ab01f462a, type: 2}
+  - animationStateName: enemy5_attack3
+    hitboxData: {fileID: 11400000, guid: c69b3ec9d6412184a91c269e36cbf794, type: 2}
+  animator: {fileID: 4421535445034707876}
 --- !u!1 &3675681025003252191
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +247,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2737103030754456279
 Transform:
   m_ObjectHideFlags: 0
@@ -331,7 +352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2609975613171830146
 Transform:
   m_ObjectHideFlags: 0
@@ -434,7 +455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1698943158835188437
 Transform:
   m_ObjectHideFlags: 0

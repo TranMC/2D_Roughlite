@@ -4,7 +4,7 @@ using Roguelite.Combat;
 
 namespace Roguelite.Enemy
 {
-    public class BossHitboxHandler : MonoBehaviour
+    public class EntityHitboxHandler : MonoBehaviour
     {
         [Header("Collider References")]
         [SerializeField] private BoxCollider2D boxCollider;

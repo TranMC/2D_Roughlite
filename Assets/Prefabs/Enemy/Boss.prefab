@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &295956351188467207
 Transform:
   m_ObjectHideFlags: 0
@@ -118,7 +118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1099669834522972408
 Transform:
   m_ObjectHideFlags: 0
@@ -216,6 +216,7 @@ GameObject:
   - component: {fileID: 4993949982838921559}
   - component: {fileID: 1511933857840140689}
   - component: {fileID: 9048081162553063204}
+  - component: {fileID: 7884530137687428089}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -412,6 +413,38 @@ MonoBehaviour:
   phaseThresholds:
   - 0.7
   - 0.4
+  phasePatterns:
+  - phaseName: Phase 0 (Default)
+    patterns:
+    - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
+  - phaseName: Phase 1 (Yellow)
+    patterns:
+    - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
+    - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
+  - phaseName: Phase 2 (Red)
+    patterns:
+    - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
+  hitboxHandler: {fileID: 0}
+--- !u!114 &7884530137687428089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533622752072390192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: enemy7_attack1
+    hitboxData: {fileID: 11400000, guid: 6cdb87065f0ea49459eb37b533732564, type: 2}
+  - animationStateName: enemy7_attack2
+    hitboxData: {fileID: 11400000, guid: dd4a4c0a4035a79408752344cc56bb4e, type: 2}
+  - animationStateName: enemy7_attack3
+    hitboxData: {fileID: 11400000, guid: 4651c8eb9cca22a41a06e31c5aa0b2a7, type: 2}
+  animator: {fileID: 1511933857840140689}
 --- !u!1 &4218480304956992236
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,7 +462,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &318523196718740310
 Transform:
   m_ObjectHideFlags: 0

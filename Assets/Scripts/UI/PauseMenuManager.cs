@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Roguelite.Core;
+using Roguelite.UI;
 
 public class PauseMenuManager : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class PauseMenuManager : MonoBehaviour
 
     [Header("Input")]
     [SerializeField] private PlayerInput playerInput;
+
+    public static bool IsMenuOpen { get; private set; }
+
+    private static int lastPauseInputFrame = -1;
 
     private bool isPaused;
     private bool isShowingOptions;
@@ -25,13 +30,29 @@ public class PauseMenuManager : MonoBehaviour
     {
         pauseCanvas.SetActive(false);
         optionCanvas.SetActive(false);
+        IsMenuOpen = false;
+    }
+
+    private void OnDestroy()
+    {
+        IsMenuOpen = false;
     }
 
     /// <summary>Gọi từ Player Input event (Pause Menu). Chỉ xử lý 1 lần mỗi lần bấm phím.</summary>
     public void OnPauseInput(InputAction.CallbackContext context)
     {
         if (!context.started) return;
-        HandlePauseInput();
+        RequestTogglePauseMenu();
+    }
+
+    /// <summary>Mở/đóng pause menu; dùng chung cho Player Input và Reward Selection (tránh double-trigger Escape).</summary>
+    public static void RequestTogglePauseMenu()
+    {
+        if (Time.frameCount == lastPauseInputFrame) return;
+        lastPauseInputFrame = Time.frameCount;
+
+        var manager = FindFirstObjectByType<PauseMenuManager>();
+        manager?.HandlePauseInput();
     }
 
     private void HandlePauseInput()
@@ -48,10 +69,10 @@ public class PauseMenuManager : MonoBehaviour
             return;
         }
 
-        ResumeGame();
+        ClosePauseMenu();
     }
 
-    public void OnContinueClicked() => ResumeGame();
+    public void OnContinueClicked() => ClosePauseMenu();
 
     public void OnOptionClicked()
     {
@@ -64,13 +85,21 @@ public class PauseMenuManager : MonoBehaviour
 
     private void OpenPauseMenu()
     {
+        if (RewardSelectionController.IsSelectionOpen)
+            RewardSelectionController.HideForPauseMenu();
+
         isPaused = true;
+        IsMenuOpen = true;
         isShowingOptions = false;
         pauseCanvas.SetActive(true);
         optionCanvas.SetActive(false);
 
         if (GameManager.Instance != null)
-            GameManager.Instance.PauseGame();
+        {
+            var state = GameManager.Instance.CurrentState;
+            if (state == GameState.Gameplay || state == GameState.RewardSelection)
+                GameManager.Instance.PauseGame();
+        }
 
         playerInput.SwitchCurrentActionMap("UI");
     }
@@ -82,12 +111,19 @@ public class PauseMenuManager : MonoBehaviour
         optionCanvas.SetActive(false);
     }
 
-    private void ResumeGame()
+    private void ClosePauseMenu()
     {
         isPaused = false;
+        IsMenuOpen = false;
         isShowingOptions = false;
         pauseCanvas.SetActive(false);
         optionCanvas.SetActive(false);
+
+        if (RewardSelectionController.IsSelectionOpen)
+        {
+            RewardSelectionController.RestoreAfterPauseMenu();
+            return;
+        }
 
         if (GameManager.Instance != null)
             GameManager.Instance.ResumeGame();

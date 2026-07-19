@@ -12,6 +12,7 @@ namespace Roguelite.Core
         MainMenu,
         Gameplay,
         Paused,
+        RewardSelection,
         GameOver,
         Victory
     }
@@ -86,6 +87,9 @@ namespace Roguelite.Core
                 case GameState.Paused:
                     Time.timeScale = 0f;
                     break;
+                case GameState.RewardSelection:
+                    Time.timeScale = 0f;
+                    break;
                 case GameState.GameOver:
                     Time.timeScale = 0f; // Đóng băng gameplay khi thua cuộc
                     break;
@@ -114,7 +118,7 @@ namespace Roguelite.Core
         /// </summary>
         public void PauseGame()
         {
-            if (currentState == GameState.Gameplay)
+            if (currentState == GameState.Gameplay || currentState == GameState.RewardSelection)
             {
                 ChangeState(GameState.Paused);
             }
@@ -129,6 +133,31 @@ namespace Roguelite.Core
             {
                 ChangeState(GameState.Gameplay);
             }
+        }
+
+        /// <summary>
+        /// Mở bảng chọn phần thưởng Perk (tạm dừng gameplay).
+        /// </summary>
+        public void EnterRewardSelection()
+        {
+            if (currentState == GameState.MainMenu ||
+                currentState == GameState.GameOver ||
+                currentState == GameState.Victory)
+            {
+                return;
+            }
+
+            if (currentState != GameState.RewardSelection)
+                ChangeState(GameState.RewardSelection);
+        }
+
+        /// <summary>
+        /// Đóng bảng chọn phần thưởng và tiếp tục gameplay.
+        /// </summary>
+        public void ExitRewardSelection()
+        {
+            if (currentState == GameState.RewardSelection)
+                ChangeState(GameState.Gameplay);
         }
 
         /// <summary>

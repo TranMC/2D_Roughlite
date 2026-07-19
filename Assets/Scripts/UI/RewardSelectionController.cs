@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using Roguelite.Core;
 using Roguelite.UpgradeSystem;
 
 namespace Roguelite.UI
@@ -17,25 +20,66 @@ namespace Roguelite.UI
         [Tooltip("Mảng chứa 3 RewardCardUI để hiển thị 3 lựa chọn.")]
         [SerializeField] private RewardCardUI[] rewardCards;
 
-        // Lưu trữ danh sách Perk đang hiển thị hiện tại
-        private List<PerkData> currentOptions = new List<PerkData>();
-        private bool isPanelActive = false;
+        [Header("Input")]
+        [SerializeField] private PlayerInput playerInput;
 
-        private void Start()
+        public static bool IsSelectionOpen { get; private set; }
+
+        private static RewardSelectionController instance;
+
+        private List<PerkData> currentOptions = new List<PerkData>();
+
+        private void Awake()
         {
-            // Mặc định ẩn giao diện khi bắt đầu
-            if (selectionPanel != null)
-            {
-                selectionPanel.SetActive(false);
-            }
-            isPanelActive = false;
+            instance = this;
+
+            if (playerInput == null || !playerInput.gameObject.scene.IsValid())
+                playerInput = FindFirstObjectByType<PlayerInput>();
+
+            // Awake chạy trước Start — tránh race khi OpenSelection() được gọi sớm (Context Menu)
+            // rồi Start() tắt panel nhưng vẫn giữ input/timeScale ở trạng thái "đang mở".
+            HideSelectionPanel();
+        }
+
+        private void OnDestroy()
+        {
+            if (instance == this)
+                instance = null;
+        }
+
+        /// <summary>Ẩn panel reward tạm thời khi mở pause menu (vẫn giữ trạng thái chọn perk).</summary>
+        public static void HideForPauseMenu()
+        {
+            if (!IsSelectionOpen || instance?.selectionPanel == null) return;
+            instance.selectionPanel.SetActive(false);
+        }
+
+        /// <summary>Khôi phục panel reward sau khi đóng pause menu.</summary>
+        public static void RestoreAfterPauseMenu()
+        {
+            if (!IsSelectionOpen || instance == null) return;
+
+            instance.EnsurePanelVisible();
+            instance.selectionPanel.SetActive(true);
+
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.Paused)
+                GameManager.Instance.EnterRewardSelection();
         }
 
         private void Update()
         {
-            if (!isPanelActive) return;
+            if (!IsSelectionOpen) return;
 
-            // Bắt phím tắt 1, 2, 3 để chọn nhanh Perk
+            if (PauseMenuManager.IsMenuOpen)
+                return;
+
+            // UI/Cancel và UI/Pause Menu cùng dùng Escape — đảm bảo pause menu vẫn mở được khi panel đang hiện.
+            if (Input.GetKeyDown(KeyCode.Escape) || Keyboard.current?.escapeKey.wasPressedThisFrame == true)
+            {
+                PauseMenuManager.RequestTogglePauseMenu();
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
             {
                 ChoosePerk(0);
@@ -50,12 +94,19 @@ namespace Roguelite.UI
             }
         }
 
-        /// <summary>
-        /// Mở panel chọn Perk và tự động rút 3 lựa chọn ngẫu nhiên từ UpgradeManager.
-        /// </summary>
         [ContextMenu("Debug/Open Selection Panel")]
         public void OpenSelection()
         {
+            RecoverFromInconsistentState();
+
+            if (IsSelectionOpen) return;
+
+            if (PauseMenuManager.IsMenuOpen)
+            {
+                Debug.LogWarning("[RewardSelectionController] Không thể mở reward panel khi pause menu đang bật.");
+                return;
+            }
+
             if (selectionPanel == null || rewardCards == null || rewardCards.Length < 3)
             {
                 Debug.LogError("[RewardSelectionController] Cấu hình UI chưa đủ hoặc mảng rewardCards không đủ 3 phần tử!");
@@ -68,7 +119,6 @@ namespace Roguelite.UI
                 return;
             }
 
-            // 1. Rút 3 Perk ngẫu nhiên từ pool
             currentOptions = UpgradeManager.Instance.GetRandomPerks(3);
 
             if (currentOptions.Count == 0)
@@ -77,7 +127,9 @@ namespace Roguelite.UI
                 return;
             }
 
-            // 2. Gán dữ liệu cho các card UI
+            EnsurePanelVisible();
+            BindCardButtons();
+
             for (int i = 0; i < rewardCards.Length; i++)
             {
                 if (i < currentOptions.Count)
@@ -91,47 +143,148 @@ namespace Roguelite.UI
                 }
             }
 
-            // 3. Hiển thị Panel UI và dừng thời gian game
             selectionPanel.SetActive(true);
-            isPanelActive = true;
-            Time.timeScale = 0f;
+
+            if (!selectionPanel.activeInHierarchy)
+            {
+                Debug.LogError("[RewardSelectionController] Không thể hiển thị selection panel — kiểm tra hierarchy Canvas/parent.");
+                return;
+            }
+
+            IsSelectionOpen = true;
+            PauseForSelection();
 
             Debug.Log("[RewardSelectionController] Đã mở bảng chọn Perk, trò chơi tạm dừng.");
         }
 
-        /// <summary>
-        /// Lựa chọn Perk tại index (gọi từ Button Click hoặc Phím tắt).
-        /// </summary>
         public void ChoosePerk(int index)
         {
+            if (!IsSelectionOpen) return;
             if (index < 0 || index >= currentOptions.Count) return;
 
             PerkData chosenPerk = currentOptions[index];
-            if (chosenPerk != null)
+            if (chosenPerk != null && UpgradeManager.Instance != null)
             {
-                // Thêm Perk vào cho Player
                 UpgradeManager.Instance.AddPerk(chosenPerk);
                 Debug.Log($"[RewardSelectionController] Đã chọn Perk: {chosenPerk.PerkName}");
             }
 
-            // Đóng Panel và khôi phục thời gian
             CloseSelection();
         }
 
-        /// <summary>
-        /// Đóng giao diện chọn Perk và tiếp tục game.
-        /// </summary>
         private void CloseSelection()
         {
             if (selectionPanel != null)
             {
                 selectionPanel.SetActive(false);
             }
-            isPanelActive = false;
-            currentOptions.Clear();
-            Time.timeScale = 1f;
 
-            Debug.Log("[RewardSelectionController] Đã đóng bảng chọn Perk, trò chơi tiếp tục.");
+            IsSelectionOpen = false;
+            currentOptions.Clear();
+
+            ResumeFromSelection();
+
+            if (PauseMenuManager.IsMenuOpen)
+                Debug.Log("[RewardSelectionController] Đã đóng bảng chọn Perk. Game vẫn tạm dừng vì pause menu đang bật.");
+            else
+                Debug.Log("[RewardSelectionController] Đã đóng bảng chọn Perk, trò chơi tiếp tục.");
+        }
+
+        private void HideSelectionPanel()
+        {
+            if (selectionPanel != null)
+                selectionPanel.SetActive(false);
+
+            IsSelectionOpen = false;
+        }
+
+        /// <summary>
+        /// Dọn trạng thái lỗi: panel ẩn nhưng game/input vẫn bị khóa từ lần mở trước.
+        /// </summary>
+        private void RecoverFromInconsistentState()
+        {
+            bool panelVisible = selectionPanel != null && selectionPanel.activeInHierarchy;
+
+            if (IsSelectionOpen && !panelVisible)
+            {
+                IsSelectionOpen = false;
+                ResumeFromSelection();
+                return;
+            }
+
+            if (!IsSelectionOpen && !panelVisible)
+                ResumeFromSelection();
+        }
+
+        private void PauseForSelection()
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.EnterRewardSelection();
+            else
+                Time.timeScale = 0f;
+
+            if (playerInput != null)
+                playerInput.SwitchCurrentActionMap("UI");
+        }
+
+        private void ResumeFromSelection()
+        {
+            if (GameManager.Instance != null)
+            {
+                if (PauseMenuManager.IsMenuOpen)
+                {
+                    if (GameManager.Instance.CurrentState == GameState.RewardSelection)
+                        GameManager.Instance.ChangeState(GameState.Paused);
+                }
+                else
+                {
+                    GameManager.Instance.ExitRewardSelection();
+                }
+            }
+            else
+            {
+                Time.timeScale = PauseMenuManager.IsMenuOpen ? 0f : 1f;
+            }
+
+            if (PauseMenuManager.IsMenuOpen)
+                return;
+
+            if (playerInput != null && playerInput.currentActionMap != null &&
+                playerInput.currentActionMap.name == "UI")
+            {
+                playerInput.SwitchCurrentActionMap("Player");
+            }
+        }
+
+        private void EnsurePanelVisible()
+        {
+            Transform current = selectionPanel.transform;
+            while (current != null)
+            {
+                current.gameObject.SetActive(true);
+                current = current.parent;
+            }
+
+            Canvas canvas = selectionPanel.GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.enabled = true;
+            }
+        }
+
+        private void BindCardButtons()
+        {
+            for (int i = 0; i < rewardCards.Length; i++)
+            {
+                if (rewardCards[i] == null) continue;
+
+                int index = i;
+                Button button = rewardCards[i].GetComponent<Button>();
+                if (button == null) continue;
+
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() => ChoosePerk(index));
+            }
         }
     }
 }

@@ -6,11 +6,11 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
-    borderMipMap: 0
+    borderMipMap: 1
     mipMapsPreserveCoverage: 0
     alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -44,8 +44,8 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
-  spriteMeshType: 0
+  spriteExtrude: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -82,14 +82,14 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
-    compressionQuality: 50
+    compressionQuality: 100
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 0
+    overridden: 1
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -126,10 +126,10 @@ TextureImporter:
       name: FullSpritesheet_0
       rect:
         serializedVersion: 2
-        x: 63
-        y: 1271
-        width: 208
-        height: 220
+        x: 89
+        y: 1292
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,10 +147,10 @@ TextureImporter:
       name: FullSpritesheet_1
       rect:
         serializedVersion: 2
-        x: 56
-        y: 1030
-        width: 243
-        height: 222
+        x: 383
+        y: 1292
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,10 +168,10 @@ TextureImporter:
       name: FullSpritesheet_2
       rect:
         serializedVersion: 2
-        x: 62
-        y: 788
-        width: 217
-        height: 218
+        x: 663
+        y: 1292
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -189,10 +189,10 @@ TextureImporter:
       name: FullSpritesheet_3
       rect:
         serializedVersion: 2
-        x: 61
-        y: 563
-        width: 222
-        height: 202
+        x: 919
+        y: 1297
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -210,10 +210,10 @@ TextureImporter:
       name: FullSpritesheet_4
       rect:
         serializedVersion: 2
-        x: 53
-        y: 320
-        width: 219
-        height: 220
+        x: 1166
+        y: 1297
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -231,10 +231,10 @@ TextureImporter:
       name: FullSpritesheet_5
       rect:
         serializedVersion: 2
-        x: 49
-        y: 67
-        width: 231
-        height: 236
+        x: 1432
+        y: 1292
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -252,10 +252,10 @@ TextureImporter:
       name: FullSpritesheet_6
       rect:
         serializedVersion: 2
-        x: 349
-        y: 1268
-        width: 234
-        height: 223
+        x: 1689
+        y: 1288
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -273,10 +273,10 @@ TextureImporter:
       name: FullSpritesheet_7
       rect:
         serializedVersion: 2
-        x: 362
-        y: 1041
-        width: 216
-        height: 208
+        x: 1960
+        y: 1283
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -294,10 +294,10 @@ TextureImporter:
       name: FullSpritesheet_8
       rect:
         serializedVersion: 2
-        x: 362
-        y: 795
-        width: 221
-        height: 210
+        x: 2216
+        y: 1283
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -315,10 +315,10 @@ TextureImporter:
       name: FullSpritesheet_9
       rect:
         serializedVersion: 2
-        x: 358
-        y: 560
-        width: 214
-        height: 209
+        x: 2478
+        y: 1283
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -336,10 +336,10 @@ TextureImporter:
       name: FullSpritesheet_10
       rect:
         serializedVersion: 2
-        x: 354
-        y: 316
-        width: 209
-        height: 208
+        x: 2725
+        y: 1278
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -357,10 +357,10 @@ TextureImporter:
       name: FullSpritesheet_11
       rect:
         serializedVersion: 2
-        x: 350
-        y: 85
-        width: 211
-        height: 211
+        x: 2986
+        y: 1278
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -378,10 +378,10 @@ TextureImporter:
       name: FullSpritesheet_12
       rect:
         serializedVersion: 2
-        x: 626
-        y: 73
-        width: 238
-        height: 223
+        x: 3234
+        y: 1278
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -399,10 +399,10 @@ TextureImporter:
       name: FullSpritesheet_13
       rect:
         serializedVersion: 2
-        x: 624
-        y: 304
-        width: 236
-        height: 222
+        x: 3486
+        y: 1278
+        width: 167
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -420,10 +420,10 @@ TextureImporter:
       name: FullSpritesheet_14
       rect:
         serializedVersion: 2
-        x: 647
-        y: 546
-        width: 211
-        height: 217
+        x: 3737
+        y: 1278
+        width: 168
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -441,10 +441,10 @@ TextureImporter:
       name: FullSpritesheet_15
       rect:
         serializedVersion: 2
-        x: 636
-        y: 796
-        width: 232
-        height: 211
+        x: 3994
+        y: 1278
+        width: 168
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -462,10 +462,10 @@ TextureImporter:
       name: FullSpritesheet_16
       rect:
         serializedVersion: 2
-        x: 632
-        y: 1035
-        width: 230
-        height: 216
+        x: 4241
+        y: 1264
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -483,10 +483,10 @@ TextureImporter:
       name: FullSpritesheet_17
       rect:
         serializedVersion: 2
-        x: 632
-        y: 1269
-        width: 234
-        height: 236
+        x: 4479
+        y: 1278
+        width: 168
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -504,10 +504,10 @@ TextureImporter:
       name: FullSpritesheet_18
       rect:
         serializedVersion: 2
-        x: 892
-        y: 1277
-        width: 224
-        height: 221
+        x: 89
+        y: 1054
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -525,10 +525,10 @@ TextureImporter:
       name: FullSpritesheet_19
       rect:
         serializedVersion: 2
-        x: 902
-        y: 1025
-        width: 212
-        height: 224
+        x: 383
+        y: 1054
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -546,10 +546,10 @@ TextureImporter:
       name: FullSpritesheet_20
       rect:
         serializedVersion: 2
-        x: 911
-        y: 788
-        width: 221
-        height: 221
+        x: 658
+        y: 1054
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -567,10 +567,10 @@ TextureImporter:
       name: FullSpritesheet_21
       rect:
         serializedVersion: 2
-        x: 911
-        y: 544
-        width: 215
-        height: 219
+        x: 924
+        y: 1054
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -588,10 +588,10 @@ TextureImporter:
       name: FullSpritesheet_22
       rect:
         serializedVersion: 2
-        x: 907
-        y: 318
-        width: 207
-        height: 206
+        x: 1171
+        y: 1059
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -609,10 +609,10 @@ TextureImporter:
       name: FullSpritesheet_23
       rect:
         serializedVersion: 2
-        x: 902
-        y: 75
-        width: 210
-        height: 223
+        x: 1437
+        y: 1059
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -630,10 +630,10 @@ TextureImporter:
       name: FullSpritesheet_24
       rect:
         serializedVersion: 2
-        x: 1144
-        y: 1275
-        width: 215
-        height: 219
+        x: 1689
+        y: 1050
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -651,10 +651,10 @@ TextureImporter:
       name: FullSpritesheet_25
       rect:
         serializedVersion: 2
-        x: 1146
-        y: 1035
-        width: 220
-        height: 216
+        x: 1960
+        y: 1050
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -672,10 +672,10 @@ TextureImporter:
       name: FullSpritesheet_26
       rect:
         serializedVersion: 2
-        x: 1146
-        y: 788
-        width: 232
-        height: 213
+        x: 2221
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -693,10 +693,10 @@ TextureImporter:
       name: FullSpritesheet_27
       rect:
         serializedVersion: 2
-        x: 1167
-        y: 554
-        width: 207
-        height: 209
+        x: 2478
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -714,10 +714,10 @@ TextureImporter:
       name: FullSpritesheet_28
       rect:
         serializedVersion: 2
-        x: 1152
-        y: 327
-        width: 212
-        height: 195
+        x: 2730
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -735,10 +735,10 @@ TextureImporter:
       name: FullSpritesheet_29
       rect:
         serializedVersion: 2
-        x: 1148
-        y: 73
-        width: 228
-        height: 223
+        x: 2986
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -756,10 +756,10 @@ TextureImporter:
       name: FullSpritesheet_30
       rect:
         serializedVersion: 2
-        x: 1400
-        y: 1269
-        width: 230
-        height: 225
+        x: 3238
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -777,10 +777,10 @@ TextureImporter:
       name: FullSpritesheet_31
       rect:
         serializedVersion: 2
-        x: 1398
-        y: 1035
-        width: 242
-        height: 214
+        x: 3490
+        y: 1045
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -798,10 +798,10 @@ TextureImporter:
       name: FullSpritesheet_32
       rect:
         serializedVersion: 2
-        x: 1416
-        y: 792
-        width: 228
-        height: 219
+        x: 3737
+        y: 1040
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -819,10 +819,10 @@ TextureImporter:
       name: FullSpritesheet_33
       rect:
         serializedVersion: 2
-        x: 1428
-        y: 542
-        width: 226
-        height: 223
+        x: 3994
+        y: 1040
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -840,10 +840,10 @@ TextureImporter:
       name: FullSpritesheet_34
       rect:
         serializedVersion: 2
-        x: 1424
-        y: 321
-        width: 220
-        height: 203
+        x: 4241
+        y: 1031
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -861,10 +861,10 @@ TextureImporter:
       name: FullSpritesheet_35
       rect:
         serializedVersion: 2
-        x: 1414
-        y: 77
-        width: 223
-        height: 226
+        x: 4479
+        y: 1040
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -882,10 +882,10 @@ TextureImporter:
       name: FullSpritesheet_36
       rect:
         serializedVersion: 2
-        x: 1673
-        y: 73
-        width: 216
-        height: 223
+        x: 4260
+        y: 1003
+        width: 149
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -903,10 +903,10 @@ TextureImporter:
       name: FullSpritesheet_37
       rect:
         serializedVersion: 2
-        x: 1671
-        y: 312
-        width: 225
-        height: 209
+        x: 89
+        y: 816
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -924,10 +924,10 @@ TextureImporter:
       name: FullSpritesheet_38
       rect:
         serializedVersion: 2
-        x: 1682
-        y: 544
-        width: 214
-        height: 212
+        x: 387
+        y: 816
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -945,10 +945,10 @@ TextureImporter:
       name: FullSpritesheet_39
       rect:
         serializedVersion: 2
-        x: 1677
-        y: 791
-        width: 214
-        height: 215
+        x: 663
+        y: 816
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -966,10 +966,10 @@ TextureImporter:
       name: FullSpritesheet_40
       rect:
         serializedVersion: 2
-        x: 1660
-        y: 1270
-        width: 224
-        height: 227
+        x: 933
+        y: 816
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -987,10 +987,10 @@ TextureImporter:
       name: FullSpritesheet_41
       rect:
         serializedVersion: 2
-        x: 1663
-        y: 1031
-        width: 231
-        height: 217
+        x: 1180
+        y: 816
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1008,10 +1008,10 @@ TextureImporter:
       name: FullSpritesheet_42
       rect:
         serializedVersion: 2
-        x: 1922
-        y: 1263
-        width: 232
-        height: 236
+        x: 1446
+        y: 812
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1029,10 +1029,10 @@ TextureImporter:
       name: FullSpritesheet_43
       rect:
         serializedVersion: 2
-        x: 1924
-        y: 1021
-        width: 237
-        height: 219
+        x: 1703
+        y: 807
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1050,10 +1050,10 @@ TextureImporter:
       name: FullSpritesheet_44
       rect:
         serializedVersion: 2
-        x: 1947
-        y: 777
-        width: 222
-        height: 214
+        x: 1969
+        y: 802
+        width: 173
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1071,10 +1071,10 @@ TextureImporter:
       name: FullSpritesheet_45
       rect:
         serializedVersion: 2
-        x: 1949
-        y: 542
-        width: 220
-        height: 210
+        x: 2230
+        y: 802
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1092,10 +1092,10 @@ TextureImporter:
       name: FullSpritesheet_46
       rect:
         serializedVersion: 2
-        x: 1939
-        y: 300
-        width: 232
-        height: 215
+        x: 2492
+        y: 802
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1113,10 +1113,10 @@ TextureImporter:
       name: FullSpritesheet_47
       rect:
         serializedVersion: 2
-        x: 1929
-        y: 56
-        width: 250
-        height: 229
+        x: 2739
+        y: 798
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1134,10 +1134,10 @@ TextureImporter:
       name: FullSpritesheet_48
       rect:
         serializedVersion: 2
-        x: 2201
-        y: 49
-        width: 224
-        height: 244
+        x: 2996
+        y: 798
+        width: 172
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1155,10 +1155,10 @@ TextureImporter:
       name: FullSpritesheet_49
       rect:
         serializedVersion: 2
-        x: 2199
-        y: 310
-        width: 231
-        height: 217
+        x: 3248
+        y: 798
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1176,10 +1176,10 @@ TextureImporter:
       name: FullSpritesheet_50
       rect:
         serializedVersion: 2
-        x: 2201
-        y: 550
-        width: 225
-        height: 207
+        x: 3500
+        y: 798
+        width: 167
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1197,10 +1197,10 @@ TextureImporter:
       name: FullSpritesheet_51
       rect:
         serializedVersion: 2
-        x: 2203
-        y: 772
-        width: 222
-        height: 221
+        x: 3751
+        y: 798
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1218,10 +1218,10 @@ TextureImporter:
       name: FullSpritesheet_52
       rect:
         serializedVersion: 2
-        x: 2194
-        y: 1021
-        width: 231
-        height: 224
+        x: 4008
+        y: 798
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1239,10 +1239,10 @@ TextureImporter:
       name: FullSpritesheet_53
       rect:
         serializedVersion: 2
-        x: 2187
-        y: 1263
-        width: 237
-        height: 226
+        x: 4255
+        y: 784
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1260,10 +1260,10 @@ TextureImporter:
       name: FullSpritesheet_54
       rect:
         serializedVersion: 2
-        x: 2456
-        y: 1263
-        width: 214
-        height: 221
+        x: 4493
+        y: 798
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1281,10 +1281,10 @@ TextureImporter:
       name: FullSpritesheet_55
       rect:
         serializedVersion: 2
-        x: 2461
-        y: 1019
-        width: 206
-        height: 216
+        x: 84
+        y: 579
+        width: 168
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1302,10 +1302,10 @@ TextureImporter:
       name: FullSpritesheet_56
       rect:
         serializedVersion: 2
-        x: 2461
-        y: 767
-        width: 224
-        height: 232
+        x: 383
+        y: 579
+        width: 168
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1323,10 +1323,10 @@ TextureImporter:
       name: FullSpritesheet_57
       rect:
         serializedVersion: 2
-        x: 2464
-        y: 536
-        width: 219
-        height: 219
+        x: 663
+        y: 574
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1344,10 +1344,10 @@ TextureImporter:
       name: FullSpritesheet_58
       rect:
         serializedVersion: 2
-        x: 2459
-        y: 305
-        width: 226
-        height: 209
+        x: 933
+        y: 579
+        width: 168
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1365,10 +1365,10 @@ TextureImporter:
       name: FullSpritesheet_59
       rect:
         serializedVersion: 2
-        x: 2464
-        y: 66
-        width: 214
-        height: 221
+        x: 1180
+        y: 579
+        width: 168
+        height: 167
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1386,10 +1386,10 @@ TextureImporter:
       name: FullSpritesheet_60
       rect:
         serializedVersion: 2
-        x: 2693
-        y: 1253
-        width: 238
-        height: 241
+        x: 1451
+        y: 574
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1407,10 +1407,10 @@ TextureImporter:
       name: FullSpritesheet_61
       rect:
         serializedVersion: 2
-        x: 2698
-        y: 1019
-        width: 231
-        height: 211
+        x: 1703
+        y: 569
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1428,10 +1428,10 @@ TextureImporter:
       name: FullSpritesheet_62
       rect:
         serializedVersion: 2
-        x: 2710
-        y: 780
-        width: 224
-        height: 216
+        x: 1974
+        y: 569
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1449,10 +1449,10 @@ TextureImporter:
       name: FullSpritesheet_63
       rect:
         serializedVersion: 2
-        x: 2715
-        y: 539
-        width: 219
-        height: 213
+        x: 2230
+        y: 565
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1470,10 +1470,10 @@ TextureImporter:
       name: FullSpritesheet_64
       rect:
         serializedVersion: 2
-        x: 2710
-        y: 303
-        width: 226
-        height: 213
+        x: 2492
+        y: 565
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1491,10 +1491,10 @@ TextureImporter:
       name: FullSpritesheet_65
       rect:
         serializedVersion: 2
-        x: 2703
-        y: 66
-        width: 233
-        height: 221
+        x: 2744
+        y: 560
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1512,10 +1512,10 @@ TextureImporter:
       name: FullSpritesheet_66
       rect:
         serializedVersion: 2
-        x: 2954
-        y: 1258
-        width: 236
-        height: 223
+        x: 3000
+        y: 560
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1533,10 +1533,10 @@ TextureImporter:
       name: FullSpritesheet_67
       rect:
         serializedVersion: 2
-        x: 3210
-        y: 1258
-        width: 234
-        height: 226
+        x: 3252
+        y: 560
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1554,10 +1554,10 @@ TextureImporter:
       name: FullSpritesheet_68
       rect:
         serializedVersion: 2
-        x: 3469
-        y: 1260
-        width: 216
-        height: 214
+        x: 3500
+        y: 560
+        width: 172
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1575,10 +1575,10 @@ TextureImporter:
       name: FullSpritesheet_69
       rect:
         serializedVersion: 2
-        x: 3713
-        y: 1258
-        width: 221
-        height: 216
+        x: 3751
+        y: 560
+        width: 173
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1596,10 +1596,10 @@ TextureImporter:
       name: FullSpritesheet_70
       rect:
         serializedVersion: 2
-        x: 3969
-        y: 1260
-        width: 216
-        height: 214
+        x: 4008
+        y: 560
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1617,10 +1617,10 @@ TextureImporter:
       name: FullSpritesheet_71
       rect:
         serializedVersion: 2
-        x: 4221
-        y: 1245
-        width: 216
-        height: 224
+        x: 4255
+        y: 546
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1638,10 +1638,10 @@ TextureImporter:
       name: FullSpritesheet_72
       rect:
         serializedVersion: 2
-        x: 4457
-        y: 1260
-        width: 216
-        height: 206
+        x: 4493
+        y: 560
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1659,10 +1659,10 @@ TextureImporter:
       name: FullSpritesheet_73
       rect:
         serializedVersion: 2
-        x: 2944
-        y: 1021
-        width: 236
-        height: 221
+        x: 79
+        y: 341
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1680,10 +1680,10 @@ TextureImporter:
       name: FullSpritesheet_74
       rect:
         serializedVersion: 2
-        x: 3205
-        y: 1021
-        width: 224
-        height: 211
+        x: 373
+        y: 336
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1701,10 +1701,10 @@ TextureImporter:
       name: FullSpritesheet_75
       rect:
         serializedVersion: 2
-        x: 3457
-        y: 1024
-        width: 226
-        height: 218
+        x: 658
+        y: 336
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1722,10 +1722,10 @@ TextureImporter:
       name: FullSpritesheet_76
       rect:
         serializedVersion: 2
-        x: 3713
-        y: 1026
-        width: 214
-        height: 209
+        x: 929
+        y: 341
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1743,10 +1743,10 @@ TextureImporter:
       name: FullSpritesheet_77
       rect:
         serializedVersion: 2
-        x: 3959
-        y: 1024
-        width: 226
-        height: 208
+        x: 1176
+        y: 345
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1764,10 +1764,10 @@ TextureImporter:
       name: FullSpritesheet_78
       rect:
         serializedVersion: 2
-        x: 4213
-        y: 1006
-        width: 229
-        height: 214
+        x: 1446
+        y: 341
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1785,10 +1785,10 @@ TextureImporter:
       name: FullSpritesheet_79
       rect:
         serializedVersion: 2
-        x: 4459
-        y: 1021
-        width: 229
-        height: 214
+        x: 1698
+        y: 336
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1806,10 +1806,10 @@ TextureImporter:
       name: FullSpritesheet_80
       rect:
         serializedVersion: 2
-        x: 2954
-        y: 775
-        width: 254
-        height: 224
+        x: 1969
+        y: 331
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1827,10 +1827,10 @@ TextureImporter:
       name: FullSpritesheet_81
       rect:
         serializedVersion: 2
-        x: 3230
-        y: 775
-        width: 214
-        height: 219
+        x: 2230
+        y: 331
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1848,10 +1848,10 @@ TextureImporter:
       name: FullSpritesheet_82
       rect:
         serializedVersion: 2
-        x: 3474
-        y: 775
-        width: 221
-        height: 221
+        x: 2487
+        y: 331
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1869,10 +1869,10 @@ TextureImporter:
       name: FullSpritesheet_83
       rect:
         serializedVersion: 2
-        x: 3725
-        y: 773
-        width: 214
-        height: 228
+        x: 2739
+        y: 327
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1890,10 +1890,10 @@ TextureImporter:
       name: FullSpritesheet_84
       rect:
         serializedVersion: 2
-        x: 3969
-        y: 773
-        width: 239
-        height: 216
+        x: 2996
+        y: 327
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1911,10 +1911,10 @@ TextureImporter:
       name: FullSpritesheet_85
       rect:
         serializedVersion: 2
-        x: 4233
-        y: 767
-        width: 206
-        height: 214
+        x: 3248
+        y: 327
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1932,10 +1932,10 @@ TextureImporter:
       name: FullSpritesheet_86
       rect:
         serializedVersion: 2
-        x: 4479
-        y: 770
-        width: 207
-        height: 236
+        x: 3500
+        y: 327
+        width: 167
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1953,10 +1953,10 @@ TextureImporter:
       name: FullSpritesheet_87
       rect:
         serializedVersion: 2
-        x: 2969
-        y: 544
-        width: 224
-        height: 208
+        x: 3747
+        y: 322
+        width: 172
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1974,10 +1974,10 @@ TextureImporter:
       name: FullSpritesheet_88
       rect:
         serializedVersion: 2
-        x: 3218
-        y: 541
-        width: 226
-        height: 221
+        x: 4003
+        y: 322
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1995,10 +1995,10 @@ TextureImporter:
       name: FullSpritesheet_89
       rect:
         serializedVersion: 2
-        x: 3474
-        y: 544
-        width: 219
-        height: 208
+        x: 4251
+        y: 313
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2016,10 +2016,10 @@ TextureImporter:
       name: FullSpritesheet_90
       rect:
         serializedVersion: 2
-        x: 3731
-        y: 541
-        width: 213
-        height: 216
+        x: 4489
+        y: 322
+        width: 172
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2037,10 +2037,10 @@ TextureImporter:
       name: FullSpritesheet_91
       rect:
         serializedVersion: 2
-        x: 3984
-        y: 546
-        width: 206
-        height: 206
+        x: 79
+        y: 112
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2058,10 +2058,10 @@ TextureImporter:
       name: FullSpritesheet_92
       rect:
         serializedVersion: 2
-        x: 4236
-        y: 521
-        width: 211
-        height: 231
+        x: 373
+        y: 107
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2079,10 +2079,10 @@ TextureImporter:
       name: FullSpritesheet_93
       rect:
         serializedVersion: 2
-        x: 4474
-        y: 536
-        width: 204
-        height: 209
+        x: 658
+        y: 107
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2100,10 +2100,10 @@ TextureImporter:
       name: FullSpritesheet_94
       rect:
         serializedVersion: 2
-        x: 2956
-        y: 303
-        width: 227
-        height: 226
+        x: 924
+        y: 107
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2121,10 +2121,10 @@ TextureImporter:
       name: FullSpritesheet_95
       rect:
         serializedVersion: 2
-        x: 2969
-        y: 59
-        width: 216
-        height: 226
+        x: 1176
+        y: 107
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2142,10 +2142,10 @@ TextureImporter:
       name: FullSpritesheet_96
       rect:
         serializedVersion: 2
-        x: 3208
-        y: 310
-        width: 228
-        height: 216
+        x: 1442
+        y: 107
+        width: 168
+        height: 164
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2163,10 +2163,10 @@ TextureImporter:
       name: FullSpritesheet_97
       rect:
         serializedVersion: 2
-        x: 3208
-        y: 64
-        width: 234
-        height: 216
+        x: 1698
+        y: 98
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2184,10 +2184,10 @@ TextureImporter:
       name: FullSpritesheet_98
       rect:
         serializedVersion: 2
-        x: 3467
-        y: 315
-        width: 216
-        height: 206
+        x: 1964
+        y: 98
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2205,10 +2205,10 @@ TextureImporter:
       name: FullSpritesheet_99
       rect:
         serializedVersion: 2
-        x: 3472
-        y: 69
-        width: 218
-        height: 211
+        x: 2226
+        y: 93
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2226,10 +2226,10 @@ TextureImporter:
       name: FullSpritesheet_100
       rect:
         serializedVersion: 2
-        x: 3718
-        y: 310
-        width: 221
-        height: 201
+        x: 2482
+        y: 93
+        width: 173
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2247,10 +2247,10 @@ TextureImporter:
       name: FullSpritesheet_101
       rect:
         serializedVersion: 2
-        x: 3720
-        y: 64
-        width: 219
-        height: 223
+        x: 2734
+        y: 93
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2268,10 +2268,10 @@ TextureImporter:
       name: FullSpritesheet_102
       rect:
         serializedVersion: 2
-        x: 3972
-        y: 298
-        width: 231
-        height: 221
+        x: 2991
+        y: 93
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2289,10 +2289,10 @@ TextureImporter:
       name: FullSpritesheet_103
       rect:
         serializedVersion: 2
-        x: 4228
-        y: 298
-        width: 209
-        height: 208
+        x: 3243
+        y: 93
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2310,10 +2310,10 @@ TextureImporter:
       name: FullSpritesheet_104
       rect:
         serializedVersion: 2
-        x: 4472
-        y: 303
-        width: 203
-        height: 211
+        x: 3495
+        y: 93
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2331,10 +2331,10 @@ TextureImporter:
       name: FullSpritesheet_105
       rect:
         serializedVersion: 2
-        x: 3977
-        y: 56
-        width: 213
-        height: 221
+        x: 3747
+        y: 89
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2352,10 +2352,10 @@ TextureImporter:
       name: FullSpritesheet_106
       rect:
         serializedVersion: 2
-        x: 4221
-        y: 44
-        width: 221
-        height: 233
+        x: 4003
+        y: 89
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2373,10 +2373,10 @@ TextureImporter:
       name: FullSpritesheet_107
       rect:
         serializedVersion: 2
-        x: 4467
-        y: 51
-        width: 226
-        height: 234
+        x: 4251
+        y: 79
+        width: 168
+        height: 168
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2386,6 +2386,27 @@ TextureImporter:
       bones: []
       spriteID: 632c58e237524094087ec84531eb54bb
       internalID: 1251204485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FullSpritesheet_108
+      rect:
+        serializedVersion: 2
+        x: 4489
+        y: 89
+        width: 168
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91bff736b3e7d824aba79eb8c63411ca
+      internalID: 1831476870
       vertices: []
       indices: 
       edges: []

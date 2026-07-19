@@ -217,6 +217,7 @@ GameObject:
   - component: {fileID: 1511933857840140689}
   - component: {fileID: 9048081162553063204}
   - component: {fileID: 7884530137687428089}
+  - component: {fileID: 278020154219810005}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -424,7 +425,7 @@ MonoBehaviour:
   - phaseName: Phase 2 (Red)
     patterns:
     - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
-  hitboxHandler: {fileID: 0}
+  hitboxHandler: {fileID: 278020154219810005}
 --- !u!114 &7884530137687428089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +446,21 @@ MonoBehaviour:
   - animationStateName: enemy7_attack3
     hitboxData: {fileID: 11400000, guid: 4651c8eb9cca22a41a06e31c5aa0b2a7, type: 2}
   animator: {fileID: 1511933857840140689}
+--- !u!114 &278020154219810005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533622752072390192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486e905cdef394747af74a515ba6b4f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 0}
+  circleCollider: {fileID: 0}
+  attackComponent: {fileID: 0}
 --- !u!1 &4218480304956992236
 GameObject:
   m_ObjectHideFlags: 0

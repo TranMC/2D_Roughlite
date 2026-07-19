@@ -34,6 +34,8 @@ namespace Roguelite.UpgradeSystem
         private Dictionary<PerkData, int> activePerks = new Dictionary<PerkData, int>();
         private List<PerkData> lastRunHistory = new List<PerkData>();
 
+        public static event System.Action<PerkData, int> OnPerkAdded;
+
         // Properties public chỉ đọc
         public Dictionary<PerkData, int> ActivePerks => activePerks;
         public List<PerkData> LastRunHistory => lastRunHistory;
@@ -91,6 +93,8 @@ namespace Roguelite.UpgradeSystem
                 activePerks.Add(perk, 1);
                 Debug.Log($"[UpgradeManager] Đã nhận Perk mới: '{perk.PerkName}'");
             }
+
+            OnPerkAdded?.Invoke(perk, activePerks[perk]);
 
             // Áp dụng ngay hiệu ứng lên Player trong Scene
             ApplyPerksToCurrentPlayer();

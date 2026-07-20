@@ -1,6 +1,7 @@
 using UnityEngine;
 using Roguelite.UpgradeSystem;
 using Roguelite.Player;
+using System.Collections.Generic;
 
 namespace Roguelite.Combat
 {
@@ -19,6 +20,11 @@ namespace Roguelite.Combat
 
         private float baseAttackDamage;
         private Collider2D attackCollider;
+        private bool isDamageInitialized = false;
+
+        // Danh sách các đối tượng đã trúng đòn trong lượt bật hitbox hiện tại
+        // (tránh đánh trúng cùng 1 mục tiêu nhiều lần trong 1 đòn)
+        private HashSet<int> hitTargets = new HashSet<int>();
 
         public float AttackDamage
         {
@@ -34,12 +40,31 @@ namespace Roguelite.Combat
 
         private void Awake()
         {
-            attackCollider = GetComponent<Collider2D>();
-            // Đảm bảo Collider là trigger để phát hiện va chạm không cản trở vật lý
-            attackCollider.isTrigger = true;
+            EnsureColliderInit();
+            InitializeDamage();
+        }
 
-            // Lưu trữ sát thương cơ bản ban đầu
-            baseAttackDamage = attackDamage;
+        private void InitializeDamage()
+        {
+            if (!isDamageInitialized)
+            {
+                baseAttackDamage = attackDamage;
+                isDamageInitialized = true;
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo attackCollider nếu chưa có (phòng trường hợp Awake chưa kịp chạy
+        /// do GameObject bị tắt từ đầu bởi HitboxController).
+        /// </summary>
+        private void EnsureColliderInit()
+        {
+            if (attackCollider == null)
+            {
+                attackCollider = GetComponent<Collider2D>();
+                if (attackCollider != null)
+                    attackCollider.isTrigger = true;
+            }
         }
 
         /// <summary>
@@ -47,15 +72,63 @@ namespace Roguelite.Combat
         /// </summary>
         public void ApplyDamageModifier(float flatBonus, float percentBonus)
         {
+            InitializeDamage();
             attackDamage = (baseAttackDamage + flatBonus) * (1f + percentBonus);
+        }
+
+        private void OnEnable()
+        {
+            hitTargets.Clear();
+            EnsureColliderInit();
+            
+            // Xử lý va chạm ngay lập tức khi hitbox vừa được bật
+            ManualOverlapCheck();
+        }
+
+        private void OnDisable()
+        {
+            hitTargets.Clear();
+        }
+
+        private void ManualOverlapCheck()
+        {
+            if (attackCollider == null) return;
+
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.useTriggers = true;
+            filter.useLayerMask = false;
+
+            List<Collider2D> results = new List<Collider2D>();
+            int hitCount = Physics2D.OverlapCollider(attackCollider, filter, results);
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                HandleHit(results[i]);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            HandleHit(collision);
+        }
+
+        private void HandleHit(Collider2D collision)
+        {
+            // Bỏ qua nếu đã đánh trúng mục tiêu này trong lần bật hitbox này
+            int targetId = collision.gameObject.GetInstanceID();
+            if (hitTargets.Contains(targetId))
+                return;
+
             // Kiểm tra xem đối tượng va chạm có thể nhận sát thương không
             IDamageable damageable = collision.GetComponent<IDamageable>();
             if (damageable != null)
             {
+                // Tránh việc tự gây sát thương cho chính mình
+                if (transform.parent != null && collision.gameObject == transform.parent.gameObject)
+                    return;
+
+                hitTargets.Add(targetId);
+
                 // Xác định hướng knockback dựa trên localScale.x của cha (hướng mặt của nhân vật tấn công)
                 Transform parentTransform = transform.parent;
                 float faceDirection = parentTransform != null ? parentTransform.localScale.x : 1f;

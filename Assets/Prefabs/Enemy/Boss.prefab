@@ -416,19 +416,19 @@ MonoBehaviour:
   - 0.4
   phasePatterns:
   - phaseName: Phase 0 (Default)
-    animatorSpeed: 1
+    speedMultiplier: 1
     scaleMultiplier: 1
     patterns:
     - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
   - phaseName: Phase 1 (Yellow)
-    animatorSpeed: 1.5
+    speedMultiplier: 1.5
     scaleMultiplier: 1.2
     patterns:
     - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
     - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
   - phaseName: Phase 2 (Red)
-    animatorSpeed: 2
-    scaleMultiplier: 1.5
+    speedMultiplier: 4
+    scaleMultiplier: 2
     patterns:
     - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
   hitboxHandler: {fileID: 278020154219810005}

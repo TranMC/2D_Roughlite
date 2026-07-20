@@ -32,8 +32,8 @@ namespace Roguelite.Enemy
         public class PhasePatternGroup
         {
             public string phaseName;
-            [Tooltip("Tốc độ chạy Animation cho Phase này (mặc định = 1)")]
-            public float animatorSpeed = 1f;
+            [Tooltip("Hệ số tốc độ (Tăng cả tốc độ Animation VÀ tốc độ di chuyển thực, mặc định = 1)")]
+            public float speedMultiplier = 1f;
             [Tooltip("Hệ số phóng to/thu nhỏ Boss cho Phase này (mặc định = 1)")]
             public float scaleMultiplier = 1f;
             public List<AttackPattern> patterns = new List<AttackPattern>();
@@ -47,6 +47,7 @@ namespace Roguelite.Enemy
         private bool isAttackingPattern = false;
         private Coroutine attackLockCoroutine;
         private Vector3 baseScale; // Lưu lại scale gốc để nhân với scaleMultiplier
+        private float baseMoveSpeed; // Lưu lại tốc độ di chuyển gốc
 
         public AttackPattern ActivePattern => activePattern;
         public bool IsAttackingPattern => isAttackingPattern;
@@ -72,8 +73,9 @@ namespace Roguelite.Enemy
         {
             base.Awake();
 
-            // Lưu lại scale gốc ban đầu (lấy giá trị tuyệt đối để tránh dính hướng mặt)
+            // Lưu lại scale và tốc độ di chuyển gốc ban đầu
             baseScale = new Vector3(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
+            baseMoveSpeed = moveSpeed;
 
             // Đăng ký lắng nghe event OnDamageTaken từ EnemyBase
             // để kiểm tra chuyển Phase sau mỗi lần nhận sát thương.
@@ -255,8 +257,11 @@ namespace Roguelite.Enemy
             // Áp dụng tốc độ Animator
             if (anim != null)
             {
-                anim.speed = group.animatorSpeed;
+                anim.speed = group.speedMultiplier;
             }
+            
+            // Áp dụng tốc độ di chuyển thực tế (moveSpeed kế thừa từ EnemyBase)
+            moveSpeed = baseMoveSpeed * group.speedMultiplier;
 
             // Áp dụng Scale (giữ nguyên hướng mặt hiện tại)
             float facingSign = Mathf.Sign(transform.localScale.x);
@@ -266,7 +271,7 @@ namespace Roguelite.Enemy
                 baseScale.z * group.scaleMultiplier
             );
             
-            Debug.Log($"[BossBase] Đã áp dụng Phase Modifiers: Speed={group.animatorSpeed}, Scale={group.scaleMultiplier}");
+            Debug.Log($"[BossBase] Đã áp dụng Phase Modifiers: SpeedMultiplier={group.speedMultiplier}, Scale={group.scaleMultiplier}");
         }
 
         // =====================================================================

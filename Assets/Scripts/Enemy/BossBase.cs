@@ -32,6 +32,10 @@ namespace Roguelite.Enemy
         public class PhasePatternGroup
         {
             public string phaseName;
+            [Tooltip("Tốc độ chạy Animation cho Phase này (mặc định = 1)")]
+            public float animatorSpeed = 1f;
+            [Tooltip("Hệ số phóng to/thu nhỏ Boss cho Phase này (mặc định = 1)")]
+            public float scaleMultiplier = 1f;
             public List<AttackPattern> patterns = new List<AttackPattern>();
         }
 
@@ -42,6 +46,7 @@ namespace Roguelite.Enemy
         private AttackPattern activePattern;
         private bool isAttackingPattern = false;
         private Coroutine attackLockCoroutine;
+        private Vector3 baseScale; // Lưu lại scale gốc để nhân với scaleMultiplier
 
         public AttackPattern ActivePattern => activePattern;
         public bool IsAttackingPattern => isAttackingPattern;
@@ -67,6 +72,9 @@ namespace Roguelite.Enemy
         {
             base.Awake();
 
+            // Lưu lại scale gốc ban đầu (lấy giá trị tuyệt đối để tránh dính hướng mặt)
+            baseScale = new Vector3(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
+
             // Đăng ký lắng nghe event OnDamageTaken từ EnemyBase
             // để kiểm tra chuyển Phase sau mỗi lần nhận sát thương.
             // (TakeDamage là public non-virtual → không override được,
@@ -81,6 +89,9 @@ namespace Roguelite.Enemy
 
             // Validate phaseThresholds: phải sắp xếp giảm dần
             ValidateThresholds();
+
+            // Áp dụng modifier cho Phase 0 ban đầu
+            ApplyPhaseModifiers(currentPhase);
         }
 
         protected virtual void OnDestroy()
@@ -226,8 +237,36 @@ namespace Roguelite.Enemy
                 Debug.Log($"[BossBase] {gameObject.name} chuyển sang Phase {currentPhase}! " +
                           $"(HP: {hpPercent:P0})");
 
+                ApplyPhaseModifiers(currentPhase);
                 OnPhaseChanged?.Invoke(currentPhase);
             }
+        }
+
+        /// <summary>
+        /// Cập nhật tốc độ Animator và Scale của Boss dựa theo cấu hình Phase hiện tại
+        /// </summary>
+        private void ApplyPhaseModifiers(int phaseIndex)
+        {
+            if (phasePatterns == null || phasePatterns.Count == 0) return;
+
+            int groupIndex = Mathf.Clamp(phaseIndex, 0, phasePatterns.Count - 1);
+            PhasePatternGroup group = phasePatterns[groupIndex];
+
+            // Áp dụng tốc độ Animator
+            if (anim != null)
+            {
+                anim.speed = group.animatorSpeed;
+            }
+
+            // Áp dụng Scale (giữ nguyên hướng mặt hiện tại)
+            float facingSign = Mathf.Sign(transform.localScale.x);
+            transform.localScale = new Vector3(
+                baseScale.x * group.scaleMultiplier * facingSign,
+                baseScale.y * group.scaleMultiplier,
+                baseScale.z * group.scaleMultiplier
+            );
+            
+            Debug.Log($"[BossBase] Đã áp dụng Phase Modifiers: Speed={group.animatorSpeed}, Scale={group.scaleMultiplier}");
         }
 
         // =====================================================================

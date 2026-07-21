@@ -8,11 +8,10 @@ namespace Roguelite.Enemy
     /// </summary>
     public class Boss: BossBase
     {
+        private Material originalMaterial;
+        
         /// <summary>Scale gốc lúc Start, dùng làm mốc tính Enrage scale.</summary>
         private Vector3 originalScale;
-
-        /// <summary>Màu gốc của SpriteRenderer.</summary>
-        private Color originalColor;
 
         // =====================================================================
         //  LIFECYCLE
@@ -26,7 +25,7 @@ namespace Roguelite.Enemy
 
             if (spriteRenderer != null)
             {
-                originalColor = spriteRenderer.color;
+                originalMaterial = spriteRenderer.material;
             }
 
             OnPhaseChanged += HandlePhaseChanged;
@@ -36,10 +35,16 @@ namespace Roguelite.Enemy
         {
             base.OnDestroy();
             OnPhaseChanged -= HandlePhaseChanged;
+            
+            // Restore original material khi destroy
+            if (spriteRenderer != null && originalMaterial != null)
+            {
+                spriteRenderer.material = originalMaterial;
+            }
         }
 
         // =====================================================================
-        //  PHASE CHANGED – Đổi màu
+        //  PHASE CHANGED – Apply Material Outline
         // =====================================================================
 
         protected override void OnStateEnter(EnemyState enteringState, EnemyState previousState)
@@ -59,6 +64,14 @@ namespace Roguelite.Enemy
                         break;
                     case EnemyState.Dead:
                         anim.SetTrigger("AI_die");
+                        
+                        // Restore original material khi boss chết
+                        if (spriteRenderer != null && originalMaterial != null)
+                        {
+                            spriteRenderer.material = originalMaterial;
+                        }
+                        
+                        Debug.Log("[DemoBoss] Boss chết: restore original material");
                         break;
                     case EnemyState.Hit:
                         anim.SetTrigger("AI_hit");
@@ -70,18 +83,40 @@ namespace Roguelite.Enemy
         private void HandlePhaseChanged(int newPhase)
         {
             if (spriteRenderer == null) return;
-
-            switch (newPhase)
+            
+            if (newPhase == 0)
             {
-                case 1:
-                    spriteRenderer.color = Color.yellow;
-                    break;
-                default: // Phase >= 2
-                    spriteRenderer.color = Color.red;
-                    break;
+                // Restore original material khi về phase 0
+                if (originalMaterial != null)
+                {
+                    spriteRenderer.material = originalMaterial;
+                }
             }
-
-            Debug.Log($"[DemoBoss] Phase {newPhase}: màu={spriteRenderer.color}");
+            else
+            {
+                // Apply material từ PhasePatternGroup tương ứng
+                int groupIndex = Mathf.Clamp(newPhase, 0, phasePatterns.Count - 1);
+                if (phasePatterns != null && groupIndex < phasePatterns.Count && phasePatterns[groupIndex] != null)
+                {
+                    Material phaseMaterial = phasePatterns[groupIndex].enragedMaterial;
+                    if (phaseMaterial != null)
+                    {
+                        spriteRenderer.material = phaseMaterial;
+                    }
+                    else if (originalMaterial != null)
+                    {
+                        // Fallback về original material nếu phase không có material
+                        spriteRenderer.material = originalMaterial;
+                    }
+                }
+                else if (originalMaterial != null)
+                {
+                    // Fallback về original material nếu không có phase pattern
+                    spriteRenderer.material = originalMaterial;
+                }
+            }
+        
+            Debug.Log($"[DemoBoss] Phase {newPhase}: {(newPhase == 0 ? "restored original material" : "applied phase material")}");
         }
 
         // =====================================================================

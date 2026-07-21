@@ -1296,7 +1296,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &702463677
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2650,7 +2650,7 @@ MonoBehaviour:
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
-  totalRooms: 4
+  totalRooms: 2
   roomLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -2835,7 +2835,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2633098601429545052, guid: 88ae526e13e15234dad8862464715652, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1.1206703
+      value: 1.1206665
       objectReference: {fileID: 0}
     - target: {fileID: 2633098601429545052, guid: 88ae526e13e15234dad8862464715652, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -3333,6 +3333,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 461169031}
   - {fileID: 674427397}
   - {fileID: 281045091}
-  - {fileID: 461169031}

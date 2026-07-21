@@ -36,11 +36,13 @@ namespace Roguelite.Enemy
             public float speedMultiplier = 1f;
             [Tooltip("Hệ số phóng to/thu nhỏ Boss cho Phase này (mặc định = 1)")]
             public float scaleMultiplier = 1f;
+            [Tooltip("Material outline sẽ được apply khi boss ở phase này")]
+            public Material enragedMaterial;
             public List<AttackPattern> patterns = new List<AttackPattern>();
         }
 
         [Header("===== Boss Attack Pattern Settings =====")]
-        [SerializeField] private List<PhasePatternGroup> phasePatterns = new List<PhasePatternGroup>();
+        [SerializeField] protected List<PhasePatternGroup> phasePatterns = new List<PhasePatternGroup>();
         [SerializeField] private EntityHitboxHandler hitboxHandler;
 
         private AttackPattern activePattern;

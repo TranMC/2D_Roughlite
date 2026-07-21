@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Roguelite.Enemy
@@ -8,6 +9,8 @@ namespace Roguelite.Enemy
     /// </summary>
     public class Boss: BossBase
     {
+        [SerializeField] private HealthBar healthBar;
+
         private Material originalMaterial;
         
         /// <summary>Scale gốc lúc Start, dùng làm mốc tính Enrage scale.</summary>
@@ -29,12 +32,38 @@ namespace Roguelite.Enemy
             }
 
             OnPhaseChanged += HandlePhaseChanged;
+    
+            // // Tìm HealthBar trong scene (bao gồm cả inactive)
+            if (healthBar == null)
+            {
+                healthBar = Resources.FindObjectsOfTypeAll<HealthBar>()
+                    .FirstOrDefault(h => h.gameObject.scene.name != null);
+            }
+            
+            // Setup health bar
+            if (healthBar != null)
+            {
+                healthBar.SetMaxHealth(maxHP);
+                healthBar.gameObject.SetActive(true); // Hiện health bar khi boss spawn
+            }
+            
+            // Đăng ký event để cập nhật health bar
+            OnDamageTaken += UpdateHealthBar;
+        }
+
+        private void UpdateHealthBar(float damage, float remainingHP)
+        {
+            if (healthBar != null)
+            {
+                healthBar.SetHealth(remainingHP);
+            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             OnPhaseChanged -= HandlePhaseChanged;
+            OnDamageTaken -= UpdateHealthBar;
             
             // Restore original material khi destroy
             if (spriteRenderer != null && originalMaterial != null)
@@ -51,6 +80,12 @@ namespace Roguelite.Enemy
         {
             base.OnStateEnter(enteringState, previousState);
             
+            // Ẩn health bar khi boss chết
+            if (enteringState == EnemyState.Dead && healthBar != null)
+            {
+                healthBar.gameObject.SetActive(false);
+            }
+
             // Kích hoạt Animation giống như Enemy_AI
             if (anim != null)
             {

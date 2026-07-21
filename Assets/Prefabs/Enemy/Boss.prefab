@@ -435,6 +435,7 @@ MonoBehaviour:
     patterns:
     - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}
   hitboxHandler: {fileID: 278020154219810005}
+  healthBar: {fileID: 0}
 --- !u!114 &7884530137687428089
 MonoBehaviour:
   m_ObjectHideFlags: 0

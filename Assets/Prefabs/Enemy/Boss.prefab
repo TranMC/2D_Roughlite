@@ -418,12 +418,14 @@ MonoBehaviour:
   - phaseName: Phase 0 (Default)
     speedMultiplier: 1
     scaleMultiplier: 1
+    attackRangeMultiplier: 1
     enragedMaterial: {fileID: 0}
     patterns:
     - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
   - phaseName: Phase 1 (Yellow)
     speedMultiplier: 1.5
     scaleMultiplier: 1.2
+    attackRangeMultiplier: 1.2
     enragedMaterial: {fileID: 2100000, guid: d4344b552c5169544acb0fc579c96192, type: 2}
     patterns:
     - {fileID: 11400000, guid: a651333a9aaf3534a95907796bccc940, type: 2}
@@ -431,6 +433,7 @@ MonoBehaviour:
   - phaseName: Phase 2 (Red)
     speedMultiplier: 4
     scaleMultiplier: 2
+    attackRangeMultiplier: 1.5
     enragedMaterial: {fileID: 2100000, guid: 6053c1c2f4a717c4297c1891a91faa05, type: 2}
     patterns:
     - {fileID: 11400000, guid: 284d927bee659d14e82e54f3b9a4d709, type: 2}

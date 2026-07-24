@@ -36,6 +36,8 @@ namespace Roguelite.Enemy
             public float speedMultiplier = 1f;
             [Tooltip("Hệ số phóng to/thu nhỏ Boss cho Phase này (mặc định = 1)")]
             public float scaleMultiplier = 1f;
+            [Tooltip("Hệ số nhân tầm đánh (Attack Range) cho Phase này (mặc định = 1, nếu <= 0 sẽ tự động lấy theo scaleMultiplier)")]
+            public float attackRangeMultiplier = 1f;
             [Tooltip("Material outline sẽ được apply khi boss ở phase này")]
             public Material enragedMaterial;
             public List<AttackPattern> patterns = new List<AttackPattern>();
@@ -50,6 +52,7 @@ namespace Roguelite.Enemy
         private Coroutine attackLockCoroutine;
         private Vector3 baseScale; // Lưu lại scale gốc để nhân với scaleMultiplier
         private float baseMoveSpeed; // Lưu lại tốc độ di chuyển gốc
+        private float baseAttackRange; // Lưu lại tầm đánh gốc để nhân với attackRangeMultiplier
 
         public AttackPattern ActivePattern => activePattern;
         public bool IsAttackingPattern => isAttackingPattern;
@@ -75,9 +78,10 @@ namespace Roguelite.Enemy
         {
             base.Awake();
 
-            // Lưu lại scale và tốc độ di chuyển gốc ban đầu
+            // Lưu lại scale, tốc độ di chuyển và tầm đánh gốc ban đầu
             baseScale = new Vector3(Mathf.Abs(transform.localScale.x), Mathf.Abs(transform.localScale.y), Mathf.Abs(transform.localScale.z));
             baseMoveSpeed = moveSpeed;
+            baseAttackRange = attackRange;
 
             // Đăng ký lắng nghe event OnDamageTaken từ EnemyBase
             // để kiểm tra chuyển Phase sau mỗi lần nhận sát thương.
@@ -272,8 +276,12 @@ namespace Roguelite.Enemy
                 baseScale.y * group.scaleMultiplier,
                 baseScale.z * group.scaleMultiplier
             );
+
+            // Áp dụng Tầm đánh (attackRange kế thừa từ EnemyBase)
+            float rangeMult = group.attackRangeMultiplier > 0f ? group.attackRangeMultiplier : group.scaleMultiplier;
+            attackRange = baseAttackRange * rangeMult;
             
-            Debug.Log($"[BossBase] Đã áp dụng Phase Modifiers: SpeedMultiplier={group.speedMultiplier}, Scale={group.scaleMultiplier}");
+            Debug.Log($"[BossBase] Đã áp dụng Phase Modifiers: SpeedMultiplier={group.speedMultiplier}, Scale={group.scaleMultiplier}, AttackRange={attackRange} (x{rangeMult})");
         }
 
         // =====================================================================

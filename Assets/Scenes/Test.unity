@@ -528,6 +528,7 @@ MonoBehaviour:
   rareWeight: 25
   epicWeight: 12
   legendaryWeight: 3
+  buffSFX: {fileID: 8300000, guid: 7fb2a23cc1ee2f04e8e16ef349ad416e, type: 3}
 --- !u!1 &388701448
 GameObject:
   m_ObjectHideFlags: 0
@@ -2186,6 +2187,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1405360295}
   m_CullTransparentMesh: 1
+--- !u!1 &1421361315
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1421361317}
+  - component: {fileID: 1421361316}
+  m_Layer: 0
+  m_Name: UpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1421361316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421361315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1555bf26d5ac3574c86e5e6c03050e64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  perkPool: {fileID: 11400000, guid: 878716c4ac9e7264ba5dfb0bd00b028c, type: 2}
+  commonWeight: 60
+  rareWeight: 25
+  epicWeight: 12
+  legendaryWeight: 3
+  buffSFX: {fileID: 8300000, guid: 7fb2a23cc1ee2f04e8e16ef349ad416e, type: 3}
+--- !u!4 &1421361317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421361315}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.540493, y: -28.103401, z: -0.029735005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1421855077
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,7 +3021,7 @@ MonoBehaviour:
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
-  totalRooms: 2
+  totalRooms: 5
   roomLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -3660,3 +3711,4 @@ SceneRoots:
   - {fileID: 461169031}
   - {fileID: 674427397}
   - {fileID: 281045091}
+  - {fileID: 1421361317}

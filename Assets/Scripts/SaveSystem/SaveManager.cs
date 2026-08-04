@@ -31,7 +31,15 @@ namespace Roguelite.SaveSystem
         private string settingFilePath;
 
         private bool isSaving = false;
+        private bool isAutoSavePending = false;
         private Coroutine autoSaveDebounceCoroutine;
+
+        public bool IsSaving => isSaving;
+        public bool IsAutoSavePending => isAutoSavePending;
+
+        public static event Action OnAutoSavePending;
+        public static event Action OnSaveStarted;
+        public static event Action OnSaveCompleted;
 
         private void Awake()
         {
@@ -305,24 +313,51 @@ namespace Roguelite.SaveSystem
         private IEnumerator SaveToDiskCoroutine()
         {
             isSaving = true;
+            OnSaveStarted?.Invoke();
             yield return null;
             SaveToDiskSync();
             isSaving = false;
+            OnSaveCompleted?.Invoke();
         }
 
-        public void TriggerAutoSave(float delaySeconds = 1.5f)
+        public void TriggerAutoSave(float delaySeconds = 0.1f)
         {
+            Debug.Log("[SaveManager] TriggerAutoSave called with delay: " + delaySeconds);
+            
             if (autoSaveDebounceCoroutine != null)
             {
                 StopCoroutine(autoSaveDebounceCoroutine);
             }
 
-            autoSaveDebounceCoroutine = StartCoroutine(DebouncedAutoSaveCoroutine(delaySeconds));
+            if (!isAutoSavePending)
+            {
+                isAutoSavePending = true;
+                Debug.Log("[SaveManager] Invoking OnAutoSavePending event");
+                OnAutoSavePending?.Invoke();
+                Debug.Log("[SaveManager] OnAutoSavePending event invoked. Subscribers: " + 
+                    (OnAutoSavePending?.GetInvocationList().Length ?? 0));
+            }
+            else
+            {
+                Debug.Log("[SaveManager] AutoSave already pending, skipping event invoke");
+            }
+
+            // Nếu delay = 0, lưu ngay lập tức không cần coroutine
+            if (delaySeconds <= 0f)
+            {
+                isAutoSavePending = false;
+                SaveToDiskAsync();
+            }
+            else
+            {
+                autoSaveDebounceCoroutine = StartCoroutine(DebouncedAutoSaveCoroutine(delaySeconds));
+            }
         }
 
         private IEnumerator DebouncedAutoSaveCoroutine(float delay)
         {
             yield return new WaitForSecondsRealtime(delay);
+            isAutoSavePending = false;
             SaveToDiskAsync();
             autoSaveDebounceCoroutine = null;
         }

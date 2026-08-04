@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 namespace Roguelite.Enemy
@@ -11,6 +10,13 @@ namespace Roguelite.Enemy
     {
         [SerializeField] private HealthBar healthBar;
 
+        [Tooltip("Khoảng cách bổ sung phía trên sprite Boss (world units).")]
+        [SerializeField] private float healthBarPadding = 0.5f;
+
+        [Tooltip("Kích thước thanh máu trong world units (rộng x cao).")]
+        [SerializeField] private Vector2 healthBarWorldSize = new Vector2(3f, 0.45f);
+
+        private bool ownsHealthBarInstance;
         private Material originalMaterial;
         
         /// <summary>Scale gốc lúc Start, dùng làm mốc tính Enrage scale.</summary>
@@ -32,23 +38,46 @@ namespace Roguelite.Enemy
             }
 
             OnPhaseChanged += HandlePhaseChanged;
-    
-            // // Tìm HealthBar trong scene (bao gồm cả inactive)
-            if (healthBar == null)
-            {
-                healthBar = Resources.FindObjectsOfTypeAll<HealthBar>()
-                    .FirstOrDefault(h => h.gameObject.scene.name != null);
-            }
-            
-            // Setup health bar
-            if (healthBar != null)
-            {
-                healthBar.SetMaxHealth(maxHP);
-                healthBar.gameObject.SetActive(true); // Hiện health bar khi boss spawn
-            }
-            
+
+            SetupHealthBar();
+
             // Đăng ký event để cập nhật health bar
             OnDamageTaken += UpdateHealthBar;
+        }
+
+        private void SetupHealthBar()
+        {
+            // Prefab gán trực tiếp trong Inspector chưa có instance trong scene → phải Instantiate.
+            if (healthBar != null && !healthBar.gameObject.scene.IsValid())
+            {
+                healthBar = Instantiate(healthBar);
+                healthBar.name = "BossHealthBar";
+                ownsHealthBarInstance = true;
+            }
+            else if (healthBar == null)
+            {
+                healthBar = FindObjectOfType<HealthBar>(true);
+            }
+
+            if (healthBar == null)
+            {
+                Debug.LogWarning("[Boss] Không tìm thấy HealthBar. Gán prefab BossHealthBar vào field Health Bar trên Boss.");
+                return;
+            }
+
+            healthBar.SetWorldDisplaySize(healthBarWorldSize);
+
+            if (spriteRenderer != null)
+            {
+                healthBar.SetFollowTarget(transform, spriteRenderer, healthBarPadding);
+            }
+            else
+            {
+                healthBar.SetFollowTarget(transform, new Vector3(0f, healthBarPadding, 0f));
+            }
+
+            healthBar.SetMaxHealth(maxHP);
+            healthBar.Show();
         }
 
         private void UpdateHealthBar(float damage, float remainingHP)
@@ -64,6 +93,11 @@ namespace Roguelite.Enemy
             base.OnDestroy();
             OnPhaseChanged -= HandlePhaseChanged;
             OnDamageTaken -= UpdateHealthBar;
+
+            if (ownsHealthBarInstance && healthBar != null)
+            {
+                Destroy(healthBar.gameObject);
+            }
             
             // Restore original material khi destroy
             if (spriteRenderer != null && originalMaterial != null)
@@ -83,7 +117,7 @@ namespace Roguelite.Enemy
             // Ẩn health bar khi boss chết
             if (enteringState == EnemyState.Dead && healthBar != null)
             {
-                healthBar.gameObject.SetActive(false);
+                healthBar.Hide();
             }
 
             // Kích hoạt Animation giống như Enemy_AI

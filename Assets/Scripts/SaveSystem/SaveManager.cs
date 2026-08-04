@@ -141,6 +141,8 @@ namespace Roguelite.SaveSystem
 
         // --- PROGRESS SAVE / LOAD ---
 
+        public static event Action<string> OnSaveCorruptDetected;
+
         /// <summary>
         /// Tải SaveData của Slot hiện tại từ đĩa. Nếu chưa có hoặc lỗi JSON, khởi tạo dữ liệu mặc định.
         /// </summary>
@@ -181,10 +183,16 @@ namespace Roguelite.SaveSystem
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[SaveManager] Lỗi đọc file SaveData Slot {CurrentSlotIndex} ({ex.Message}). Thử phục hồi từ file backup...");
+                string corruptMsg = $"[CẢNH BÁO SAVE CORRUPT] Phát hiện file save tại Slot {CurrentSlotIndex} bị hỏng hoặc lỗi định dạng! Chi tiết: {ex.Message}. Thử khôi phục từ backup...";
+                Debug.LogWarning(corruptMsg);
+                OnSaveCorruptDetected?.Invoke(corruptMsg);
+
                 if (!RestoreFromBackup())
                 {
-                    Debug.LogWarning($"[SaveManager] Cả file chính và backup của Slot {CurrentSlotIndex} đều hỏng. Tạo mới SaveData mặc định.");
+                    string resetMsg = $"[CẢNH BÁO SAVE CORRUPT] Cả file chính và file backup của Slot {CurrentSlotIndex} đều bị lỗi! Đã tiến hành reset và tạo lại dữ liệu save mặc định.";
+                    Debug.LogWarning(resetMsg);
+                    OnSaveCorruptDetected?.Invoke(resetMsg);
+
                     CurrentSaveData = CreateDefaultSaveData(CurrentSlotIndex);
                     SaveToDiskSync();
                 }

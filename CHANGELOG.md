@@ -2,6 +2,16 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [v0.6.0] - 2026-08-04
+
+### 💾 Nền tảng Save/Load System (Epic E07 - US-028 → US-030, US-032, US-033)
+*   **Mô hình dữ liệu lưu trữ**: Bổ sung các lớp serializable `SaveData`, `PlayerProgressData`, `WeaponUnlockData`, `AbilityUnlockData` và `SettingData`, bao quát tiến trình người chơi, vũ khí, ability/perk vĩnh viễn và thiết lập hệ thống.
+*   **SaveManager & 3 save slot**: Thêm `SaveManager.cs` Singleton lưu/tải JSON tại `Application.persistentDataPath`; hỗ trợ chuyển, kiểm tra, xem trước và xóa các slot từ 1 đến 3.
+*   **Khởi tạo, tương thích và phục hồi dữ liệu**: Tự tạo dữ liệu mặc định khi chưa có file, di cư file legacy `save_data.json` sang slot 1, đồng thời phục hồi từ file `.bak` hoặc fallback về dữ liệu mặc định khi JSON lỗi.
+*   **Settings độc lập & autosave**: Tách `settings.json` khỏi save tiến trình, ghi nhớ slot gần nhất; thêm autosave có debounce và kích hoạt lưu khi GameManager chuyển sang `GameOver` hoặc `Victory`.
+
+---
+
 ## [v0.5.1] - 2026-07-24
 
 ### 👹 Bổ sung Tầm đánh (Attack Range Multiplier) theo Phase cho Boss (Epic E06)

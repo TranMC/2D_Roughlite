@@ -102,23 +102,23 @@ Mô tả sơ đồ:
 Tên diagram: Save Data Class Diagram
 
 Mục đích:
- Mô tả cấu trúc dữ liệu được lưu trữ để duy trì tiến trình của người chơi.
+ Mô tả cấu trúc dữ liệu được lưu trữ để duy trì tiến trình của người chơi (Hỗ trợ 3 Save Slots độc lập, SaveVersion 2.0).
 
 Các thành phần chính:
- SaveData, PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData.
+ SaveData (SaveVersion = 2, SlotIndex = 1..3), PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData (LastActiveSlotIndex).
 
 Mô tả sơ đồ:
- SaveData là lớp dữ liệu trung tâm chứa toàn bộ tiến trình vĩnh viễn của người chơi. Dữ liệu bao gồm tài nguyên tích lũy, cấp độ nâng cấp chỉ số, danh sách vũ khí đã mở khóa, kỹ năng đã mở khóa và các thiết lập hệ thống như âm thanh hoặc đồ họa.
+ SaveData là lớp dữ liệu trung tâm chứa toàn bộ tiến trình vĩnh viễn của người chơi ở từng Slot (save_data_slot_1.json, save_data_slot_2.json, save_data_slot_3.json). Dữ liệu bao gồm tài nguyên tích lũy, số lượt chơi, quái tiêu diệt, danh sách vũ khí đã mở khóa, kỹ năng đã mở khóa. SettingData lưu riêng biệt toàn cục (settings.json) cho tất cả các slot.
 
 # 9. Luồng lưu và tải dữ liệu
 
 Tên diagram: Save and Load Flow Diagram
 
 Mục đích:
- Mô tả quy trình lưu và tải dữ liệu trong trò chơi.
+ Mô tả quy trình lưu, tải dữ liệu và quản lý Slot trong trò chơi.
 
 Các thành phần chính:
- Game Start, Check Save File, Load SaveData, Create New SaveData, Save Progress, Update Settings.
+ Game Start, Load Settings & Last Active Slot, Check Slot File, Load SaveData Slot X, Create Default Slot Data, Auto-Save (Debounced), Backup (.bak), Migration V1->V2.
 
 Mô tả sơ đồ:
- Khi khởi động trò chơi, hệ thống kiểm tra sự tồn tại của tệp lưu. Nếu dữ liệu đã tồn tại, SaveData được tải và áp dụng vào game. Nếu chưa có dữ liệu, hệ thống tạo SaveData mới với các giá trị mặc định. Khi người chơi kết thúc lượt chơi hoặc thay đổi thiết lập, dữ liệu sẽ được cập nhật và lưu xuống bộ nhớ để sử dụng trong các lần chơi tiếp theo.
+ Khi khởi động trò chơi, hệ thống nạp SettingData trước để xác định Slot hoạt động gần nhất (lastActiveSlotIndex). Sau đó nạp dữ liệu tiến trình của Slot tương ứng. Nếu phát hiện file v1 cũ (save_data.json), hệ thống tự động di cư sang save_data_slot_1.json. Khi kết thúc lượt chơi (Win/Dead) hoặc thay đổi thiết lập, Auto-Save sẽ được kích hoạt với cơ chế hoãn (debounce) và sao lưu dữ liệu (.bak) an toàn.

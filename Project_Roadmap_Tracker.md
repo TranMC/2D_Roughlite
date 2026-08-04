@@ -1,15 +1,15 @@
-# TIẾN ĐỘ VÀ LỘ TRÌNH PHÁT TRIỂN DỰ ÁN (PROJECT ROADMAP TRACKER) - **v0.5.1**
+# TIẾN ĐỘ VÀ LỘ TRÌNH PHÁT TRIỂN DỰ ÁN (PROJECT ROADMAP TRACKER) - **v0.6.0**
 
 Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stories và các Epic trong suốt quá trình phát triển game 2D Roguelite.
 
 ---
 
-## 📊 TÓM TẮT TIẾN ĐỘ CHUNG (Cập nhật: 2026-07-24)
-*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), Menu Tạm dừng & Prefabs Quái vật (US-016), giải thuật Level Gen (US-015, US-017), toàn bộ hệ thống Perk & Reward UI Selection (US-018 -> US-022 thuộc Epic E05), cùng hệ thống Boss Fight & Arena (US-023 -> US-026 thuộc Epic E06) bao gồm phân phase Boss, Enraged Material Outline Shader, Hitbox Data-Driven system và Boss HealthBar UI.
+## 📊 TÓM TẮT TIẾN ĐỘ CHUNG (Cập nhật: 2026-08-04)
+*   **Trạng thái hiện tại**: Hoàn tất các hệ thống đã triển khai của Epic E01–E06, gồm Room/Spawner, Level Gen, Perk & Reward UI, Boss Fight/Arena. Epic E07 đã hoàn thiện nền tảng Save/Load: mô hình dữ liệu, SaveManager JSON với 3 slot, khởi tạo dữ liệu mặc định, di cư file legacy, backup/fallback dữ liệu lỗi, settings tách riêng; phần tích hợp autosave đang được thực hiện.
 *   **Tổng số Story Points (SP)**: 149 SP.
-*   **Đã hoàn thành**: 84 / 149 SP (56%).
-*   **Đang thực hiện**: 0 / 149 SP (0%).
-*   **Chưa bắt đầu**: 65 / 149 SP (44%).
+*   **Đã hoàn thành**: 96 / 149 SP (64%).
+*   **Đang thực hiện**: 3 / 149 SP (2%).
+*   **Chưa bắt đầu**: 50 / 149 SP (34%).
 
 ---
 
@@ -95,12 +95,12 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Data | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Cấu trúc dữ liệu save có thể tuần tự hóa. |
-| **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Architecture | 3 | 🔴 High | ⏳ Chưa bắt đầu | Trình quản lý đọc ghi file JSON xuống thiết bị. |
-| **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Architecture | 2 | 🔴 High | ⏳ Chưa bắt đầu | Tự động khởi tạo hoặc tải save cũ khi mở game. |
-| **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Architecture | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Đăng ký các thời điểm lưu dữ liệu tự động. |
-| **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | System | 2 | 🔴 High | ⏳ Chưa bắt đầu | Tách biệt lưu trữ cấu hình hệ thống và tiến trình chơi game. |
-| **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Architecture | 2 | 🟡 Medium | ⏳ Chưa bắt đầu | Phòng tránh crash game khi dữ liệu save bị lỗi hoặc mất mát. |
+| **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Data | 3 | 🟡 Medium | ✅ Hoàn thành | Đã tạo các lớp dữ liệu serializable cho tiến trình, vũ khí, ability/perk và thiết lập. |
+| **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Architecture | 3 | 🔴 High | ✅ Hoàn thành | `SaveManager` lưu/tải JSON tại `Application.persistentDataPath`, hỗ trợ 3 save slot và file backup `.bak`. |
+| **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Architecture | 2 | 🔴 High | ✅ Hoàn thành | `GameManager` bảo đảm SaveManager được tạo lúc khởi động; SaveManager tự tải hoặc tạo dữ liệu mặc định. |
+| **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Architecture | 3 | 🟡 Medium | 🚧 Đang thực hiện | Đã kích hoạt autosave có debounce khi `GameOver`/`Victory`; còn điểm gọi khi mua Permanent Upgrade và thay đổi Setting. |
+| **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | System | 2 | 🔴 High | ✅ Hoàn thành | `SettingData` được lưu riêng trong `settings.json` và ghi nhớ save slot dùng gần nhất. |
+| **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Architecture | 2 | 🟡 Medium | ✅ Hoàn thành | Tạo dữ liệu mặc định khi file thiếu; file save lỗi sẽ thử phục hồi từ backup trước khi fallback và ghi log. |
 | **US-034** | Basic integrity check (checksum/hash đơn giản) để phát hiện file save bị chỉnh tay | Architecture | 3 | 🔴 High | ⏳ Chưa bắt đầu | Kiểm tra tính toàn vẹn của save để chống hack/cheat thủ công. |
 
 ---

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Roguelite.Combat;
 
 namespace Roguelite.Core
 {
@@ -16,5 +17,8 @@ namespace Roguelite.Core
 
         // Checkpoint event - xảy ra khi người chơi kích hoạt điểm checkpoint (Vector3 vị trí checkpoint)
         public static UnityAction<Vector3> checkpointSaved;
+
+        // Sự kiện xảy ra khi Player đổi vũ khí thành công (GameObject player, WeaponData vũ khí mới)
+        public static UnityAction<GameObject, WeaponData> weaponSwitched;
     }
 }

@@ -1,4 +1,4 @@
-# 🎮 Dự án Game 2D Roguelite (Unity)
+# 🎮 Dự án Game 2D Roguelite (Unity) - **v0.5.1**
 
 Dự án phát triển game hành động **2D Roguelite** trong Unity sử dụng URP, Rigidbody2D, kiến trúc State Machine và các hệ thống lõi phục vụ lối chơi phiêu lưu, vượt ải ngẫu nhiên.
 
@@ -18,9 +18,10 @@ Toàn bộ mã nguồn của dự án được tổ chức khoa học trong thư
 *   **[Enemy/](Assets/Scripts/Enemy)**: Trí tuệ nhân tạo (AI) của quái vật và Boss.
     *   [EnemyBase.cs](Assets/Scripts/Enemy/EnemyBase.cs): Lớp cơ sở trừu tượng quản lý HP, trạng thái Stagger, lực đẩy lùi (Knockback).
     *   [Enemy_AI.cs](Assets/Scripts/Enemy/Enemy_AI.cs): State Machine điều khiển quái đi tuần tra (Patrol Anchor), bám đuổi (Chase) và tấn công (Attack) Player.
-    *   [BossBase.cs](Assets/Scripts/Enemy/BossBase.cs) & [Boss.cs](Assets/Scripts/Enemy/Boss.cs): Cấu trúc Boss đa Phase theo ngưỡng máu và tự động mở cửa phòng Boss khi chết.
+    *   [BossBase.cs](Assets/Scripts/Enemy/BossBase.cs) & [Boss.cs](Assets/Scripts/Enemy/Boss.cs): Cấu trúc Boss đa Phase, Enraged Material Outline Shader và Animator Speed & Physics Scale theo Phase.
 *   **[Combat/](Assets/Scripts/Combat)**: Hệ thống chiến đấu và gây sát thương.
-    *   [Attack.cs](Assets/Scripts/Combat/Attack.cs): Quản lý kích thước hitbox, lượng sát thương và hướng knockback.
+    *   [Attack.cs](Assets/Scripts/Combat/Attack.cs): Quản lý kích thước hitbox, lượng sát thương và hướng knockback (bổ sung OverlapCollider).
+    *   [HitboxData.cs](Assets/Scripts/Combat/HitboxData.cs) & [HitboxController.cs](Assets/Scripts/Combat/HitboxController.cs): Quản lý Hitbox dựa trên dữ liệu Frame Index trong Animation Event.
     *   [IDamageable.cs](Assets/Scripts/Combat/IDamageable.cs): Giao diện nhận sát thương chung cho cả Player và Enemy.
 *   **[RoomSystem/](Assets/Scripts/RoomSystem)**: Hệ thống phòng và sinh quái tự động.
     *   [RoomManager.cs](Assets/Scripts/RoomSystem/RoomManager.cs): Quản lý trạng thái khóa/mở phòng khi người chơi đi qua cửa.
@@ -30,9 +31,11 @@ Toàn bộ mã nguồn của dự án được tổ chức khoa học trong thư
 *   **[UpgradeSystem/](Assets/Scripts/UpgradeSystem)**: Hệ thống Perk và Nâng cấp trong lượt chơi (Run).
     *   [PerkData.cs](Assets/Scripts/UpgradeSystem/PerkData.cs): ScriptableObject lưu trữ thông số của từng Perk.
     *   [PerkPool.cs](Assets/Scripts/UpgradeSystem/PerkPool.cs): Quản lý kho Perk khả dụng và random có trọng số loại trừ trùng lặp.
-    *   [UpgradeManager.cs](Assets/Scripts/UpgradeSystem/UpgradeManager.cs): Quản lý danh sách các Perk đang hoạt động của Player và lịch sử nâng cấp.
+    *   [UpgradeManager.cs](Assets/Scripts/UpgradeSystem/UpgradeManager.cs): Quản lý danh sách các Perk đang hoạt động của Player, sự kiện `OnPerkAdded` và lịch sử nâng cấp.
     *   [PerkEffectApplier.cs](Assets/Scripts/UpgradeSystem/PerkEffectApplier.cs): Áp dụng các chỉ số thay đổi thực tế vào thuộc tính của Player.
 *   **[UI/](Assets/Scripts/UI)**: Các thành phần giao diện và hiệu ứng đồ họa.
+    *   [RewardCardUI.cs](Assets/Scripts/UI/RewardCardUI.cs): Hiển thị thẻ chọn Perk với tint viền màu từ Material theo Rarity.
+    *   [BossHealthBarUI.cs](Assets/Scripts/UI/BossHealthBarUI.cs): Giao diện Slider/Image cho thanh HP của Boss.
     *   [PauseMenuManager.cs](Assets/Scripts/UI/PauseMenuManager.cs): Quản lý tạm dừng game.
     *   [ParallaxEffect.cs](Assets/Scripts/UI/ParallaxEffect.cs): Hiệu ứng nền di chuyển song song theo camera của Player.
 

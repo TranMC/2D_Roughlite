@@ -1,15 +1,15 @@
-# TIẾN ĐỘ VÀ LỘ TRÌNH PHÁT TRIỂN DỰ ÁN (PROJECT ROADMAP TRACKER)
+# TIẾN ĐỘ VÀ LỘ TRÌNH PHÁT TRIỂN DỰ ÁN (PROJECT ROADMAP TRACKER) - **v0.6.0**
 
 Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stories và các Epic trong suốt quá trình phát triển game 2D Roguelite.
 
 ---
 
-## 📊 TÓM TẮT TIẾN ĐỘ CHUNG
-*   **Trạng thái hiện tại**: Đã hoàn tất toàn bộ hệ thống Phòng và sinh quái vật (US-012, US-013 thuộc Epic E03), cùng hệ thống Menu Tạm dừng & Prefabs Quái vật (US-016 thuộc Epic E04), giải thuật Semi-random Level Gen (US-015, US-017), nền tảng hệ thống Perk & Nâng cấp (US-018, US-019, US-021, US-022) và một phần nền tảng Boss Fight (US-023). Dự án chuẩn bị bước vào phát triển giao diện Reward Card (US-020) và hoàn thiện các cơ chế đòn đánh nâng cao của Boss Fight (E06).
+## 📊 TÓM TẮT TIẾN ĐỘ CHUNG (Cập nhật: 2026-08-04)
+*   **Trạng thái hiện tại**: Hoàn tất các hệ thống đã triển khai của Epic E01–E06, gồm Room/Spawner, Level Gen, Perk & Reward UI, Boss Fight/Arena. Epic E07 đã hoàn thiện nền tảng Save/Load: mô hình dữ liệu, SaveManager JSON với 3 slot, khởi tạo dữ liệu mặc định, di cư file legacy, backup/fallback dữ liệu lỗi, settings tách riêng; phần tích hợp autosave đang được thực hiện.
 *   **Tổng số Story Points (SP)**: 149 SP.
-*   **Đã hoàn thành**: 70 / 149 SP (47%).
-*   **Đang thực hiện**: 0 / 149 SP (0%).
-*   **Chưa bắt đầu**: 84 / 149 SP (56%).
+*   **Đã hoàn thành**: 96 / 149 SP (64%).
+*   **Đang thực hiện**: 3 / 149 SP (2%).
+*   **Chưa bắt đầu**: 50 / 149 SP (34%).
 
 ---
 
@@ -71,7 +71,7 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-018** | Định nghĩa PerkData (ScriptableObject): id, tên, icon, loại effect (Stat modifier / Special behavior), giá trị, rarity, quy tắc stack | Data | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện lớp PerkData kế thừa ScriptableObject và cấu hình các thuộc tính. |
 | **US-019** | Xây dựng PerkPool + random có trọng số theo rarity, loại trừ perk đã đạt max stack khỏi vòng random | System | 3 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện PerkPool và thuật toán random có trọng số loại trừ perk max stack. |
-| **US-020** | UI Reward Card: hiển thị 3 lựa chọn Perk kèm icon, mô tả, màu theo rarity; chọn bằng click hoặc phím 1/2/3 | UI | 3 | 🔴 High | ⏳ Chưa bắt đầu | Giao diện chọn Perk hỗ trợ chuột và bàn phím. |
+| **US-020** | UI Reward Card: hiển thị 3 lựa chọn Perk kèm icon, mô tả, màu theo rarity; chọn bằng click hoặc phím 1/2/3 | UI | 3 | 🔴 High | ✅ Hoàn thành | Đã tạo Panel Reward Selection & RewardCardUI hiển thị border material theo rarity và lắng nghe OnPerkAdded. |
 | **US-021** | PerkEffectApplier tách riêng khỏi UpgradeManager: xử lý áp effect theo loại (cộng thẳng / nhân hệ số / effect đặc biệt) | System | 3 | 🟡 Medium | ✅ Hoàn thành | Đã hoàn thiện lớp PerkEffectApplier xử lý cộng dồn và áp dụng hiệu ứng chỉ số / đặc biệt. |
 | **US-022** | UpgradeManager quản lý danh sách Perk active trong run, tự động clear khi kết thúc, lưu lịch sử để hiển thị ở màn Result | System | 5 | 🔴 High | ✅ Hoàn thành | Đã hoàn thiện UpgradeManager Singleton quản lý active perks, đồng bộ scene và tự động clear. |
 
@@ -83,9 +83,9 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | **US-023** | BossBase kế thừa EnemyBase, thêm Phase theo ngưỡng % HP; dùng lại animation clip có sẵn của asset, chỉ đổi tốc độ và scale | Enemy | 5 | 🔴 High | ✅ Hoàn thành | Đã xây dựng BossBase.cs và Boss.cs với cơ chế chia pha theo lượng HP và đổi màu sprite. |
-| **US-024** | Bộ 2 attack pattern phân biệt bằng hitbox và timing khác nhau trên cùng 1 animation clip | Enemy | 5 | 🔴 High | ⏳ Chưa bắt đầu | Tạo các dạng đòn đánh khác nhau trên cùng 1 animation clip. |
-| **US-025** | Enrage ở Phase cuối: tăng tốc độ tấn công/di chuyển + đổi màu sprite (tint) bằng Material/Shader Graph | Enemy | 3 | 🟢 Low | ⏳ Chưa bắt đầu | Trạng thái cuồng nộ (Enrage) khi Boss xuống pha máu cuối. |
-| **US-026** | BossHealthBar UI: tên boss, thanh máu chia phase, hiệu ứng flash/shake UI khi chuyển phase | UI | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Giao diện thanh HP của Boss hiển thị trên HUD. |
+| **US-024** | Bộ 2 attack pattern phân biệt bằng hitbox và timing khác nhau trên cùng 1 animation clip | Enemy | 5 | 🔴 High | ✅ Hoàn thành | Xây dựng hệ thống Hitbox dựa trên dữ liệu (HitboxData + HitboxController) kích hoạt theo animation event frame index. |
+| **US-025** | Enrage ở Phase cuối: tăng tốc độ tấn công/di chuyển + đổi màu sprite (tint) bằng Material/Shader Graph | Enemy | 3 | 🟢 Low | ✅ Hoàn thành | Tự động đổi Animator speed, physics scale và Material Outline Shader khi vào Enraged Phase. |
+| **US-026** | BossHealthBar UI: tên boss, thanh máu chia phase, hiệu ứng flash/shake UI khi chuyển phase | UI | 3 | 🟡 Medium | ✅ Hoàn thành | Thiết lập UI Slider/Image cho thanh máu Boss hiển thị tên và lượng HP theo từng phase. |
 | **US-027** | Tích hợp Boss Room vào level generation, khóa cửa khi vào; thêm ambient VFX và SFX riêng | Room System | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Thiết kế Boss Arena, cơ chế khóa cửa phòng và tích hợp vào sinh màn chơi. |
 
 ---
@@ -95,12 +95,12 @@ Tài liệu này dùng để theo dõi tiến độ thực hiện các User Stor
 
 | ID | User Story | Module | SP | Độ ưu tiên | Trạng thái | Ghi chú |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Data | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Cấu trúc dữ liệu save có thể tuần tự hóa. |
-| **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Architecture | 3 | 🔴 High | ⏳ Chưa bắt đầu | Trình quản lý đọc ghi file JSON xuống thiết bị. |
-| **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Architecture | 2 | 🔴 High | ⏳ Chưa bắt đầu | Tự động khởi tạo hoặc tải save cũ khi mở game. |
-| **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Architecture | 3 | 🟡 Medium | ⏳ Chưa bắt đầu | Đăng ký các thời điểm lưu dữ liệu tự động. |
-| **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | System | 2 | 🔴 High | ⏳ Chưa bắt đầu | Tách biệt lưu trữ cấu hình hệ thống và tiến trình chơi game. |
-| **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Architecture | 2 | 🟡 Medium | ⏳ Chưa bắt đầu | Phòng tránh crash game khi dữ liệu save bị lỗi hoặc mất mát. |
+| **US-028** | Thiết kế SaveData serializable: PlayerProgressData, WeaponUnlockData, AbilityUnlockData, SettingData | Data | 3 | 🟡 Medium | ✅ Hoàn thành | Đã tạo các lớp dữ liệu serializable cho tiến trình, vũ khí, ability/perk và thiết lập. |
+| **US-029** | SaveManager (Singleton): đọc/ghi JSON tại persistentDataPath | Architecture | 3 | 🔴 High | ✅ Hoàn thành | `SaveManager` lưu/tải JSON tại `Application.persistentDataPath`, hỗ trợ 3 save slot và file backup `.bak`. |
+| **US-030** | Luồng Load tại startup: kiểm tra file tồn tại → load, hoặc tạo SaveData mặc định nếu chưa có | Architecture | 2 | 🔴 High | ✅ Hoàn thành | `GameManager` bảo đảm SaveManager được tạo lúc khởi động; SaveManager tự tải hoặc tạo dữ liệu mặc định. |
+| **US-031** | Tích hợp điểm gọi Save cụ thể: kết thúc run (Dead/Win), mua Permanent Upgrade, đổi Setting | Architecture | 3 | 🟡 Medium | 🚧 Đang thực hiện | Đã kích hoạt autosave có debounce khi `GameOver`/`Victory`; còn điểm gọi khi mua Permanent Upgrade và thay đổi Setting. |
+| **US-032** | Tách riêng lưu SettingData (âm lượng, độ phân giải, key binding) khỏi luồng save tiến trình chính | System | 2 | 🔴 High | ✅ Hoàn thành | `SettingData` được lưu riêng trong `settings.json` và ghi nhớ save slot dùng gần nhất. |
+| **US-033** | Xử lý file corrupt/thiếu: fallback về SaveData mặc định, log cảnh báo | Architecture | 2 | 🟡 Medium | ✅ Hoàn thành | Tạo dữ liệu mặc định khi file thiếu; file save lỗi sẽ thử phục hồi từ backup trước khi fallback và ghi log. |
 | **US-034** | Basic integrity check (checksum/hash đơn giản) để phát hiện file save bị chỉnh tay | Architecture | 3 | 🔴 High | ⏳ Chưa bắt đầu | Kiểm tra tính toàn vẹn của save để chống hack/cheat thủ công. |
 
 ---

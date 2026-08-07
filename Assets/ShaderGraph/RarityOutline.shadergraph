@@ -1119,7 +1119,7 @@
     "m_ObjectId": "100e0831c27440f782dc48c9491cb470",
     "m_Title": "Sanitize the colors",
     "m_Position": {
-        "x": -630.39990234375,
+        "x": -630.4000244140625,
         "y": -524.0
     }
 }
@@ -1130,7 +1130,7 @@
     "m_ObjectId": "11fb1b3ba05b4d8ab0c65fe9b37c7b13",
     "m_Title": "Add all offsets together",
     "m_Position": {
-        "x": -643.9999389648438,
+        "x": -644.0,
         "y": 422.4000244140625
     }
 }
@@ -2617,8 +2617,8 @@
     "m_ObjectId": "8d309b6758234162b252cd6809f6088e",
     "m_Title": "Subtract the original silhouette from the offset version",
     "m_Position": {
-        "x": -635.9998779296875,
-        "y": -48.00006103515625
+        "x": -636.0,
+        "y": -48.0
     }
 }
 
@@ -3081,8 +3081,8 @@
     "m_ObjectId": "b47d19e679384bc2a8e51a80a6675710",
     "m_Title": "Sample Original Sprite",
     "m_Position": {
-        "x": -1271.1998291015625,
-        "y": -210.4000244140625
+        "x": -1271.2000732421875,
+        "y": -210.39999389648438
     }
 }
 

@@ -238,7 +238,7 @@ MonoBehaviour:
       m_Calls: []
   isDead: 0
   isInvincible: 0
-  invincibilityTimer: 2
+  invincibilityTimer: 1
 --- !u!114 &285976679450404119
 MonoBehaviour:
   m_ObjectHideFlags: 0

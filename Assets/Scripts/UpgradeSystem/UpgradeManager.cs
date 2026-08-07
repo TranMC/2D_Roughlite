@@ -29,6 +29,9 @@ namespace Roguelite.UpgradeSystem
         [SerializeField] private int epicWeight = 12;
         [Tooltip("Trọng số xuất hiện của Rarity: Legendary.")]
         [SerializeField] private int legendaryWeight = 3;
+        [Header("Audio Settings")]
+        [Tooltip("Âm thanh phát khi nhận Perk/Buff.")]
+        [SerializeField] private AudioClip buffSFX;
 
         // Trạng thái Run hiện tại
         private Dictionary<PerkData, int> activePerks = new Dictionary<PerkData, int>();
@@ -96,8 +99,15 @@ namespace Roguelite.UpgradeSystem
 
             OnPerkAdded?.Invoke(perk, activePerks[perk]);
 
+            
             // Áp dụng ngay hiệu ứng lên Player trong Scene
             ApplyPerksToCurrentPlayer();
+
+            // --- THÊM DÒNG NÀY ĐỂ PHÁT ÂM THANH BUFF ---
+            if (buffSFX != null)
+            {
+                AudioSource.PlayClipAtPoint(buffSFX, Camera.main.transform.position);
+            }
         }
 
         /// <summary>

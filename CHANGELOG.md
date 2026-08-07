@@ -2,6 +2,52 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [v0.6.0] - 2026-08-04
+
+### 💾 Nền tảng Save/Load System (Epic E07 - US-028 → US-030, US-032, US-033)
+*   **Mô hình dữ liệu lưu trữ**: Bổ sung các lớp serializable `SaveData`, `PlayerProgressData`, `WeaponUnlockData`, `AbilityUnlockData` và `SettingData`, bao quát tiến trình người chơi, vũ khí, ability/perk vĩnh viễn và thiết lập hệ thống.
+*   **SaveManager & 3 save slot**: Thêm `SaveManager.cs` Singleton lưu/tải JSON tại `Application.persistentDataPath`; hỗ trợ chuyển, kiểm tra, xem trước và xóa các slot từ 1 đến 3.
+*   **Khởi tạo, tương thích và phục hồi dữ liệu**: Tự tạo dữ liệu mặc định khi chưa có file, di cư file legacy `save_data.json` sang slot 1, đồng thời phục hồi từ file `.bak` hoặc fallback về dữ liệu mặc định khi JSON lỗi.
+*   **Settings độc lập & autosave**: Tách `settings.json` khỏi save tiến trình, ghi nhớ slot gần nhất; thêm autosave có debounce và kích hoạt lưu khi GameManager chuyển sang `GameOver` hoặc `Victory`.
+
+---
+
+## [v0.5.1] - 2026-07-24
+
+### 👹 Bổ sung Tầm đánh (Attack Range Multiplier) theo Phase cho Boss (Epic E06)
+*   **Bổ sung `attackRangeMultiplier` vào PhasePatternGroup**:
+    *   Cập nhật [BossBase.cs](Assets/Scripts/Enemy/BossBase.cs) lưu lại `baseAttackRange` ban đầu tại `Awake()`.
+    *   Tự động tính toán và nhân lại tầm đánh `attackRange` theo hệ số `attackRangeMultiplier` (mặc định lấy theo `scaleMultiplier` nếu không cấu hình) khi Boss chuyển Phase.
+    *   Hiển thị hệ số nhân tầm đánh mới trong Unity Inspector và Debug Log.
+
+---
+
+## [v0.5.0] - 2026-07-24
+
+### 🖼️ Giao diện Reward Card UI & Hệ thống Perk (Epic E05 - US-020)
+*   **Thiết kế UI Reward Selection & Card UI**: 
+    *   Tạo script `RewardCardUI.cs` điều khiển hiển thị icon, tên, mô tả và tint viền màu từ Material theo Rarity của Perk (Common, Rare, Epic).
+    *   Khởi tạo Panel `Reward Selection` cho phép người chơi chọn 1 trong 3 Perk ngẫu nhiên.
+    *   Thêm sự kiện `public static event Action<PerkData, int> OnPerkAdded;` trong `UpgradeManager.cs` giúp các UI khác lắng nghe mỗi khi thêm/bớt Perk.
+
+### 👹 Nâng cấp Boss Fight & Thanh máu Boss (Epic E06 - US-023, US-025, US-026)
+*   **Boss HealthBar UI**: Thiết lập UI Image / Slider cho thanh máu Boss ([BossHealthBarUI.cs](Assets/Scripts/UI/BossHealthBarUI.cs)) hiển thị tên Boss và lượng HP theo từng phase.
+*   **Enraged Phase Shader & Material**: Cập nhật [Boss.cs](Assets/Scripts/Enemy/Boss.cs) sử dụng Material Outline Shader cho trạng thái Enraged thay vì đổi màu đơn thuần.
+*   **Điều chỉnh Tốc độ & Scale Boss**:
+    *   Tự động thay đổi Animator Speed và Transform Scale theo từng Phase.
+    *   Đồng bộ tốc độ của Boss kết hợp cả Animation và Physics movement.
+*   **Boss Arena & Ambient VFX**: Thêm asset Boss #2 và Particle Fog nền không khí vào phòng đấu Boss ([Room_Boss1](Assets/Prefabs/Rooms/Room_Boss1.prefab)).
+
+### ⚔️ Hệ thống Hitbox Dựa trên Dữ liệu (Hitbox Data-Driven System - US-024)
+*   **HitboxData & Controller**: Xây dựng `HitboxData.cs` và `HitboxController.cs` cho phép định nghĩa thông số Hitbox độc lập và kích hoạt thông qua Frame Index trong Animation Event.
+
+### 🛠️ Tinh chỉnh Chiến đấu & Khắc phục Lỗi (Combat Tuning & Bug Fixes)
+*   **Khắc phục lỗi baseAttackDamage**: Xử lý lỗi `baseAttackDamage` chưa được khởi tạo đúng lúc khi `UpgradeManager` đăng ký event từ sớm.
+*   **Bổ sung OverlapCollider**: Thêm `OverlapCollider` vào [Attack.cs](Assets/Scripts/Combat/Attack.cs) để giải quyết triệt để lỗi đòn đánh không trúng enemy khi nhân vật đứng sát sạt.
+*   **Player Attack Configs**: Tạo ScriptableObject `AttackConfigs` giúp tùy chỉnh tham số sát thương và timing của Player dễ dàng hơn.
+
+---
+
 ## [2026-07-16]
 
 ### 👹 Nền tảng Boss Fight & Cơ chế Phân Phase (Epic E06)

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Roguelite.SaveSystem;
 
 namespace Roguelite.Core
 {
@@ -52,6 +53,9 @@ namespace Roguelite.Core
 
         private void Start()
         {
+            // Đảm bảo SaveManager tồn tại và tải dữ liệu lúc khởi động
+            EnsureSaveManagerLoaded();
+
             // Tự động nhận diện trạng thái game dựa theo scene hiện tại đang active lúc chạy
             string activeSceneName = SceneManager.GetActiveScene().name;
             if (activeSceneName == mainMenuSceneName)
@@ -62,6 +66,18 @@ namespace Roguelite.Core
             {
                 ChangeState(GameState.Gameplay);
             }
+        }
+
+        private void EnsureSaveManagerLoaded()
+        {
+            if (SaveManager.Instance == null)
+            {
+                GameObject saveManagerGo = new GameObject("SaveManager");
+                saveManagerGo.AddComponent<SaveManager>();
+            }
+
+            SaveManager.Instance.LoadFromDisk();
+            SaveManager.Instance.LoadSettingData();
         }
 
         /// <summary>
@@ -92,9 +108,11 @@ namespace Roguelite.Core
                     break;
                 case GameState.GameOver:
                     Time.timeScale = 0f; // Đóng băng gameplay khi thua cuộc
+                    SaveManager.Instance?.TriggerAutoSave();
                     break;
                 case GameState.Victory:
                     Time.timeScale = 0f; // Đóng băng gameplay khi chiến thắng
+                    SaveManager.Instance?.TriggerAutoSave();
                     break;
             }
 

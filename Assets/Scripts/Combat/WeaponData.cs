@@ -22,6 +22,10 @@ namespace Roguelite.Combat
         [SerializeField] private float range = 1.5f;
         [SerializeField] private Vector2 knockback = new Vector2(3f, 0f);
 
+        [Header("Âm thanh (SFX)")]
+        [SerializeField] private AudioClip shootSFX;
+        [SerializeField] private AudioClip hitSFX;
+
         // === Properties (read-only) ===
         public string WeaponId => weaponId;
         public string WeaponName => weaponName;
@@ -31,5 +35,7 @@ namespace Roguelite.Combat
         public float AttackSpeed => attackSpeed;
         public float Range => range;
         public Vector2 Knockback => knockback;
+        public AudioClip ShootSFX => shootSFX;
+        public AudioClip HitSFX => hitSFX;
     }
 }

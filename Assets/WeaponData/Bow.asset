@@ -20,3 +20,5 @@ MonoBehaviour:
   attackSpeed: 1
   range: 1.5
   knockback: {x: 3, y: 0}
+  shootSFX: {fileID: 8300000, guid: 7cca524f94a5ce04f8599c0de2c38441, type: 3}
+  hitSFX: {fileID: 8300000, guid: 92f901f688bf2de4b8380c948e0cbf74, type: 3}

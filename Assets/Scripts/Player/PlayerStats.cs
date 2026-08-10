@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Roguelite.Combat;
+using Roguelite.Core;
 
 namespace Roguelite.Player
 {
@@ -348,10 +349,16 @@ namespace Roguelite.Player
                 }
             }
 
-            // Gọi GameManager chuyển trạng thái sang GameOver
-            if (Core.GameManager.Instance != null)
+            // Delay chuyển GameOver để animation chết kịp chạy trước khi GameManager freeze timeScale
+            StartCoroutine(DelayedGameOverSequence());
+        }
+
+        private IEnumerator DelayedGameOverSequence()
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            if (GameManager.Instance != null)
             {
-                Core.GameManager.Instance.ChangeState(Core.GameState.GameOver);
+                GameManager.Instance.ChangeState(GameState.GameOver);
             }
         }
 
@@ -361,11 +368,16 @@ namespace Roguelite.Player
         /// </summary>
         private IEnumerator HandlePhysicsAfterDeath()
         {
-            // Chờ một khoảng thời gian ngắn để nhân vật bắt đầu rơi (tránh việc đứng yên lúc đầu có velocity.y = 0)
-            yield return new WaitForSeconds(0.15f);
+            // Chờ một khoảng thời gian ngắn để nhân vật bắt đầu rơi
+            yield return new WaitForSecondsRealtime(0.15f);
 
-            // Chờ đến khi vận tốc rơi theo trục Y xấp xỉ bằng 0 (đã chạm đất)
-            yield return new WaitUntil(() => playerController == null || playerController.Rb == null || Mathf.Abs(playerController.Rb.velocity.y) < 0.1f);
+            float timeout = 1.0f;
+            float elapsed = 0f;
+            while (elapsed < timeout && playerController != null && playerController.Rb != null && Mathf.Abs(playerController.Rb.velocity.y) >= 0.1f)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
 
             if (playerController != null && playerController.Rb != null)
             {
@@ -395,12 +407,12 @@ namespace Roguelite.Player
             }
 
             // 1. Chờ cho đến khi Animator chuyển sang trạng thái "Hurt"
-            // Giới hạn thời gian chờ tối đa 0.2 giây đề phòng trigger bị bỏ qua
+            // Giới hạn thời gian chờ tối đa 0.2 giây đề phòng trigger bị bỏ qua (dùng unscaledDeltaTime để không bị vĩnh viễn bế tắc nếu timeScale = 0)
             float timeout = 0.2f;
             float elapsed = 0f;
             while (elapsed < timeout && !animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
             {
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
 
@@ -414,6 +426,10 @@ namespace Roguelite.Player
             }
 
             LockVelocity = false;
+            if (!isDead && playerController != null && playerController.Animator != null)
+            {
+                playerController.Animator.SetBool(AnimationStrings.canMove, true);
+            }
             lockVelocityCoroutine = null;
         }
 

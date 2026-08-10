@@ -108,10 +108,14 @@ namespace Roguelite.Core
                     break;
                 case GameState.GameOver:
                     Time.timeScale = 0f; // Đóng băng gameplay khi thua cuộc
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
                     SaveManager.Instance?.TriggerAutoSave();
                     break;
                 case GameState.Victory:
                     Time.timeScale = 0f; // Đóng băng gameplay khi chiến thắng
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
                     SaveManager.Instance?.TriggerAutoSave();
                     break;
             }

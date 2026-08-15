@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
   m_Name: SuperSpeed
   m_EditorClassIdentifier: 
-  id: 
-  perkName: 
-  description: 
+  id: SuperSpeed
+  perkName: "B\u01B0\u1EDBc Ch\xE2n Th\u1EA7n T\u1ED1c"
+  description: "T\u0103ng 25% t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n.\r\n\r\n"
   icon: {fileID: 0}
-  rarity: 0
+  rarity: 3
   effectType: 0
-  statType: 0
-  effectValue: 0
-  isPercent: 0
+  statType: 2
+  effectValue: 0.25
+  isPercent: 1
   specialBehaviorKey: 
   maxStack: 1
   stackBehavior: 0

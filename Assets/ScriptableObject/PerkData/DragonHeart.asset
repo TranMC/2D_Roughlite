@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
   m_Name: DragonHeart
   m_EditorClassIdentifier: 
-  id: 
-  perkName: 
-  description: 
+  id: DragonHeart
+  perkName: "Tr\xE1i Tim c\u1EE7a R\u1ED3ng"
+  description: "T\u0103ng 50% HP t\u1ED1i \u0111a cho nh\xE2n v\u1EADt."
   icon: {fileID: 0}
-  rarity: 0
+  rarity: 3
   effectType: 0
-  statType: 0
-  effectValue: 0
-  isPercent: 0
+  statType: 1
+  effectValue: 0.5
+  isPercent: 1
   specialBehaviorKey: 
   maxStack: 1
   stackBehavior: 0

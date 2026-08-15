@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
   m_Name: MaxHealth%
   m_EditorClassIdentifier: 
-  id: 
-  perkName: 
-  description: 
+  id: MaxHealth%
+  perkName: "Tr\xE1i Tim Qu\u1EA3 C\u1EA3m"
+  description: "T\u0103ng th\xEAm 15% HP t\u1ED1i \u0111a d\u1EE5a tr\xEAn m\xE1u
+    c\u01A1 b\u1EA3n"
   icon: {fileID: 0}
-  rarity: 0
+  rarity: 1
   effectType: 0
-  statType: 0
-  effectValue: 0
-  isPercent: 0
+  statType: 1
+  effectValue: 0.15
+  isPercent: 1
   specialBehaviorKey: 
-  maxStack: 1
-  stackBehavior: 0
+  maxStack: 3
+  stackBehavior: 2

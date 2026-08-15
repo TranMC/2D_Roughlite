@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
   m_Name: BloodLust
   m_EditorClassIdentifier: 
-  id: 
-  perkName: 
-  description: 
+  id: perk_low_hp_lifesteal
+  perkName: "Cu\u1ED3ng Huy\u1EBFt"
+  description: "T\u0103ng 10% h\xFAt m\xE1u khi m\xE1u c\u1EE7a nh\xE2n v\u1EADt
+    d\u01B0\u1EDBi 30%."
   icon: {fileID: 0}
-  rarity: 0
-  effectType: 0
+  rarity: 2
+  effectType: 1
   statType: 0
-  effectValue: 0
-  isPercent: 0
-  specialBehaviorKey: 
-  maxStack: 1
-  stackBehavior: 0
+  effectValue: 0.1
+  isPercent: 1
+  specialBehaviorKey: low_hp_lifesteal
+  maxStack: 2
+  stackBehavior: 1

@@ -13,4 +13,18 @@ MonoBehaviour:
   m_Name: PerkPool
   m_EditorClassIdentifier: 
   allPerks:
+  - {fileID: 11400000, guid: f38cbce740c6a244c8259661ac2cd65e, type: 2}
+  - {fileID: 11400000, guid: fef1e0696b9a4e2418852c19d9f8b1cc, type: 2}
+  - {fileID: 11400000, guid: f2aad85461b12494f82fbee208903ae5, type: 2}
+  - {fileID: 11400000, guid: 9997591ce8e086e49bfd20a84964dfce, type: 2}
+  - {fileID: 11400000, guid: 6d05fd844cb56a04eb8cb005117a1a02, type: 2}
+  - {fileID: 11400000, guid: d7a113e6db33ef142b694659485fb94a, type: 2}
+  - {fileID: 11400000, guid: 0cc5ef66049fe0e4ca238e32d8a4244a, type: 2}
   - {fileID: 11400000, guid: 0be995e24d766384caa54b58635239c3, type: 2}
+  - {fileID: 11400000, guid: 4fb2a7587ecb5e74f8e55e91245434bb, type: 2}
+  - {fileID: 11400000, guid: cfac7d04288920d45b99268228c3d727, type: 2}
+  - {fileID: 11400000, guid: 4648e121349a9c441aaeb17b67739d5e, type: 2}
+  - {fileID: 11400000, guid: 7deccf06183dfca4aab36cc0dc514096, type: 2}
+  - {fileID: 11400000, guid: 2972b21e71f42144bbedc0441a910256, type: 2}
+  - {fileID: 11400000, guid: d425b18506ede4b4b90d61ac1929f701, type: 2}
+  - {fileID: 11400000, guid: 118cbbba03ef1ca4a86562c747ff2265, type: 2}

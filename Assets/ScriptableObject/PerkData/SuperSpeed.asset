@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
-  m_Name: LifeSteal
+  m_Name: SuperSpeed
   m_EditorClassIdentifier: 
-  id: perk_lifesteal
-  perkName: "Huy\u1EBFt \u0110ao"
-  description: "H\u1ED3i m\u00E1u b\u1EB1ng 5% s\u00E1t th\u01B0\u01A1ng th\u1EF1c t\u1EBF g\u00E2y ra."
+  id: 
+  perkName: 
+  description: 
   icon: {fileID: 0}
-  rarity: 2
-  effectType: 1
+  rarity: 0
+  effectType: 0
   statType: 0
-  effectValue: 0.05
-  isPercent: 1
-  specialBehaviorKey: lifesteal
-  maxStack: 3
-  stackBehavior: 1
+  effectValue: 0
+  isPercent: 0
+  specialBehaviorKey: 
+  maxStack: 1
+  stackBehavior: 0

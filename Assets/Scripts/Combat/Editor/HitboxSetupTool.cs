@@ -111,7 +111,7 @@ namespace Roguelite.Editor
         //  WINDOW
         // =====================================================================
 
-        //[MenuItem("Roguelite/Hitbox Full Setup")]
+        [MenuItem("Tools/Roguelite/Hitbox Full Setup")]
         public static void ShowWindow()
         {
             var window = GetWindow<HitboxSetupTool>("Hitbox Full Setup");

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Roguelite.Combat;
 using Roguelite.Core;
+using Roguelite.UpgradeSystem;
 
 namespace Roguelite.Player
 {
@@ -56,7 +57,14 @@ namespace Roguelite.Player
         [SerializeField] private float invincibilityTimer = 0.25f;
         private float timeSinceHit = 0f;
 
+        [Header("Special Behavior States")]
+        private bool hasUsedLastStand = false;
+        private float vengeanceTimer = 0f;
+        private float customInvincibilityDuration = 0f;
+
         public bool IsDead => isDead;
+        public bool IsVengeanceActive => vengeanceTimer > 0f;
+        public bool HasUsedLastStand => hasUsedLastStand;
 
         public bool LockVelocity
         {
@@ -114,13 +122,21 @@ namespace Roguelite.Player
 
         private void Update()
         {
+            // Xử lý đếm ngược thời gian báo thù (vengeance_damage)
+            if (vengeanceTimer > 0f)
+            {
+                vengeanceTimer -= Time.deltaTime;
+            }
+
             // Xử lý đếm ngược thời gian bất tử
             if (isInvincible)
             {
-                if (timeSinceHit > invincibilityTimer)
+                float activeDuration = customInvincibilityDuration > 0f ? customInvincibilityDuration : invincibilityTimer;
+                if (timeSinceHit > activeDuration)
                 {
                     isInvincible = false;
                     timeSinceHit = 0f;
+                    customInvincibilityDuration = 0f;
                     LockVelocity = false; // Mở khóa di chuyển cho Player sau khi hết bất tử/stagger
 
                     if (logInvincibility)
@@ -178,6 +194,34 @@ namespace Roguelite.Player
                 return;
             }
 
+            // --- XỬ LÝ HƠI THỞ CUỐI CÙNG (LAST_STAND) ---
+            if (currentHealth - damage <= 0f && !hasUsedLastStand)
+            {
+                if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("last_stand", out int lastStandStack))
+                {
+                    float duration = 3.0f;
+                    foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                    {
+                        if (kvp.Key.SpecialBehaviorKey == "last_stand")
+                        {
+                            duration = kvp.Key.EffectValue;
+                            break;
+                        }
+                    }
+                    hasUsedLastStand = true;
+                    currentHealth = 1f; // Giữ lại 1 máu
+                    isInvincible = true;
+                    customInvincibilityDuration = duration;
+                    timeSinceHit = 0f;
+
+                    DebugLogger.LogWarning($"[LastStand] Player kích hoạt Hơi Thở Cuối Cùng! Thoát chết và bất tử trong {duration}s.", MODULE_NAME);
+
+                    OnHealthChanged?.Invoke(currentHealth, maxHealth);
+                    healthChanged?.Invoke(currentHealth, maxHealth);
+                    return;
+                }
+            }
+
             if (logDamage)
             {
                 DebugLogger.LogWarning($"{gameObject.name} took {damage} damage! HP: {currentHealth} → {currentHealth - damage}", MODULE_NAME);
@@ -186,6 +230,13 @@ namespace Roguelite.Player
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
             isInvincible = true;
+
+            // Kích hoạt Lưỡi Gươm Báo Thù (vengeance_damage) khi nhận sát thương
+            if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("vengeance_damage", out _))
+            {
+                vengeanceTimer = 5.0f;
+                DebugLogger.Log($"[Vengeance] Kích hoạt! Player tăng sát thương trong 5s.", MODULE_NAME);
+            }
 
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
             healthChanged?.Invoke(currentHealth, maxHealth);

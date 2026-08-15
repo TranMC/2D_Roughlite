@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
-  m_Name: LifeSteal
+  m_Name: Vengenance
   m_EditorClassIdentifier: 
-  id: perk_lifesteal
-  perkName: "Huy\u1EBFt \u0110ao"
-  description: "H\u1ED3i m\u00E1u b\u1EB1ng 5% s\u00E1t th\u01B0\u01A1ng th\u1EF1c t\u1EBF g\u00E2y ra."
+  id: perk_vengeance_damage
+  perkName: "L\u01B0\u1EE1i G\u01B0\u01A1m B\u00E1o Th\u00F9"
+  description: "T\u0103ng 10% s\u00E1t th\u01B0\u01A1ng trong 5s sau khi nh\u1EADn s\u00E1t th\u01B0\u01A1ng."
   icon: {fileID: 0}
-  rarity: 2
+  rarity: 1
   effectType: 1
   statType: 0
-  effectValue: 0.05
+  effectValue: 0.1
   isPercent: 1
-  specialBehaviorKey: lifesteal
+  specialBehaviorKey: vengeance_damage
   maxStack: 3
   stackBehavior: 1

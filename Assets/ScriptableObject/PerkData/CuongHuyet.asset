@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
-  m_Name: LifeSteal
+  m_Name: CuongHuyet
   m_EditorClassIdentifier: 
-  id: perk_lifesteal
-  perkName: "Huy\u1EBFt \u0110ao"
-  description: "H\u1ED3i m\u00E1u b\u1EB1ng 5% s\u00E1t th\u01B0\u01A1ng th\u1EF1c t\u1EBF g\u00E2y ra."
+  id: perk_low_hp_lifesteal
+  perkName: "Cu\u1ED3ng Huy\u1EBFt"
+  description: "T\u0103ng 10% h\u00FAt m\u00E1u khi m\u00E1u c\u1EE7a nh\u00E2n v\u1EADt d\u01B0\u1EDBi 30%."
   icon: {fileID: 0}
   rarity: 2
   effectType: 1
   statType: 0
-  effectValue: 0.05
+  effectValue: 0.1
   isPercent: 1
-  specialBehaviorKey: lifesteal
-  maxStack: 3
+  specialBehaviorKey: low_hp_lifesteal
+  maxStack: 2
   stackBehavior: 1

@@ -143,25 +143,66 @@ namespace Roguelite.Combat
                     Debug.Log($"[Attack] {attackerName} va chạm gây sát thương lên {collision.name}: {attackDamage} dmg, Knockback: {deliveredKnockback}");
                 }
 
-                // --- HÚT MÁU (LIFESTEAL) ---
-                // Nếu kẻ tấn công (parent của component này) có PlayerStats -> Player là người gây sát thương
+                // --- HÚT MÁU & BÁO THÙ (LIFESTEAL, LOW_HP_LIFESTEAL, VENGEANCE_DAMAGE) ---
                 PlayerStats attackerStats = parentTransform != null ? parentTransform.GetComponent<PlayerStats>() : null;
                 if (attackerStats != null && !attackerStats.IsDead)
                 {
+                    // Lưỡi Gươm Báo Thù (vengeance_damage)
+                    if (attackerStats.IsVengeanceActive && UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("vengeance_damage", out int vengStack))
+                    {
+                        float vengPercent = 0.1f;
+                        foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                        {
+                            if (kvp.Key.SpecialBehaviorKey == "vengeance_damage")
+                            {
+                                vengPercent = kvp.Key.EffectValue;
+                                break;
+                            }
+                        }
+                        attackDamage *= (1f + vengPercent * vengStack);
+                        Debug.Log($"[Vengeance] Sát thương cộng thêm trong trạng thái báo thù: {attackDamage}");
+                    }
+
+                    float totalLifestealPercent = 0f;
+
+                    // 1. Huyết Đao (lifesteal)
                     if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("lifesteal", out int lifestealStack))
                     {
-                        float lifestealPercent = 0.05f; // Mặc định 5%
+                        float percent = 0.05f;
                         foreach (var kvp in UpgradeManager.Instance.ActivePerks)
                         {
                             if (kvp.Key.SpecialBehaviorKey == "lifesteal")
                             {
-                                lifestealPercent = kvp.Key.EffectValue;
+                                percent = kvp.Key.EffectValue;
                                 break;
                             }
                         }
-                        float healAmount = attackDamage * lifestealPercent * lifestealStack;
+                        totalLifestealPercent += percent * lifestealStack;
+                    }
+
+                    // 2. Cuồng Huyết (low_hp_lifesteal khi HP < 30%)
+                    if (UpgradeManager.Instance != null && attackerStats.CurrentHealth / attackerStats.MaxHealth <= 0.3f)
+                    {
+                        if (UpgradeManager.Instance.HasSpecialBehavior("low_hp_lifesteal", out int lowHpStack))
+                        {
+                            float percent = 0.1f;
+                            foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                            {
+                                if (kvp.Key.SpecialBehaviorKey == "low_hp_lifesteal")
+                                {
+                                    percent = kvp.Key.EffectValue;
+                                    break;
+                                }
+                            }
+                            totalLifestealPercent += percent * lowHpStack;
+                        }
+                    }
+
+                    if (totalLifestealPercent > 0f)
+                    {
+                        float healAmount = attackDamage * totalLifestealPercent;
                         attackerStats.Heal(healAmount);
-                        Debug.Log($"[Lifesteal] Kích hoạt: Player gây {attackDamage} damage, hồi {healAmount} HP.");
+                        Debug.Log($"[Lifesteal] Kích hoạt: Player gây {attackDamage} damage, hồi {healAmount} HP (Tỉ lệ: {totalLifestealPercent * 100}%).");
                     }
                 }
 

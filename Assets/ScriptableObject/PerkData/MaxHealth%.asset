@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "Tr\xE1i Tim Qu\u1EA3 C\u1EA3m"
   description: "T\u0103ng th\xEAm 15% HP t\u1ED1i \u0111a d\u1EE5a tr\xEAn m\xE1u
     c\u01A1 b\u1EA3n"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d88dfda3f641cc240835f5f0dd2992fa, type: 3}
   rarity: 1
   effectType: 0
   statType: 1

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: MaxHeatlh
   perkName: "S\u1EE9c Kho\u1EBB Tr\xE1ng Ki\u1EC7t"
   description: "T\u0103ng th\xEAm 20HP t\u1ED1i \u0111a cho nh\xE2n v\u1EADt"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 99eb7d70ed09b9d4d82c0ece9f9813c2, type: 3}
   rarity: 0
   effectType: 0
   statType: 1

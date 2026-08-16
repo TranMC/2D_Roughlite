@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "Cu\u1ED3ng Huy\u1EBFt"
   description: "T\u0103ng 10% h\xFAt m\xE1u khi m\xE1u c\u1EE7a nh\xE2n v\u1EADt
     d\u01B0\u1EDBi 30%."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e96d8e1cdb1038f41adcd7c979fa2d76, type: 3}
   rarity: 2
   effectType: 1
   statType: 0

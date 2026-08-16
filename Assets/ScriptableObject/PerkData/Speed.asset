@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "Chi\u1EBFn BInh Nhanh Nh\u1EB9n"
   description: "T\u0103ng 10% t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n \u0111i b\u1ED9
     v\xE0 ch\u1EA1y"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 47c6892cda9efa648ace0dc91973cde5, type: 3}
   rarity: 0
   effectType: 0
   statType: 2

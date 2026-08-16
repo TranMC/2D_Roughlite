@@ -15,7 +15,7 @@ MonoBehaviour:
   id: DragonHeart
   perkName: "Tr\xE1i Tim c\u1EE7a R\u1ED3ng"
   description: "T\u0103ng 50% HP t\u1ED1i \u0111a cho nh\xE2n v\u1EADt."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d033319b9c43e174490ecbeb111f1ac9, type: 3}
   rarity: 3
   effectType: 0
   statType: 1

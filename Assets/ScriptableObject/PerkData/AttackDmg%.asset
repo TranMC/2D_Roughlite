@@ -15,7 +15,7 @@ MonoBehaviour:
   id: AttackDmg%
   perkName: "N\u1ED9i L\u1EF1c Cu\u1ED9n Tr\xE0o"
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b9812a180f076f743a707dcf8d1fa699, type: 3}
   rarity: 1
   effectType: 0
   statType: 4

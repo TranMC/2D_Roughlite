@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Thorn
   m_EditorClassIdentifier: 
   id: perk_thorns
-  perkName: "Gi\u00E1p Gai"
-  description: "Ph\u1EA3n l\u1EA1i 15% s\u00E1t th\u01B0\u01A1ng nh\u1EADn v\u00E0o l\u00EAn qu\u00E1i v\u1EADt."
-  icon: {fileID: 0}
+  perkName: "Gi\xE1p Gai"
+  description: "Ph\u1EA3n l\u1EA1i 15% s\xE1t th\u01B0\u01A1ng nh\u1EADn v\xE0o l\xEAn
+    qu\xE1i v\u1EADt."
+  icon: {fileID: 21300000, guid: 96da6c23f00243e4cb6c8c87af6350a8, type: 3}
   rarity: 2
   effectType: 1
   statType: 0

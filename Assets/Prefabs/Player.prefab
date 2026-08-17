@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 2152392908269816835}
   - component: {fileID: 8012567144743504470}
   - component: {fileID: 3733895618793157169}
+  - component: {fileID: 6742864124527369752}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -499,6 +500,18 @@ MonoBehaviour:
   - animationStateName: Air Attack
     hitboxData: {fileID: 11400000, guid: 16a2f4ce990f75646a59b497cbfec08a, type: 2}
   animator: {fileID: 1641182201220779459}
+--- !u!114 &6742864124527369752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201934938828041213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2ff19fe545e574fba94c7feb74ae14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5146295657505998755
 GameObject:
   m_ObjectHideFlags: 0

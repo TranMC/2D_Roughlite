@@ -35,8 +35,20 @@ namespace Roguelite.RoomSystem
         [SerializeField] private Collider2D roomBoundsCollider;
 
         [Header("===== Cinemachine Settings =====")]
-        [Tooltip("Tham chiếu tới Cinemachine Virtual Camera chính của Player.")]
+        [Tooltip("Tham chiếu tới Cinemachine Virtual Camera riêng của phòng này (Phương án 2).")]
+        [SerializeField] private CinemachineVirtualCamera roomVirtualCamera;
+
+        [Tooltip("Tham chiếu tới Cinemachine Virtual Camera chính của Player (Phương án 1 - Fallback).")]
         [SerializeField] private CinemachineVirtualCamera playerVirtualCamera;
+
+        [Tooltip("Khoảng cách thụt lùi (margin) từ lề phòng vào trong để kích hoạt camera & khóa phòng (tránh bị nhảy camera khi mới chạm mép cửa).")]
+        [SerializeField] private float cameraTriggerMargin = 1.5f;
+
+        [Tooltip("Độ ưu tiên VCam khi Player ở trong phòng.")]
+        [SerializeField] private int activePriority = 20;
+
+        [Tooltip("Độ ưu tiên VCam khi Player ngoài phòng.")]
+        [SerializeField] private int inactivePriority = 0;
 
         #endregion
 
@@ -48,12 +60,12 @@ namespace Roguelite.RoomSystem
         private bool isRoomLocked = false;
 
         /// <summary>
-        /// Cache Collider2D nhận diện Player của RoomManager (tắt sau khi kích hoạt).
+        /// Cache Collider2D nhận diện Player của RoomManager.
         /// </summary>
         private Collider2D triggerCollider;
 
         /// <summary>
-        /// Cache component CinemachineConfiner2D để giới hạn phạm vi camera.
+        /// Cache component CinemachineConfiner2D để giới hạn phạm vi camera (Fallback Phương án 1).
         /// </summary>
         private CinemachineConfiner2D cameraConfiner;
 
@@ -94,16 +106,52 @@ namespace Roguelite.RoomSystem
                 enemySpawner.OnAllEnemiesCleared += OnRoomCleared;
             }
 
-            // Tự động tìm kiếm Cinemachine Virtual Camera trên Scene nếu chưa được gán (hữu ích khi phòng là Prefab)
-            if (playerVirtualCamera == null)
+            // Tự động tìm kiếm Cinemachine Virtual Camera trong phòng (Phương án 2)
+            if (roomVirtualCamera == null)
             {
+                roomVirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+            }
+
+            if (roomVirtualCamera != null)
+            {
+                roomVirtualCamera.Priority = inactivePriority;
+                CinemachineConfiner2D confiner = roomVirtualCamera.GetComponent<CinemachineConfiner2D>();
+                if (confiner != null && roomBoundsCollider != null && confiner.m_BoundingShape2D == null)
+                {
+                    confiner.m_BoundingShape2D = roomBoundsCollider;
+                }
+            }
+            else if (playerVirtualCamera == null)
+            {
+                // Fallback Phương án 1: Tự động tìm camera chính trên Scene
                 playerVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             }
 
-            // Cache Cinemachine Confiner từ Virtual Camera
+            // Cache Cinemachine Confiner từ Virtual Camera chung (nếu dùng phương án 1)
             if (playerVirtualCamera != null)
             {
                 cameraConfiner = playerVirtualCamera.GetComponent<CinemachineConfiner2D>();
+            }
+        }
+
+        private void Start()
+        {
+            // Nếu là Start Room, ưu tiên tự động kích hoạt camera ngay khi màn chơi vừa khởi tạo xong
+            if (roomType == RoomType.Start)
+            {
+                var player = FindObjectOfType<PlayerController>();
+                if (player != null)
+                {
+                    ActivateRoomCamera(player.transform);
+                }
+                else
+                {
+                    GameObject playerObj = GameObject.FindWithTag("Player");
+                    if (playerObj != null)
+                    {
+                        ActivateRoomCamera(playerObj.transform);
+                    }
+                }
             }
         }
 
@@ -117,23 +165,113 @@ namespace Roguelite.RoomSystem
         }
 
         // =====================================================================
-        //  [BƯỚC 1] PLAYER ENTER ROOM – Nhận diện Player bằng Layer
+        //  [BƯỚC 1] PLAYER ENTER ROOM – Nhận diện Player bằng Layer & Inner Bounds
         // =====================================================================
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            // Bỏ qua nếu phòng đã bị khóa (tránh kích hoạt lần 2)
-            if (isRoomLocked) return;
+            TryHandlePlayerEntry(collision);
+        }
 
-            // Start Room không tự động khóa khi Player bắt đầu game
-            if (roomType == RoomType.Start) return;
+        private void OnTriggerStay2D(Collider2D collision)
+        {
+            TryHandlePlayerEntry(collision);
+        }
 
+        private void TryHandlePlayerEntry(Collider2D collision)
+        {
             // Kiểm tra Layer của đối tượng va chạm có nằm trong playerLayer không
             if (((1 << collision.gameObject.layer) & playerLayer) == 0) return;
 
-            // Player đã bước vào phòng → Kích hoạt chuỗi sự kiện
-            Debug.Log($"[RoomManager] Player đã bước vào phòng: {gameObject.name}");
-            LockRoom();
+            // Kiểm tra người chơi đã thực sự bước hẳn qua mép cửa vào trong phòng chưa
+            if (!IsPlayerInsideRoomInnerBounds(collision.transform.position)) return;
+
+            // Chỉ kích hoạt khi VCam chưa ở độ ưu tiên cao nhất
+            if (roomVirtualCamera != null && roomVirtualCamera.Priority != activePriority)
+            {
+                ActivateRoomCamera(collision.transform);
+            }
+
+            // Khóa phòng và sinh quái nếu phòng chưa bị khóa
+            if (!isRoomLocked && roomType != RoomType.Start)
+            {
+                Debug.Log($"[RoomManager] Player đã thực sự bước vào trong phòng: {gameObject.name}");
+                LockRoom();
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            // Kiểm tra Layer của đối tượng va chạm
+            if (((1 << collision.gameObject.layer) & playerLayer) == 0) return;
+
+            // Hạ độ ưu tiên VCam của phòng này khi Player rời đi hẳn khỏi phòng
+            DeactivateRoomCamera();
+        }
+
+        /// <summary>
+        /// Kiểm tra xem vị trí của Player có nằm sâu bên trong vùng nội bộ của phòng (vượt qua mép cửa) hay không.
+        /// </summary>
+        public bool IsPlayerInsideRoomInnerBounds(Vector3 playerPos)
+        {
+            if (roomBoundsCollider == null) return true;
+
+            Bounds bounds = roomBoundsCollider.bounds;
+
+            // Thụt lùi ranh giới vào bên trong theo cameraTriggerMargin (tính bằng Tile/Đơn vị Unity)
+            float marginX = Mathf.Min(cameraTriggerMargin, bounds.extents.x * 0.4f);
+            float marginY = Mathf.Min(cameraTriggerMargin, bounds.extents.y * 0.4f);
+
+            Vector3 min = bounds.min + new Vector3(marginX, marginY, 0);
+            Vector3 max = bounds.max - new Vector3(marginX, marginY, 0);
+
+            return playerPos.x >= min.x && playerPos.x <= max.x &&
+                   playerPos.y >= min.y && playerPos.y <= max.y;
+        }
+
+        /// <summary>
+        /// Kích hoạt camera riêng của phòng khi Player bước vào.
+        /// </summary>
+        public void ActivateRoomCamera(Transform playerTransform)
+        {
+            if (roomVirtualCamera != null)
+            {
+                if (roomVirtualCamera.Follow == null || roomVirtualCamera.Follow != playerTransform)
+                {
+                    roomVirtualCamera.Follow = playerTransform;
+                }
+                roomVirtualCamera.Priority = activePriority;
+            }
+        }
+
+        /// <summary>
+        /// Hạ độ ưu tiên camera của phòng khi Player rời khỏi.
+        /// </summary>
+        public void DeactivateRoomCamera()
+        {
+            if (roomVirtualCamera != null)
+            {
+                roomVirtualCamera.Priority = inactivePriority;
+            }
+        }
+
+        // Vẽ đường giới hạn vùng cảm biến kích hoạt camera trong Editor (chọn RoomManager để thấy)
+        private void OnDrawGizmosSelected()
+        {
+            if (roomBoundsCollider != null)
+            {
+                Bounds bounds = roomBoundsCollider.bounds;
+                float marginX = Mathf.Min(cameraTriggerMargin, bounds.extents.x * 0.4f);
+                float marginY = Mathf.Min(cameraTriggerMargin, bounds.extents.y * 0.4f);
+
+                Vector3 min = bounds.min + new Vector3(marginX, marginY, 0);
+                Vector3 max = bounds.max - new Vector3(marginX, marginY, 0);
+                Vector3 center = (min + max) * 0.5f;
+                Vector3 size = max - min;
+
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireCube(center, size);
+            }
         }
 
         // =====================================================================
@@ -141,8 +279,7 @@ namespace Roguelite.RoomSystem
         // =====================================================================
 
         /// <summary>
-        /// Khóa phòng: đánh dấu cờ, bật các cửa chặn lối đi,
-        /// tắt Collider nhận diện để tối ưu hiệu suất, sau đó gọi SpawnEnemies.
+        /// Khóa phòng: đánh dấu cờ, bật các cửa chặn lối đi, sau đó gọi SpawnEnemies.
         /// </summary>
         private void LockRoom()
         {
@@ -161,15 +298,12 @@ namespace Roguelite.RoomSystem
                 }
             }
 
-            // Khóa camera vào ranh giới phòng
+            // Khóa camera vào ranh giới phòng (Fallback cho Phương án 1)
             if (cameraConfiner != null && roomBoundsCollider != null)
             {
                 cameraConfiner.m_BoundingShape2D = roomBoundsCollider;
                 cameraConfiner.InvalidateCache();
             }
-
-            // Tắt Collider nhận diện của RoomManager – không cần quét nữa
-            triggerCollider.enabled = false;
 
             Debug.Log($"[RoomManager] Phòng {gameObject.name} đã bị khóa! Cửa chặn đã đóng để chiến đấu.");
 

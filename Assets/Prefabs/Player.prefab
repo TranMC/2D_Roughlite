@@ -433,10 +433,10 @@ MonoBehaviour:
   logMovement: 0
   logActions: 1
   logStateChanges: 1
-  walkSpeed: 5
-  runSpeed: 10
-  jumpImpulse: 10
-  airWalkSpeed: 4
+  walkSpeed: 8
+  runSpeed: 15
+  jumpImpulse: 15
+  airWalkSpeed: 8.4
   attackMovementMultiplier: 0
   _isMoving: 0
   _isRunning: 0

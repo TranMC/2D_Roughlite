@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "H\u01A1i Th\u1EDF Cu\u1ED1i C\xF9ng"
   description: "B\u1EA5t t\u1EED ho\xE0n to\xE0n trong 3 gi\xE2y khi nh\u1EADn s\xE1t
     th\u01B0\u01A1ng ch\xED t\u1EED."
-  icon: {fileID: 21300000, guid: 0dd3cc15aa60cbb48bed5aab447b0806, type: 3}
+  icon: {fileID: 947313271, guid: 260ed21ce81d84e4bbe0b232e20640c0, type: 3}
   rarity: 3
   effectType: 1
   statType: 0

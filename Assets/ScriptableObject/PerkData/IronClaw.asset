@@ -15,7 +15,7 @@ MonoBehaviour:
   id: IronClaw
   perkName: "Vu\u1ED1t S\u1EAFt"
   description: "T\u0103ng 5 s\xE1t th\u01B0\u01A1ng m\u1ED7i \u0111\xF2n \u0111\xE1nh"
-  icon: {fileID: 21300000, guid: 6f58c0a8818460c4584a197a578a148f, type: 3}
+  icon: {fileID: 906813177, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
   rarity: 0
   effectType: 0
   statType: 4

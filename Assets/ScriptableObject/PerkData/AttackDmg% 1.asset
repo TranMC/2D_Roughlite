@@ -15,7 +15,7 @@ MonoBehaviour:
   id: AttackDmg%
   perkName: "Th\u1EA7n Binh Truy\u1EC1n Thuy\u1EBFt"
   description: "T\u0103ng 40% s\xE1t th\u01B0\u01A1ng v\u1EADt l\xFD g\xE2y ra."
-  icon: {fileID: 21300000, guid: 252b753f6d4515349a7b3a39e2c148c5, type: 3}
+  icon: {fileID: -622795115, guid: 260ed21ce81d84e4bbe0b232e20640c0, type: 3}
   rarity: 3
   effectType: 0
   statType: 0

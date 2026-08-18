@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd6a446b687cc145a6c8e26f5231c21, type: 3}
   m_Name: Bow
   m_EditorClassIdentifier: 
-  weaponId: 
-  weaponName: 
+  weaponId: 01
+  weaponName: Bow
   icon: {fileID: 0}
   description: 
   damage: 10
   attackSpeed: 1
-  range: 1.5
+  range: 10
   knockback: {x: 3, y: 0}

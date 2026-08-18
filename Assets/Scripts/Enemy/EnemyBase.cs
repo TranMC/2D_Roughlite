@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Roguelite.Combat;
+using Roguelite.Core;
 
 namespace Roguelite.Enemy
 {
@@ -504,6 +505,12 @@ namespace Roguelite.Enemy
             CurrentState = EnemyState.Dead;
 
             Debug.Log($"[EnemyBase] {gameObject.name} đã chết!");
+
+            // Kích hoạt medium hit-stop khi enemy thường chết
+            if (HitStopManager.Instance != null)
+            {
+                HitStopManager.Instance.MediumHitStop();
+            }
 
             // Dừng mọi di chuyển
             StopMovement();

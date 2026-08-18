@@ -1,6 +1,7 @@
 using UnityEngine;
 using Roguelite.UpgradeSystem;
 using Roguelite.Player;
+using Roguelite.Core;
 using System.Collections.Generic;
 
 namespace Roguelite.Combat
@@ -133,6 +134,13 @@ namespace Roguelite.Combat
                 Transform parentTransform = transform.parent;
                 float faceDirection = parentTransform != null ? parentTransform.localScale.x : 1f;
                 Vector2 deliveredKnockback = faceDirection > 0f ? knockback : new Vector2(-knockback.x, knockback.y);
+
+                // Light hit-stop trước TakeDamage để death hit-stop (Medium/Heavy) có thể ghi đè sau
+                bool isPlayerAttack = parentTransform != null && parentTransform.GetComponent<PlayerStats>() != null;
+                if (isPlayerAttack && HitStopManager.Instance != null)
+                {
+                    HitStopManager.Instance.LightHitStop();
+                }
 
                 // Thực hiện gây sát thương và áp dụng knockback
                 damageable.TakeDamage(attackDamage, deliveredKnockback);

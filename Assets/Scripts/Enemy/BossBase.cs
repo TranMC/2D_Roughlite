@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Roguelite.RoomSystem;
+using Roguelite.Core;
 
 namespace Roguelite.Enemy
 {
@@ -298,6 +299,12 @@ namespace Roguelite.Enemy
             StopActivePattern();
 
             base.HandleDeath();
+
+            // Kích hoạt heavy hit-stop khi boss chết
+            if (HitStopManager.Instance != null)
+            {
+                HitStopManager.Instance.HeavyHitStop();
+            }
 
             // Tìm RoomManager trên parent hoặc cùng hierarchy
             // (Boss thường nằm trong Room → RoomManager ở parent/root của Room)

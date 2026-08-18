@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
   m_Name: LifeSteal
   m_EditorClassIdentifier: 
-  id: LifeSteal
-  perkName: 'LifeSteal '
-  description: +5% health heal base on the physical attack that you deal
-  icon: {fileID: 425044165, guid: 355a380ada646b04f97b605e8f7909e6, type: 3}
+  id: perk_lifesteal
+  perkName: "Huy\u1EBFt \u0110ao"
+  description: "H\u1ED3i m\xE1u b\u1EB1ng 5% s\xE1t th\u01B0\u01A1ng th\u1EF1c t\u1EBF
+    g\xE2y ra."
+  icon: {fileID: 21300000, guid: 9d228d0b15ec6c041b90003be2690b42, type: 3}
   rarity: 2
   effectType: 1
-  statType: 1
+  statType: 0
   effectValue: 0.05
   isPercent: 1
-  specialBehaviorKey: heal_on_attack
+  specialBehaviorKey: lifesteal
   maxStack: 3
   stackBehavior: 1

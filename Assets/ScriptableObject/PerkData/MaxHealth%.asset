@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2df93db848f51ea48b1cf747e0b05b3c, type: 3}
+  m_Name: MaxHealth%
+  m_EditorClassIdentifier: 
+  id: MaxHealth%
+  perkName: "Tr\xE1i Tim Qu\u1EA3 C\u1EA3m"
+  description: "T\u0103ng th\xEAm 15% HP t\u1ED1i \u0111a d\u1EE5a tr\xEAn m\xE1u
+    c\u01A1 b\u1EA3n"
+  icon: {fileID: 21300000, guid: d88dfda3f641cc240835f5f0dd2992fa, type: 3}
+  rarity: 1
+  effectType: 0
+  statType: 1
+  effectValue: 0.15
+  isPercent: 1
+  specialBehaviorKey: 
+  maxStack: 3
+  stackBehavior: 2

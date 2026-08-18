@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Roguelite.Combat;
+using Roguelite.Core;
+using Roguelite.UpgradeSystem;
 
 namespace Roguelite.Player
 {
@@ -55,7 +57,14 @@ namespace Roguelite.Player
         [SerializeField] private float invincibilityTimer = 0.25f;
         private float timeSinceHit = 0f;
 
+        [Header("Special Behavior States")]
+        private bool hasUsedLastStand = false;
+        private float vengeanceTimer = 0f;
+        private float customInvincibilityDuration = 0f;
+
         public bool IsDead => isDead;
+        public bool IsVengeanceActive => vengeanceTimer > 0f;
+        public bool HasUsedLastStand => hasUsedLastStand;
 
         public bool LockVelocity
         {
@@ -113,13 +122,21 @@ namespace Roguelite.Player
 
         private void Update()
         {
+            // Xử lý đếm ngược thời gian báo thù (vengeance_damage)
+            if (vengeanceTimer > 0f)
+            {
+                vengeanceTimer -= Time.deltaTime;
+            }
+
             // Xử lý đếm ngược thời gian bất tử
             if (isInvincible)
             {
-                if (timeSinceHit > invincibilityTimer)
+                float activeDuration = customInvincibilityDuration > 0f ? customInvincibilityDuration : invincibilityTimer;
+                if (timeSinceHit > activeDuration)
                 {
                     isInvincible = false;
                     timeSinceHit = 0f;
+                    customInvincibilityDuration = 0f;
                     LockVelocity = false; // Mở khóa di chuyển cho Player sau khi hết bất tử/stagger
 
                     if (logInvincibility)
@@ -177,6 +194,34 @@ namespace Roguelite.Player
                 return;
             }
 
+            // --- XỬ LÝ HƠI THỞ CUỐI CÙNG (LAST_STAND) ---
+            if (currentHealth - damage <= 0f && !hasUsedLastStand)
+            {
+                if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("last_stand", out int lastStandStack))
+                {
+                    float duration = 3.0f;
+                    foreach (var kvp in UpgradeManager.Instance.ActivePerks)
+                    {
+                        if (kvp.Key.SpecialBehaviorKey == "last_stand")
+                        {
+                            duration = kvp.Key.EffectValue;
+                            break;
+                        }
+                    }
+                    hasUsedLastStand = true;
+                    currentHealth = 1f; // Giữ lại 1 máu
+                    isInvincible = true;
+                    customInvincibilityDuration = duration;
+                    timeSinceHit = 0f;
+
+                    DebugLogger.LogWarning($"[LastStand] Player kích hoạt Hơi Thở Cuối Cùng! Thoát chết và bất tử trong {duration}s.", MODULE_NAME);
+
+                    OnHealthChanged?.Invoke(currentHealth, maxHealth);
+                    healthChanged?.Invoke(currentHealth, maxHealth);
+                    return;
+                }
+            }
+
             if (logDamage)
             {
                 DebugLogger.LogWarning($"{gameObject.name} took {damage} damage! HP: {currentHealth} → {currentHealth - damage}", MODULE_NAME);
@@ -185,6 +230,13 @@ namespace Roguelite.Player
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
             isInvincible = true;
+
+            // Kích hoạt Lưỡi Gươm Báo Thù (vengeance_damage) khi nhận sát thương
+            if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("vengeance_damage", out _))
+            {
+                vengeanceTimer = 5.0f;
+                DebugLogger.Log($"[Vengeance] Kích hoạt! Player tăng sát thương trong 5s.", MODULE_NAME);
+            }
 
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
             healthChanged?.Invoke(currentHealth, maxHealth);
@@ -348,10 +400,16 @@ namespace Roguelite.Player
                 }
             }
 
-            // Gọi GameManager chuyển trạng thái sang GameOver
-            if (Core.GameManager.Instance != null)
+            // Delay chuyển GameOver để animation chết kịp chạy trước khi GameManager freeze timeScale
+            StartCoroutine(DelayedGameOverSequence());
+        }
+
+        private IEnumerator DelayedGameOverSequence()
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            if (GameManager.Instance != null)
             {
-                Core.GameManager.Instance.ChangeState(Core.GameState.GameOver);
+                GameManager.Instance.ChangeState(GameState.GameOver);
             }
         }
 
@@ -361,11 +419,16 @@ namespace Roguelite.Player
         /// </summary>
         private IEnumerator HandlePhysicsAfterDeath()
         {
-            // Chờ một khoảng thời gian ngắn để nhân vật bắt đầu rơi (tránh việc đứng yên lúc đầu có velocity.y = 0)
-            yield return new WaitForSeconds(0.15f);
+            // Chờ một khoảng thời gian ngắn để nhân vật bắt đầu rơi
+            yield return new WaitForSecondsRealtime(0.15f);
 
-            // Chờ đến khi vận tốc rơi theo trục Y xấp xỉ bằng 0 (đã chạm đất)
-            yield return new WaitUntil(() => playerController == null || playerController.Rb == null || Mathf.Abs(playerController.Rb.velocity.y) < 0.1f);
+            float timeout = 1.0f;
+            float elapsed = 0f;
+            while (elapsed < timeout && playerController != null && playerController.Rb != null && Mathf.Abs(playerController.Rb.velocity.y) >= 0.1f)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
 
             if (playerController != null && playerController.Rb != null)
             {
@@ -395,12 +458,12 @@ namespace Roguelite.Player
             }
 
             // 1. Chờ cho đến khi Animator chuyển sang trạng thái "Hurt"
-            // Giới hạn thời gian chờ tối đa 0.2 giây đề phòng trigger bị bỏ qua
+            // Giới hạn thời gian chờ tối đa 0.2 giây đề phòng trigger bị bỏ qua (dùng unscaledDeltaTime để không bị vĩnh viễn bế tắc nếu timeScale = 0)
             float timeout = 0.2f;
             float elapsed = 0f;
             while (elapsed < timeout && !animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
             {
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
 
@@ -414,6 +477,10 @@ namespace Roguelite.Player
             }
 
             LockVelocity = false;
+            if (!isDead && playerController != null && playerController.Animator != null)
+            {
+                playerController.Animator.SetBool(AnimationStrings.canMove, true);
+            }
             lockVelocityCoroutine = null;
         }
 

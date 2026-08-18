@@ -12,9 +12,10 @@ namespace Roguelite.SaveSystem
     {
         public static SaveManager Instance { get; private set; }
 
-        public static readonly int CURRENT_SAVE_VERSION = 2;
+        public static readonly int CURRENT_SAVE_VERSION = 3;
         public static readonly int CURRENT_SETTING_VERSION = 1;
 
+        public const int AUTOSAVE_SLOT_INDEX = 0;
         public const int MIN_SLOT_INDEX = 1;
         public const int MAX_SLOT_INDEX = 3;
 
@@ -68,6 +69,10 @@ namespace Roguelite.SaveSystem
 
         public static string GetSlotFileName(int slotIndex)
         {
+            if (slotIndex == AUTOSAVE_SLOT_INDEX)
+            {
+                return "save_data_autosave.json";
+            }
             int validSlot = Mathf.Clamp(slotIndex, MIN_SLOT_INDEX, MAX_SLOT_INDEX);
             return $"save_data_slot_{validSlot}.json";
         }
@@ -304,18 +309,57 @@ namespace Roguelite.SaveSystem
 
         // --- COROUTINE SAVE & DEBOUNCE ---
 
-        public void SaveToDiskAsync()
+        public void SaveToDiskAsync(int targetSlotIndex = -1)
         {
             if (isSaving) return;
-            StartCoroutine(SaveToDiskCoroutine());
+            StartCoroutine(SaveToDiskCoroutine(targetSlotIndex));
         }
 
-        private IEnumerator SaveToDiskCoroutine()
+        private IEnumerator SaveToDiskCoroutine(int targetSlotIndex = -1)
         {
             isSaving = true;
             OnSaveStarted?.Invoke();
             yield return null;
-            SaveToDiskSync();
+
+            int slotToUse = targetSlotIndex >= 0 ? targetSlotIndex : CurrentSlotIndex;
+            string slotFileName = GetSlotFileName(slotToUse);
+            string basePath = Application.persistentDataPath;
+            string targetPath = Path.Combine(basePath, slotFileName);
+            string backupPath = Path.Combine(basePath, slotFileName + ".bak");
+
+            InitializePaths();
+            if (CurrentSaveData == null)
+            {
+                CurrentSaveData = CreateDefaultSaveData(slotToUse);
+            }
+            CurrentSaveData.slotIndex = slotToUse;
+            CurrentSaveData.saveVersion = CURRENT_SAVE_VERSION;
+            CurrentSaveData.lastSavedTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string json = JsonUtility.ToJson(CurrentSaveData, true);
+
+            var saveTask = System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    if (File.Exists(targetPath))
+                    {
+                        File.Copy(targetPath, backupPath, overwrite: true);
+                    }
+                    File.WriteAllText(targetPath, json);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[SaveManager] Lỗi ghi đè SaveData Slot {slotToUse} xuống đĩa: {ex.Message}");
+                }
+            });
+
+            while (!saveTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            Debug.Log($"[SaveManager] Lưu SaveData Slot {slotToUse} (AutoSave/Manual) thành công xuống đĩa (Async).");
             isSaving = false;
             OnSaveCompleted?.Invoke();
         }
@@ -342,11 +386,11 @@ namespace Roguelite.SaveSystem
                 Debug.Log("[SaveManager] AutoSave already pending, skipping event invoke");
             }
 
-            // Nếu delay = 0, lưu ngay lập tức không cần coroutine
+            // Nếu delay = 0, lưu ngay lập tức vào ô AutoSave (Slot 0)
             if (delaySeconds <= 0f)
             {
                 isAutoSavePending = false;
-                SaveToDiskAsync();
+                SaveToDiskAsync(AUTOSAVE_SLOT_INDEX);
             }
             else
             {
@@ -358,8 +402,19 @@ namespace Roguelite.SaveSystem
         {
             yield return new WaitForSecondsRealtime(delay);
             isAutoSavePending = false;
-            SaveToDiskAsync();
+            SaveToDiskAsync(AUTOSAVE_SLOT_INDEX);
             autoSaveDebounceCoroutine = null;
+        }
+
+        public bool HasAutoSave()
+        {
+            string path = Path.Combine(Application.persistentDataPath, GetSlotFileName(AUTOSAVE_SLOT_INDEX));
+            return File.Exists(path);
+        }
+
+        public SaveData LoadAutoSaveData()
+        {
+            return LoadSlotData(AUTOSAVE_SLOT_INDEX);
         }
 
         // --- UTILS & MIGRATION ---

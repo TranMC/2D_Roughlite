@@ -15,5 +15,5 @@ MonoBehaviour:
   buffType: 2
   displayName: "H\u1ED3i M\xE1u"
   duration: 10
-  icon: {fileID: -1092959980, guid: 4852556ed59b2ce4e920c9d493f13ad5, type: 3}
+  icon: {fileID: 21300000, guid: e857cc4fb7f0e9045949d3508b0b7839, type: 3}
   zoneParticlePrefab: {fileID: 7714455852320249089, guid: a16fc4309b67c8f46b315eeb5a4dee66, type: 3}

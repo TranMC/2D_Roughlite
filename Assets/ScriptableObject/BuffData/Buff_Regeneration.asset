@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b8c9d0e1f2345678901234abcdef01, type: 3}
+  m_Name: Buff_Regeneration
+  m_EditorClassIdentifier: 
+  buffType: 2
+  displayName: "H\u1ED3i M\xE1u"
+  duration: 10
+  icon: {fileID: -1092959980, guid: 4852556ed59b2ce4e920c9d493f13ad5, type: 3}
+  zoneParticlePrefab: {fileID: 7714455852320249089, guid: a16fc4309b67c8f46b315eeb5a4dee66, type: 3}

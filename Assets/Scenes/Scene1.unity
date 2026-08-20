@@ -3901,6 +3901,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HotbarSlot
       objectReference: {fileID: 0}
+    - target: {fileID: 633251543485697070, guid: 529c2f4509a97ee4da174b85aa5295c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5735764047268078850, guid: 529c2f4509a97ee4da174b85aa5295c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Roguelite.Combat;
+using Roguelite.Core;
 
 namespace Roguelite.Enemy
 {
@@ -32,6 +33,12 @@ namespace Roguelite.Enemy
     public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
         #region ====== SERIALIZE FIELDS ======
+
+        [Header("===== Reward Settings =====")]
+        [Tooltip("Số tiền / linh hồn thưởng cho người chơi khi tiêu diệt quái vật này.")]
+        [SerializeField] protected int currencyReward = 10;
+
+        public int CurrencyReward => currencyReward;
 
         [Header("===== Health Settings =====")]
         [Tooltip("Lượng máu tối đa của quái vật.")]
@@ -504,6 +511,12 @@ namespace Roguelite.Enemy
             CurrentState = EnemyState.Dead;
 
             Debug.Log($"[EnemyBase] {gameObject.name} đã chết!");
+
+            // Kích hoạt medium hit-stop khi enemy thường chết
+            if (HitStopManager.Instance != null)
+            {
+                HitStopManager.Instance.MediumHitStop();
+            }
 
             // Dừng mọi di chuyển
             StopMovement();

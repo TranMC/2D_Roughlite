@@ -26,10 +26,12 @@ namespace Roguelite.SaveSystem
     public class AbilityUnlockData
     {
         public List<AbilityLevelEntry> abilityLevels = new List<AbilityLevelEntry>();
+        public List<string> grantedMilestones = new List<string>();
 
         public AbilityUnlockData()
         {
             abilityLevels = new List<AbilityLevelEntry>();
+            grantedMilestones = new List<string>();
         }
 
         public int GetAbilityLevel(string abilityId)
@@ -57,6 +59,24 @@ namespace Roguelite.SaveSystem
                 }
             }
             abilityLevels.Add(new AbilityLevelEntry(abilityId, level));
+        }
+
+        public bool IsMilestoneGranted(string milestoneKey)
+        {
+            if (grantedMilestones == null) return false;
+            return grantedMilestones.Contains(milestoneKey);
+        }
+
+        public void MarkMilestoneGranted(string milestoneKey)
+        {
+            if (grantedMilestones == null)
+            {
+                grantedMilestones = new List<string>();
+            }
+            if (!grantedMilestones.Contains(milestoneKey))
+            {
+                grantedMilestones.Add(milestoneKey);
+            }
         }
     }
 }

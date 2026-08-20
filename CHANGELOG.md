@@ -2,6 +2,32 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [v0.7.0] - 2026-08-20
+
+### 🔮 Hệ thống Permanent Upgrade & Tích hợp SaveManager (Sprint 5)
+*   **Cấu trúc Dữ liệu Upgrade Nhiều Bậc (Multi-tier Upgrade Data Structure)**:
+    *   Tạo `PermanentUpgradeTier.cs` định nghĩa thông số từng cấp bậc (Cost, StatType, StatValue, Percent flag và mốc đặc biệt MilestoneBonus).
+    *   Tạo ScriptableObject `PermanentUpgradeData.cs` và `PermanentUpgradeDatabase.cs` lưu trữ danh sách các nâng cấp vĩnh viễn phân theo từng nhóm (Offense, Defense, Utility).
+*   **Quản lý Nâng cấp Vĩnh viễn (PermanentUpgradeManager.cs)**:
+    *   Xây dựng Singleton `PermanentUpgradeManager` quản lý mua/nâng cấp level, kiểm tra khả năng thanh toán vàng (`CanAffordUpgrade`), trừ tiền tích lũy và tương tác với `SaveManager.Instance.CurrentSaveData`.
+    *   Thêm hàm `ApplyAllUpgrades(GameObject player)` tính toán và áp dụng toàn bộ chỉ số nâng cấp vĩnh viễn trực tiếp lên `PlayerStats`, `PlayerController`, và `Attack` khi bắt đầu Run.
+*   **Kiểm tra & Cấp Bonus Mốc Đặc biệt (Milestone Bonus Detection & Grant Logic)**:
+    *   Xây dựng logic tự động phát hiện mốc Milestone đặc biệt khi người chơi nâng cấp lên các bậc được đánh dấu `isMilestone`.
+    *   Bổ sung `grantedMilestones` (`List<string>`) trong `AbilityUnlockData.cs` để ghi nhận các mốc đã trao thưởng, ngăn chặn hoàn toàn việc cấp trùng lặp bonus mốc đặc biệt khi tải lại save hoặc reset.
+*   **Giải quyết Xung đột Chỉ số (StatCalculator.cs)**:
+    *   Xây dựng `StatCalculator.cs` và `StatModifierGroup` chuẩn hóa thứ tự tính toán chỉ số Roguelite ($\text{FinalValue} = (\text{BaseValue} + \text{FlatSum}) \times (1 + \text{AdditivePercentSum}) \times \text{MultiplicativeProduct}$).
+    *   Đảm bảo thứ tự ưu tiên chính xác và không bị xung đột giữa nhiều nâng cấp vĩnh viễn và các perk trong trận.
+*   **Tùy chỉnh Phần thưởng Vàng khi tiêu diệt Enemy (Enemy Currency Rewards)**:
+    *   Bổ sung thuộc tính `[SerializeField] protected int currencyReward = 10;` vào [EnemyBase.cs](Assets/Scripts/Enemy/EnemyBase.cs) cho phép tùy chỉnh lượng vàng/linh hồn thưởng cho từng loại quái vật trực tiếp trên Unity Inspector.
+    *   `PermanentUpgradeManager` tự động lắng nghe sự kiện `EnemyBase.OnAnyEnemyDied` để cộng tiền vào `SaveData.progressData.totalCurrency` và theo dõi số lượng quái đã tiêu diệt.
+*   **Giao diện Cửa hàng Nâng cấp Scroll & Filter (PermanentUpgradeUIController.cs & PermanentUpgradeItemUI.cs)**:
+    *   Tạo `PermanentUpgradeUIController.cs` điều khiển ScrollRect danh sách nâng cấp, hỗ trợ các tab lọc (`All`, `Offense`, `Defense`, `Utility`).
+    *   Tạo `PermanentUpgradeItemUI.cs` hiển thị thông tin từng nâng cấp, cấp độ hiện tại/max, giá tiền, trạng thái nút mua và badge mốc Milestone đặc biệt.
+*   **Nâng cấp Phiên bản SaveData (V3 → V4)**:
+    *   Cập nhật `CURRENT_SAVE_VERSION = 4` trong `SaveManager.cs` và bổ sung logic di cư `MigrateSaveData` tự động khởi tạo danh sách `grantedMilestones` cho các file save cũ.
+
+---
+
 ## [v0.6.0] - 2026-08-04
 
 ### 💾 Nền tảng Save/Load System (Epic E07 - US-028 → US-030, US-032, US-033)

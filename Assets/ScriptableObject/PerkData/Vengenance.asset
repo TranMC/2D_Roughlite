@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "L\u01B0\u1EE1i G\u01B0\u01A1m B\xE1o Th\xF9"
   description: "T\u0103ng 10% s\xE1t th\u01B0\u01A1ng trong 5s sau khi nh\u1EADn
     s\xE1t th\u01B0\u01A1ng."
-  icon: {fileID: 21300000, guid: 5a8c6692b463bdf49a15947a65903931, type: 3}
+  icon: {fileID: 1776758407, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
   rarity: 1
   effectType: 1
   statType: 0

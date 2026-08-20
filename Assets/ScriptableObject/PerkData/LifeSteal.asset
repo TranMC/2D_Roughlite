@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "Huy\u1EBFt \u0110ao"
   description: "H\u1ED3i m\xE1u b\u1EB1ng 5% s\xE1t th\u01B0\u01A1ng th\u1EF1c t\u1EBF
     g\xE2y ra."
-  icon: {fileID: 21300000, guid: 9d228d0b15ec6c041b90003be2690b42, type: 3}
+  icon: {fileID: 1823567544, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
   rarity: 2
   effectType: 1
   statType: 0

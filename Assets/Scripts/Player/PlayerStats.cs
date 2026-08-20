@@ -118,6 +118,12 @@ namespace Roguelite.Player
                 playerController.Animator.SetBool(AnimationStrings.isDead, false);
             }
             LockVelocity = false; // Đảm bảo mở khóa di chuyển khi bắt đầu game
+
+            // Áp dụng các chỉ số nâng cấp vĩnh viễn từ PermanentUpgradeManager
+            if (PermanentUpgradeManager.Instance != null)
+            {
+                PermanentUpgradeManager.Instance.ApplyAllUpgrades(gameObject);
+            }
         }
 
         private void Update()
@@ -258,7 +264,13 @@ namespace Roguelite.Player
             {
                 OnHit?.Invoke();
                 damageableHit?.Invoke(damage, knockback);
-                
+
+                // Kích hoạt medium hit-stop khi player bị tấn công
+                if (HitStopManager.Instance != null)
+                {
+                    HitStopManager.Instance.MediumHitStop();
+                }
+
                 // Kích hoạt Animator trigger hit nếu có
                 if (playerController != null && playerController.Animator != null)
                 {
@@ -340,6 +352,7 @@ namespace Roguelite.Player
         private void Die()
         {
             isDead = true;
+
             OnDead?.Invoke();
 
             if (logDeath)
@@ -400,13 +413,31 @@ namespace Roguelite.Player
                 }
             }
 
-            // Delay chuyển GameOver để animation chết kịp chạy trước khi GameManager freeze timeScale
-            StartCoroutine(DelayedGameOverSequence());
+            // Kích hoạt heavy hit-stop khi player chết, sau đó delay chuyển GameOver
+            StartCoroutine(DeathSequenceWithHitStop());
         }
 
-        private IEnumerator DelayedGameOverSequence()
+        private IEnumerator DeathSequenceWithHitStop()
         {
-            yield return new WaitForSecondsRealtime(1.0f);
+            // Kích hoạt heavy hit-stop khi player chết
+            if (HitStopManager.Instance != null)
+            {
+                HitStopManager.Instance.HeavyHitStop();
+
+                // Đợi cho hit-stop hoàn thành (sử dụng unscaledDeltaTime để không bị ảnh hưởng bởi timescale = 0)
+                float hitStopDuration = HitStopManager.Instance.HeavyHitStopDuration;
+                float elapsed = 0f;
+                while (elapsed < hitStopDuration)
+                {
+                    elapsed += Time.unscaledDeltaTime;
+                    yield return null;
+                }
+            }
+
+            // Sau khi hit-stop kết thúc, đợi thêm một chút để animation chết chạy
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            // Chuyển sang GameOver state
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.ChangeState(GameState.GameOver);

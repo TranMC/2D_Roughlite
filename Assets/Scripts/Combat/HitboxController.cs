@@ -53,6 +53,12 @@ namespace Roguelite.Combat
             childLookup = new Dictionary<string, GameObject>();
             foreach (Transform child in transform)
             {
+                // Chỉ quản lý hitbox attack — bỏ qua GroundCheck, BuffIconAnchor, v.v.
+                if (child.GetComponent<Attack>() == null)
+                {
+                    continue;
+                }
+
                 if (!childLookup.ContainsKey(child.name))
                 {
                     childLookup[child.name] = child.gameObject;

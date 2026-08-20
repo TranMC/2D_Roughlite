@@ -16,7 +16,7 @@ MonoBehaviour:
   perkName: "K\u1EBB Thu Ho\u1EA1ch"
   description: "H\u1ED3i l\u1EA1i 5 HP m\u1ED7i khi ti\xEAu di\u1EC7t m\u1ED9t k\u1EBB
     \u0111\u1ECBch."
-  icon: {fileID: 21300000, guid: a82897635448f394681220c7d46be2fe, type: 3}
+  icon: {fileID: 1055019432, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
   rarity: 2
   effectType: 1
   statType: 0

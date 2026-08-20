@@ -34,6 +34,12 @@ namespace Roguelite.Enemy
     {
         #region ====== SERIALIZE FIELDS ======
 
+        [Header("===== Reward Settings =====")]
+        [Tooltip("Số tiền / linh hồn thưởng cho người chơi khi tiêu diệt quái vật này.")]
+        [SerializeField] protected int currencyReward = 10;
+
+        public int CurrencyReward => currencyReward;
+
         [Header("===== Health Settings =====")]
         [Tooltip("Lượng máu tối đa của quái vật.")]
         [SerializeField] protected float maxHP = 100f;

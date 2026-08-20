@@ -118,6 +118,12 @@ namespace Roguelite.Player
                 playerController.Animator.SetBool(AnimationStrings.isDead, false);
             }
             LockVelocity = false; // Đảm bảo mở khóa di chuyển khi bắt đầu game
+
+            // Áp dụng các chỉ số nâng cấp vĩnh viễn từ PermanentUpgradeManager
+            if (PermanentUpgradeManager.Instance != null)
+            {
+                PermanentUpgradeManager.Instance.ApplyAllUpgrades(gameObject);
+            }
         }
 
         private void Update()

@@ -83,6 +83,33 @@ public class PauseMenuManager : MonoBehaviour
 
     public void OnBackClicked() => ShowPauseMenu();
 
+    public void OnSaveClicked()
+    {
+        if (Roguelite.SaveSystem.SaveManager.Instance != null)
+        {
+            // Lưu dữ liệu vào slot hiện tại (Manual Save)
+            Roguelite.SaveSystem.SaveManager.Instance.SaveToDiskAsync();
+            Debug.Log("[PauseMenu] Đã lưu game thành công!");
+        }
+    }
+
+    public void OnQuitToMainMenuClicked()
+    {
+        ClosePauseMenu();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.BackToMainMenu();
+        }
+    }
+
+    public void OnQuitGameClicked()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.QuitGame();
+        }
+    }
+
     private void OpenPauseMenu()
     {
         if (RewardSelectionController.IsSelectionOpen)

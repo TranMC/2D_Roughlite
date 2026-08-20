@@ -7,8 +7,8 @@ namespace Roguelite.UI
 {
     /// <summary>
     /// Điều khiển toàn bộ logic Main Menu UI.
-    /// Quản lý các nút Start, Continue, Load, Quit và panel chọn Slot.
-    /// (Nút Save chỉ có trong Pause Menu, không có ở Main Menu)
+    /// Quản lý các nút Start, Load, Quit và panel chọn Slot.
+    /// Save Slots: Slot 0 = Auto Save (chỉ Load được), Slot 1-3 = Manual Save.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
@@ -18,17 +18,12 @@ namespace Roguelite.UI
 
         [Header("=== NÚT CHÍNH ===")]
         [SerializeField] private Button startButton;
-        [SerializeField] private Button continueButton;
-        [SerializeField] private Button loadButton;
+        [SerializeField] private Button optionButton; // Thay thế nút Load
         [SerializeField] private Button quitButton;
 
         [Header("=== NÚT TRONG SLOT PANEL ===")]
         [SerializeField] private Button backButton;
         [SerializeField] private SaveSlotUI[] slotUIs;
-
-        // Chế độ hiện tại của Slot Panel
-        private enum SlotPanelMode { Start, Load }
-        private SlotPanelMode currentMode;
 
         // =====================================================================
         //  UNITY LIFECYCLE
@@ -43,56 +38,32 @@ namespace Roguelite.UI
             }
 
             // Đăng ký sự kiện cho các nút chính
-            startButton.onClick.AddListener(OnStartClicked);
-            continueButton.onClick.AddListener(OnContinueClicked);
-            loadButton.onClick.AddListener(OnLoadClicked);
-            quitButton.onClick.AddListener(OnQuitClicked);
+            if (startButton != null) startButton.onClick.AddListener(OnStartClicked);
+            if (optionButton != null) optionButton.onClick.AddListener(OnOptionClicked);
+            if (quitButton != null) quitButton.onClick.AddListener(OnQuitClicked);
 
             // Nút quay lại trong Slot Panel
-            backButton.onClick.AddListener(OnBackClicked);
+            if (backButton != null) backButton.onClick.AddListener(OnBackClicked);
 
             // Mặc định: hiện Main Panel, ẩn Slot Panel
             ShowMainPanel();
-
-            // Kiểm tra nút Continue có khả dụng không
-            RefreshContinueButton();
         }
 
         // =====================================================================
         //  NÚT CHÍNH
         // =====================================================================
 
-        /// <summary>START — Chọn slot để bắt đầu run mới.</summary>
+        /// <summary>START — Mở panel chọn slot. Gộp cả tính năng Start và Load.</summary>
         private void OnStartClicked()
         {
-            currentMode = SlotPanelMode.Start;
             ShowSlotPanel();
         }
 
-        /// <summary>CONTINUE — Tiếp tục từ slot cuối cùng đã chơi.</summary>
-        private void OnContinueClicked()
+        /// <summary>OPTION — Mở bảng cài đặt (chưa làm).</summary>
+        private void OnOptionClicked()
         {
-            if (SaveManager.Instance == null) return;
-
-            int lastSlot = SaveManager.Instance.CurrentSlotIndex;
-
-            // Kiểm tra slot cuối có dữ liệu không
-            if (!SaveManager.Instance.DoesSlotExist(lastSlot))
-            {
-                Debug.LogWarning("[MainMenu] Không tìm thấy dữ liệu ở slot cuối cùng!");
-                return;
-            }
-
-            SaveManager.Instance.SetCurrentSlot(lastSlot, autoLoad: true);
-            Debug.Log($"[MainMenu] Tiếp tục từ Slot {lastSlot}.");
-            GameManager.Instance.StartNewRun();
-        }
-
-        /// <summary>LOAD — Mở panel chọn slot ở chế độ Tải.</summary>
-        private void OnLoadClicked()
-        {
-            currentMode = SlotPanelMode.Load;
-            ShowSlotPanel();
+            Debug.Log("[MainMenu] Mở bảng Cài đặt (Option)... Tính năng này sẽ làm sau.");
+            // Thêm code mở OptionCanvas vào đây sau
         }
 
         /// <summary>QUIT — Thoát game.</summary>
@@ -121,39 +92,29 @@ namespace Roguelite.UI
         {
             if (SaveManager.Instance == null) return;
 
-            switch (currentMode)
+            // Nếu slot đã có dữ liệu -> Tải game (Load)
+            if (SaveManager.Instance.DoesSlotExist(slotIndex))
             {
-                case SlotPanelMode.Start:
-                    HandleStartNewRun(slotIndex);
-                    break;
-
-                case SlotPanelMode.Load:
-                    HandleLoadFromSlot(slotIndex);
-                    break;
+                SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: true);
+                Debug.Log($"[MainMenu] Đã tải Slot {slotIndex}. Vào game!");
+                GameManager.Instance.StartNewRun();
             }
-        }
-
-        /// <summary>Tạo save mới ở slot được chọn rồi bắt đầu run.</summary>
-        private void HandleStartNewRun(int slotIndex)
-        {
-            SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: false);
-            SaveManager.Instance.SaveToDiskSync();
-            Debug.Log($"[MainMenu] Bắt đầu run mới tại Slot {slotIndex}!");
-            GameManager.Instance.StartNewRun();
-        }
-
-        /// <summary>Tải dữ liệu từ slot được chọn rồi vào game.</summary>
-        private void HandleLoadFromSlot(int slotIndex)
-        {
-            if (!SaveManager.Instance.DoesSlotExist(slotIndex))
+            else
             {
-                Debug.LogWarning($"[MainMenu] Slot {slotIndex} trống, không thể Load!");
-                return;
-            }
+                // Nếu slot trống (chưa có dữ liệu) -> Tạo mới (Start)
+                
+                // Chặn không cho tạo mới đè lên slot Auto Save (nếu nó lỡ bị trống)
+                if (slotIndex == SaveManager.AUTOSAVE_SLOT_INDEX)
+                {
+                    Debug.LogWarning("[MainMenu] Không thể tạo run mới trên Auto Save slot!");
+                    return;
+                }
 
-            SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: true);
-            Debug.Log($"[MainMenu] Đã tải Slot {slotIndex}. Vào game!");
-            GameManager.Instance.StartNewRun();
+                SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: false);
+                SaveManager.Instance.SaveToDiskSync();
+                Debug.Log($"[MainMenu] Bắt đầu run mới tại Slot {slotIndex}!");
+                GameManager.Instance.StartNewRun();
+            }
         }
 
         /// <summary>Nút Quay lại — đóng Slot Panel, mở lại Main Panel.</summary>
@@ -168,41 +129,25 @@ namespace Roguelite.UI
 
         private void ShowMainPanel()
         {
-            mainPanel.SetActive(true);
-            slotPanel.SetActive(false);
+            if (mainPanel != null) mainPanel.SetActive(true);
+            if (slotPanel != null) slotPanel.SetActive(false);
         }
 
         private void ShowSlotPanel()
         {
-            mainPanel.SetActive(false);
-            slotPanel.SetActive(true);
+            if (mainPanel != null) mainPanel.SetActive(false);
+            if (slotPanel != null) slotPanel.SetActive(true);
+
+            if (slotUIs == null) return;
 
             foreach (SaveSlotUI slot in slotUIs)
             {
+                if (slot == null) continue;
                 slot.Setup(OnSlotSelected);
+                
+                // Mọi slot đều có thể tương tác (Slot 0 AutoSave chỉ Load được nếu có dữ liệu)
+                slot.SetInteractable(true);
             }
-        }
-
-        /// <summary>Bật/tắt nút Continue dựa trên việc có slot nào đã lưu chưa.</summary>
-        private void RefreshContinueButton()
-        {
-            if (SaveManager.Instance == null)
-            {
-                continueButton.interactable = false;
-                return;
-            }
-
-            bool hasAnySave = false;
-            for (int i = SaveManager.MIN_SLOT_INDEX; i <= SaveManager.MAX_SLOT_INDEX; i++)
-            {
-                if (SaveManager.Instance.DoesSlotExist(i))
-                {
-                    hasAnySave = true;
-                    break;
-                }
-            }
-
-            continueButton.interactable = hasAnySave;
         }
     }
 }

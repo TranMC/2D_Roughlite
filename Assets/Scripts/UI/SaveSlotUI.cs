@@ -8,10 +8,11 @@ namespace Roguelite.UI
     /// <summary>
     /// Hiển thị thông tin của 1 ô lưu (Save Slot) trên giao diện chọn Slot.
     /// Gắn script này lên mỗi GameObject đại diện cho 1 slot trong panel chọn Slot.
+    /// Hỗ trợ cả Auto Save slot (index 0) và Manual Save slots (index 1-3).
     /// </summary>
     public class SaveSlotUI : MonoBehaviour
     {
-        [Header("Slot Index (1 → 3)")]
+        [Header("Slot Index (0 = AutoSave, 1-3 = Manual)")]
         [SerializeField] private int slotIndex = 1;
 
         [Header("UI References")]
@@ -20,6 +21,9 @@ namespace Roguelite.UI
         [SerializeField] private Button slotButton;
 
         private System.Action<int> onSlotSelected;
+
+        /// <summary>Slot này có phải Auto Save không.</summary>
+        public bool IsAutoSaveSlot => slotIndex == SaveManager.AUTOSAVE_SLOT_INDEX;
 
         /// <summary>Gán callback khi người chơi bấm chọn slot này.</summary>
         public void Setup(System.Action<int> callback)
@@ -56,8 +60,8 @@ namespace Roguelite.UI
                 return;
             }
 
-            // Hiển thị thông tin
-            slotTitleText.text = $"Slot {slotIndex}";
+            // Hiển thị tiêu đề
+            slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
 
             string timeInfo = string.IsNullOrEmpty(previewData.lastSavedTime)
                 ? "Chưa rõ"
@@ -73,7 +77,7 @@ namespace Roguelite.UI
         /// <summary>Hiển thị trạng thái trống khi slot chưa có dữ liệu.</summary>
         private void SetEmptyDisplay()
         {
-            slotTitleText.text = $"Slot {slotIndex}";
+            slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
             slotInfoText.text = "[TRỐNG]";
         }
 
@@ -81,6 +85,12 @@ namespace Roguelite.UI
         public bool HasData()
         {
             return SaveManager.Instance != null && SaveManager.Instance.DoesSlotExist(slotIndex);
+        }
+
+        /// <summary>Bật/tắt nút bấm của slot này.</summary>
+        public void SetInteractable(bool interactable)
+        {
+            slotButton.interactable = interactable;
         }
 
         public int SlotIndex => slotIndex;

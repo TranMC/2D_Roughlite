@@ -3427,7 +3427,7 @@ MonoBehaviour:
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
-  totalRooms: 2
+  totalRooms: 6
   roomLayer:
     serializedVersion: 2
     m_Bits: 8

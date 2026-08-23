@@ -15,6 +15,8 @@ namespace Roguelite.UI
         [Header("=== PANEL ===")]
         [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject slotPanel;
+        [Tooltip("Panel cài đặt (object PauseMenu). Nếu để trống sẽ tự tìm theo tên trong scene.")]
+        [SerializeField] private GameObject pauseMenu;
 
         [Header("=== NÚT CHÍNH ===")]
         [SerializeField] private Button startButton;
@@ -45,7 +47,10 @@ namespace Roguelite.UI
             // Nút quay lại trong Slot Panel
             if (backButton != null) backButton.onClick.AddListener(OnBackClicked);
 
-            // Mặc định: hiện Main Panel, ẩn Slot Panel
+            ResolvePauseMenu();
+            BindPauseMenuCloseButtons();
+
+            // Mặc định: hiện Main Panel, ẩn Slot Panel và PauseMenu
             ShowMainPanel();
         }
 
@@ -59,11 +64,33 @@ namespace Roguelite.UI
             ShowSlotPanel();
         }
 
-        /// <summary>OPTION — Mở bảng cài đặt (chưa làm).</summary>
-        private void OnOptionClicked()
+        /// <summary>OPTION — Bật/tắt object PauseMenu.</summary>
+        public void OnOptionClicked()
         {
-            Debug.Log("[MainMenu] Mở bảng Cài đặt (Option)... Tính năng này sẽ làm sau.");
-            // Thêm code mở OptionCanvas vào đây sau
+            ResolvePauseMenu();
+            if (pauseMenu == null)
+            {
+                Debug.LogWarning("[MainMenu] Chưa gán PauseMenu. Kéo object PauseMenu vào field Pause Menu trên MainMenuController.");
+                return;
+            }
+
+            if (pauseMenu.activeSelf)
+            {
+                ClosePauseMenu();
+                return;
+            }
+
+            OpenPauseMenu();
+        }
+
+        public void ClosePauseMenu()
+        {
+            if (pauseMenu != null)
+            {
+                pauseMenu.SetActive(false);
+            }
+
+            ShowMainPanel();
         }
 
         /// <summary>QUIT — Thoát game.</summary>
@@ -131,12 +158,14 @@ namespace Roguelite.UI
         {
             if (mainPanel != null) mainPanel.SetActive(true);
             if (slotPanel != null) slotPanel.SetActive(false);
+            if (pauseMenu != null) pauseMenu.SetActive(false);
         }
 
         private void ShowSlotPanel()
         {
             if (mainPanel != null) mainPanel.SetActive(false);
             if (slotPanel != null) slotPanel.SetActive(true);
+            if (pauseMenu != null) pauseMenu.SetActive(false);
 
             if (slotUIs == null) return;
 
@@ -148,6 +177,81 @@ namespace Roguelite.UI
                 // Mọi slot đều có thể tương tác (Slot 0 AutoSave chỉ Load được nếu có dữ liệu)
                 slot.SetInteractable(true);
             }
+        }
+
+        private void OpenPauseMenu()
+        {
+            if (slotPanel != null) slotPanel.SetActive(false);
+            if (pauseMenu != null) pauseMenu.SetActive(true);
+        }
+
+        private void ResolvePauseMenu()
+        {
+            if (pauseMenu != null)
+            {
+                return;
+            }
+
+            pauseMenu = FindSceneObjectByName("PauseMenu");
+        }
+
+        private void BindPauseMenuCloseButtons()
+        {
+            if (pauseMenu == null)
+            {
+                return;
+            }
+
+            Button[] buttons = pauseMenu.GetComponentsInChildren<Button>(true);
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                Button button = buttons[i];
+                if (button == null)
+                {
+                    continue;
+                }
+
+                string buttonName = button.gameObject.name;
+                if (buttonName == "Back" || buttonName == "BackButton" || buttonName == "CloseButton")
+                {
+                    button.onClick.RemoveListener(ClosePauseMenu);
+                    button.onClick.AddListener(ClosePauseMenu);
+                }
+            }
+        }
+
+        private GameObject FindSceneObjectByName(string objectName)
+        {
+            GameObject[] roots = gameObject.scene.GetRootGameObjects();
+            for (int i = 0; i < roots.Length; i++)
+            {
+                Transform found = FindChildRecursive(roots[i].transform, objectName);
+                if (found != null)
+                {
+                    return found.gameObject;
+                }
+            }
+
+            return null;
+        }
+
+        private static Transform FindChildRecursive(Transform parent, string objectName)
+        {
+            if (parent.name == objectName)
+            {
+                return parent;
+            }
+
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform found = FindChildRecursive(parent.GetChild(i), objectName);
+                if (found != null)
+                {
+                    return found;
+                }
+            }
+
+            return null;
         }
     }
 }

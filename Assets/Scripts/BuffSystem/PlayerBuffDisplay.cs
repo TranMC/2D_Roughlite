@@ -23,7 +23,8 @@ namespace Roguelite.BuffSystem
         [Tooltip("Scale hiển thị của từng icon.")]
         [SerializeField] private float iconScale = 0.4f;
 
-        [SerializeField] private int sortingOrder = 20;
+        [Tooltip("Order so với SpriteRenderer của player. Giữ thấp hơn Canvas Screen Space - Camera (pause/option) để icon không đè UI.")]
+        [SerializeField] private int sortingOrderOffset = 1;
 
         [Header("Expiry Warning")]
         [Tooltip("Bắt đầu nhấp nháy khi còn lại bao nhiêu giây trước khi buff hết hiệu lực.")]
@@ -190,7 +191,7 @@ namespace Roguelite.BuffSystem
             iconObject.transform.SetParent(iconContainer, false);
 
             SpriteRenderer renderer = iconObject.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = sortingOrder;
+            ApplyWorldSorting(renderer);
             iconObject.transform.localScale = Vector3.one * iconScale;
 
             return renderer;
@@ -222,6 +223,20 @@ namespace Roguelite.BuffSystem
                 iconTransform.localPosition = new Vector3(cursorX + iconWidth * 0.5f, 0f, 0f);
                 iconTransform.localScale = Vector3.one * iconScale;
                 cursorX += iconWidth + iconSpacing;
+            }
+        }
+
+        private void ApplyWorldSorting(SpriteRenderer renderer)
+        {
+            SpriteRenderer playerRenderer = GetComponent<SpriteRenderer>();
+            if (playerRenderer != null)
+            {
+                renderer.sortingLayerID = playerRenderer.sortingLayerID;
+                renderer.sortingOrder = playerRenderer.sortingOrder + sortingOrderOffset;
+            }
+            else
+            {
+                renderer.sortingOrder = sortingOrderOffset;
             }
         }
 

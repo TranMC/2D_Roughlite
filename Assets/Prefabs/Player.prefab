@@ -532,7 +532,7 @@ MonoBehaviour:
   anchorOffset: {x: 0, y: 2.5}
   iconSpacing: 0.1
   iconScale: 0.4
-  sortingOrder: 20
+  sortingOrderOffset: 1
 --- !u!114 &8912345678901234568
 MonoBehaviour:
   m_ObjectHideFlags: 0

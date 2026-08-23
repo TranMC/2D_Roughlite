@@ -196,6 +196,15 @@ namespace Roguelite.Combat
             hitboxDataSets = newList.ToArray();
         }
 
+        /// <summary>
+        /// Trả về bản sao của mảng HitboxDataSet gốc (Inspector).
+        /// Dùng bởi WeaponHitboxBridge để lưu trữ bản gốc và khôi phục khi cần.
+        /// </summary>
+        public HitboxDataSet[] GetSerializedDataSets()
+        {
+            return (HitboxDataSet[])hitboxDataSets.Clone();
+        }
+
         private IEnumerator AutoDeactivateRoutine(float delay)
         {
             yield return new WaitForSeconds(delay);

@@ -1793,8 +1793,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 1
-  mainMenuSceneName: MainMenuScene
-  gameplaySceneName: Test
+  mainMenuSceneName: MainMenu
+  gameplaySceneName: Scene1
 --- !u!4 &812712738
 Transform:
   m_ObjectHideFlags: 0
@@ -3427,7 +3427,7 @@ MonoBehaviour:
   - {fileID: 3223717696486680930, guid: f747d489684ecf04eb1c9d67aeedb7bb, type: 3}
   rewardRoomPrefab: {fileID: 3200933418676977678, guid: e968cce4136d9274e901d41b7c64642b, type: 3}
   bossRoomPrefab: {fileID: 3200933418676977678, guid: d2787ef7144cd1b40aa3adb545536286, type: 3}
-  totalRooms: 6
+  totalRooms: 5
   roomLayer:
     serializedVersion: 2
     m_Bits: 8

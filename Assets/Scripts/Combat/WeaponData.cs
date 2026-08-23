@@ -26,6 +26,18 @@ namespace Roguelite.Combat
         [SerializeField] private AudioClip shootSFX;
         [SerializeField] private AudioClip hitSFX;
 
+        [Header("Hitbox Data theo Animation State")]
+        [Tooltip("Gán bộ HitboxData riêng cho vũ khí này. Nếu để trống, dùng HitboxData mặc định trên Player.")]
+        [SerializeField] private WeaponHitboxMapping[] hitboxMappings;
+
+        [System.Serializable]
+        public struct WeaponHitboxMapping
+        {
+            [Tooltip("Tên animation state (vd: Attack1, Attack2, Attack3, AirAttack)")]
+            public string animationStateName;
+            public HitboxData hitboxData;
+        }
+
         // === Properties (read-only) ===
         public string WeaponId => weaponId;
         public string WeaponName => weaponName;
@@ -37,5 +49,9 @@ namespace Roguelite.Combat
         public Vector2 Knockback => knockback;
         public AudioClip ShootSFX => shootSFX;
         public AudioClip HitSFX => hitSFX;
+        public WeaponHitboxMapping[] HitboxMappings => hitboxMappings;
+
+        /// <summary>Kiểm tra vũ khí này có bộ hitbox mapping riêng hay không.</summary>
+        public bool HasHitboxMappings => hitboxMappings != null && hitboxMappings.Length > 0;
     }
 }

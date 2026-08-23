@@ -533,6 +533,10 @@ MonoBehaviour:
   iconSpacing: 0.1
   iconScale: 0.4
   sortingOrderOffset: 1
+  warningThreshold: 3
+  blinkSpeed: 6
+  minAlpha: 0.25
+  maxAlpha: 1
 --- !u!114 &8912345678901234568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,7 +941,7 @@ PolygonCollider2D:
       - {x: 1.1539853, y: -0.81453276}
       - {x: -0.6911003, y: -1.7130227}
       - {x: 2.2408242, y: -1.8679949}
-      - {x: 2.5136948, y: -0.7241321}
+      - {x: 2.7726943, y: -0.7931989}
   m_UseDelaunayMesh: 0
 --- !u!114 &7126438045661098729
 MonoBehaviour:

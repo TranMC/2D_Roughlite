@@ -114,6 +114,9 @@ namespace Roguelite.Enemy
         /// <summary>Trạng thái hiện tại của quái vật.</summary>
         public EnemyState CurrentState { get; protected set; }
 
+        /// <summary>Trả về true nếu quái vật đã chết.</summary>
+        public bool IsDead => CurrentState == EnemyState.Dead;
+
         /// <summary>Hướng quay mặt: 1 = phải, -1 = trái.</summary>
         protected int facingDirection = 1;
 

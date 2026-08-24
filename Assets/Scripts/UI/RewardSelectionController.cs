@@ -26,6 +26,17 @@ namespace Roguelite.UI
         public static bool IsSelectionOpen { get; private set; }
 
         private static RewardSelectionController instance;
+        public static RewardSelectionController Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindFirstObjectByType<RewardSelectionController>(FindObjectsInactive.Include);
+                }
+                return instance;
+            }
+        }
 
         private List<PerkData> currentOptions = new List<PerkData>();
 
@@ -99,7 +110,11 @@ namespace Roguelite.UI
         {
             RecoverFromInconsistentState();
 
-            if (IsSelectionOpen) return;
+            if (IsSelectionOpen)
+            {
+                Debug.LogWarning("[RewardSelectionController] Panel đang mở sẵn từ trước!");
+                return;
+            }
 
             if (PauseMenuManager.IsMenuOpen)
             {
@@ -109,21 +124,21 @@ namespace Roguelite.UI
 
             if (selectionPanel == null || rewardCards == null || rewardCards.Length < 3)
             {
-                Debug.LogError("[RewardSelectionController] Cấu hình UI chưa đủ hoặc mảng rewardCards không đủ 3 phần tử!");
+                Debug.LogError($"[RewardSelectionController] Cấu hình UI chưa đủ! selectionPanel: {(selectionPanel != null ? "Đã gán" : "Chưa gán (NULL)")}, mảng rewardCards: {(rewardCards != null ? rewardCards.Length.ToString() : "NULL")}");
                 return;
             }
 
             if (UpgradeManager.Instance == null)
             {
-                Debug.LogError("[RewardSelectionController] Không tìm thấy UpgradeManager Instance!");
+                Debug.LogError("[RewardSelectionController] Không tìm thấy UpgradeManager Instance trong Scene!");
                 return;
             }
 
             currentOptions = UpgradeManager.Instance.GetRandomPerks(3);
 
-            if (currentOptions.Count == 0)
+            if (currentOptions == null || currentOptions.Count == 0)
             {
-                Debug.LogWarning("[RewardSelectionController] Không rút được Perk nào do pool cạn!");
+                Debug.LogWarning("[RewardSelectionController] Không rút được Perk nào! Hãy kiểm tra PerkPool trên UpgradeManager có chứa danh sách PerkData chưa.");
                 return;
             }
 
@@ -225,6 +240,10 @@ namespace Roguelite.UI
 
             if (playerInput != null)
                 playerInput.SwitchCurrentActionMap("UI");
+
+            // Mở và hiện con trỏ chuột để tương tác với UI chọn Perk
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         private void ResumeFromSelection()

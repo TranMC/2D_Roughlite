@@ -12,7 +12,7 @@ namespace Roguelite.SaveSystem
     {
         public static SaveManager Instance { get; private set; }
 
-        public static readonly int CURRENT_SAVE_VERSION = 4;
+        public static readonly int CURRENT_SAVE_VERSION = 5;
         public static readonly int CURRENT_SETTING_VERSION = 1;
 
         public const int AUTOSAVE_SLOT_INDEX = 0;
@@ -495,6 +495,11 @@ namespace Roguelite.SaveSystem
                 {
                     oldData.abilityData.grantedMilestones = new System.Collections.Generic.List<string>();
                 }
+            }
+
+            if (oldData.saveVersion < 5)
+            {
+                oldData.saveVersion = 5;
             }
 
             return oldData;

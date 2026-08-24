@@ -7,9 +7,12 @@ namespace Roguelite.UI
 {
     /// <summary>
     /// UI component hiển thị trạng thái auto-save với icon và text "Đang lưu..."
+    /// Version: 1.2.0
     /// </summary>
     public class AutoSaveIndicatorUI : MonoBehaviour
     {
+        public const string VERSION = "1.2.0";
+
         [Header("UI Elements")]
         [SerializeField] private GameObject indicatorPanel;
         [SerializeField] private Image iconImage;
@@ -18,7 +21,8 @@ namespace Roguelite.UI
         [Header("Icon Settings")]
         [SerializeField] private Sprite saveIcon;
         
-        [Header("Animation")]
+        [Header("Animation Settings")]
+        [SerializeField] private SaveIndicatorAnimator animator;
         [SerializeField] private float pulseSpeed = 2f;
         [SerializeField] private float minAlpha = 0.5f;
         [SerializeField] private float maxAlpha = 1f;
@@ -44,6 +48,15 @@ namespace Roguelite.UI
                 canvasGroup = indicatorPanel.AddComponent<CanvasGroup>();
             }
             
+            if (animator == null)
+            {
+                animator = GetComponent<SaveIndicatorAnimator>();
+                if (animator == null)
+                {
+                    animator = GetComponentInChildren<SaveIndicatorAnimator>();
+                }
+            }
+
             Debug.Log("[AutoSaveIndicatorUI] indicatorPanel assigned: " + indicatorPanel.name);
             
             // Set initial state - chỉ ẩn UI elements, không disable panel
@@ -74,7 +87,7 @@ namespace Roguelite.UI
             }
             
             // Set text
-            if (saveText != null)
+            if (saveText != null && animator == null)
             {
                 saveText.text = "Đang lưu...";
             }
@@ -84,20 +97,23 @@ namespace Roguelite.UI
         {
             Debug.Log("[AutoSaveIndicatorUI] ShowIndicator called");
             
-            // Bật các UI elements con thay vì disable panel
+            if (animator != null)
+            {
+                animator.PlaySaveAnimation();
+                return;
+            }
+
+            // Fallback nếu không gắn SaveIndicatorAnimator
             if (iconImage != null && iconImage.gameObject != null)
             {
                 iconImage.gameObject.SetActive(true);
-                Debug.Log("[AutoSaveIndicatorUI] Enabled iconImage");
             }
             
             if (saveText != null && saveText.gameObject != null)
             {
                 saveText.gameObject.SetActive(true);
-                Debug.Log("[AutoSaveIndicatorUI] Enabled saveText");
             }
             
-            // Panel luôn enable, chỉ dùng canvasGroup để điều khiển alpha
             if (indicatorPanel != null)
             {
                 indicatorPanel.SetActive(true);
@@ -106,7 +122,6 @@ namespace Roguelite.UI
             isAnimating = true;
             time = 0f;
             
-            // Set alpha để hiển thị
             if (canvasGroup != null)
             {
                 canvasGroup.alpha = 1f;
@@ -116,7 +131,11 @@ namespace Roguelite.UI
         private void OnSaveStarted()
         {
             // Additional handling when save actually starts
-            if (saveText != null)
+            if (animator != null)
+            {
+                animator.PlaySaveAnimation();
+            }
+            else if (saveText != null)
             {
                 saveText.text = "Đang lưu...";
             }
@@ -126,20 +145,23 @@ namespace Roguelite.UI
         {
             Debug.Log("[AutoSaveIndicatorUI] HideIndicator called");
             
-            // Chỉ ẩn các UI elements con, không disable panel
+            if (animator != null)
+            {
+                animator.StopSaveAnimation(true);
+                return;
+            }
+
+            // Fallback nếu không có animator
             if (iconImage != null && iconImage.gameObject != null)
             {
                 iconImage.gameObject.SetActive(false);
-                Debug.Log("[AutoSaveIndicatorUI] Disabled iconImage");
             }
             
             if (saveText != null && saveText.gameObject != null)
             {
                 saveText.gameObject.SetActive(false);
-                Debug.Log("[AutoSaveIndicatorUI] Disabled saveText");
             }
             
-            // Panel luôn enable, chỉ dùng canvasGroup alpha để ẩn
             if (canvasGroup != null)
             {
                 canvasGroup.alpha = 0f;
@@ -150,6 +172,8 @@ namespace Roguelite.UI
 
         private void Update()
         {
+            if (animator != null) return; // Đã xử lý hoạt hoạ trong SaveIndicatorAnimator
+
             if (isAnimating && canvasGroup != null)
             {
                 time += Time.deltaTime * pulseSpeed;

@@ -14,13 +14,29 @@ public enum SoundType
 
 public class SoundManager : MonoBehaviour
 {
+    public const string VERSION = "1.1.0";
     [SerializeField] private SoundList[] soundList;
     private static SoundManager instance;
+    public static SoundManager Instance => instance;
     private AudioSource audioSource;
 
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            if (Application.isPlaying)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+        }
+        else if (instance != this)
+        {
+            if (Application.isPlaying)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 
     private void Start()

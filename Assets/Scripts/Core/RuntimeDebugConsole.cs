@@ -34,7 +34,8 @@ namespace Roguelite.Core
         // Khung vị trí cửa sổ (có thể di chuyển được)
         private Rect windowRect = new Rect(20, 20, 780, 520);
         private int activeTab = 0;
-        private readonly string[] tabNames = { "📜 Console Logs", "⚡ Cheats & Actions", "⚙️ Debug Modules", "📊 Performance Stats" };
+        private readonly string[] tabNames = { "📜 Console Logs", "⚡ Cheats & Actions", "🎁 Perks & Player Stats", "⚙️ Debug Modules", "📊 Performance Stats" };
+        private Vector2 perkScrollPos;
 
         // === LOG CONSOLE DATA ===
         public struct LogEntry
@@ -142,6 +143,12 @@ namespace Roguelite.Core
             if (Input.GetKeyDown(toggleKeyPrimary) || Input.GetKeyDown(toggleKeySecondary))
             {
                 showConsole = !showConsole;
+            }
+
+            if (showConsole)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
 
             // Tính FPS
@@ -338,9 +345,12 @@ namespace Roguelite.Core
                     DrawCheatsTab();
                     break;
                 case 2:
-                    DrawDebugModulesTab();
+                    DrawPerksTab();
                     break;
                 case 3:
+                    DrawDebugModulesTab();
+                    break;
+                case 4:
                     DrawPerformanceTab();
                     break;
             }
@@ -546,6 +556,189 @@ namespace Roguelite.Core
             GUILayout.Space(4);
             GUILayout.Label($"<color=#00e5ff>{commandOutput}</color>");
             GUILayout.EndVertical();
+        }
+
+        #endregion
+
+        #region ====== TAB 3: PERKS & PLAYER STATS ======
+
+        private void DrawPerksTab()
+        {
+            perkScrollPos = GUILayout.BeginScrollView(perkScrollPos, GUILayout.Height(430));
+
+            PlayerStats playerStats = FindObjectOfType<PlayerStats>();
+            PlayerController playerController = FindObjectOfType<PlayerController>();
+
+            // --- SECTION 1: PLAYER STATS REALTIME ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("📊 <b>THÔNG SỐ PLAYER REALTIME</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            if (playerStats != null)
+            {
+                float hpPercent = playerStats.MaxHealth > 0 ? (playerStats.CurrentHealth / playerStats.MaxHealth) * 100f : 0f;
+                GUILayout.Label($"• <b>Máu (HP):</b> <color=#00ff88>{playerStats.CurrentHealth:F1}</color> / {playerStats.MaxHealth:F1} ({hpPercent:F0}%)");
+                GUILayout.Label($"• <b>God Mode:</b> {(playerStats.IsGodMode ? "<color=#00ff88>BẬT</color>" : "<color=#ff4d4d>TẮT</color>")}");
+                GUILayout.Label($"• <b>Trạng Thái Sống:</b> {(playerStats.IsDead ? "<color=#ff4d4d>ĐÃ CHẾT</color>" : "<color=#00ff88>SỐNG</color>")}");
+
+                if (playerController != null)
+                {
+                    GUILayout.Label($"• <b>Move Speed (Walk/Run):</b> {playerController.walkSpeed:F1} / {playerController.runSpeed:F1}");
+                    GUILayout.Label($"• <b>Speed Hiện Tại:</b> {playerController.CurrentMoveSpeed:F1}");
+                }
+            }
+            else
+            {
+                GUILayout.Label("<color=#ffcc00>⚠️ Không tìm thấy PlayerStats trong Scene!</color>");
+            }
+
+            int gold = SaveManager.Instance?.CurrentSaveData?.progressData?.totalCurrency ?? 0;
+            GUILayout.Label($"• <b>Gold Tích Lũy:</b> <color=#ffcc00>{gold}</color>");
+            GUILayout.EndVertical();
+
+            GUILayout.Space(6);
+
+            // --- SECTION 2: ACTIVE PERKS & STACKS ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("✨ <b>DANH SÁCH PERK ĐANG ACTIVE</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                var activePerks = Roguelite.UpgradeSystem.UpgradeManager.Instance.ActivePerks;
+                if (activePerks != null && activePerks.Count > 0)
+                {
+                    foreach (var pair in activePerks)
+                    {
+                        Roguelite.UpgradeSystem.PerkData perk = pair.Key;
+                        int stack = pair.Value;
+                        if (perk == null) continue;
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>[{perk.Rarity}] {perk.PerkName}</b> (Stack: {stack}/{perk.MaxStack})");
+                        if (GUILayout.Button("+1 Stack", btnPrimaryStyle, GUILayout.Width(75), GUILayout.Height(24)))
+                        {
+                            Roguelite.UpgradeSystem.UpgradeManager.Instance.AddPerk(perk);
+                        }
+                        if (GUILayout.Button("-1 Stack", btnDangerStyle, GUILayout.Width(75), GUILayout.Height(24)))
+                        {
+                            Roguelite.UpgradeSystem.UpgradeManager.Instance.RemovePerk(perk);
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+                else
+                {
+                    GUILayout.Label("<color=#888888>Chưa có Perk nào đang active.</color>");
+                }
+            }
+            else
+            {
+                GUILayout.Label("<color=#ffcc00>⚠️ Không tìm thấy UpgradeManager Instance!</color>");
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.Space(6);
+
+            // --- SECTION 3: RARITY WEIGHTS & FORCE DROP ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("🎲 <b>TÙY CHỈNH TỶ LỆ RARITY & FORCE DROP</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                var um = Roguelite.UpgradeSystem.UpgradeManager.Instance;
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Common: {um.CommonWeight}", GUILayout.Width(90));
+                um.CommonWeight = Mathf.RoundToInt(GUILayout.HorizontalSlider(um.CommonWeight, 0, 200));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Rare: {um.RareWeight}", GUILayout.Width(90));
+                um.RareWeight = Mathf.RoundToInt(GUILayout.HorizontalSlider(um.RareWeight, 0, 200));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Epic: {um.EpicWeight}", GUILayout.Width(90));
+                um.EpicWeight = Mathf.RoundToInt(GUILayout.HorizontalSlider(um.EpicWeight, 0, 200));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Legendary: {um.LegendaryWeight}", GUILayout.Width(90));
+                um.LegendaryWeight = Mathf.RoundToInt(GUILayout.HorizontalSlider(um.LegendaryWeight, 0, 200));
+                GUILayout.EndHorizontal();
+
+                GUILayout.Space(4);
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("🔄 Reset Weight (60/25/12/3)", btnNormalStyle, GUILayout.Height(26)))
+                {
+                    um.CommonWeight = 60;
+                    um.RareWeight = 25;
+                    um.EpicWeight = 12;
+                    um.LegendaryWeight = 3;
+                }
+
+                if (GUILayout.Button("🎁 Mở Bảng Chọn Perk (3 Card)", btnPrimaryStyle, GUILayout.Height(26)))
+                {
+                    var rsc = Roguelite.UI.RewardSelectionController.Instance;
+                    if (rsc != null)
+                    {
+                        Debug.Log("[DebugConsole] Đang yêu cầu RewardSelectionController mở bảng chọn Perk...");
+                        rsc.OpenSelection();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[DebugConsole] Không tìm thấy RewardSelectionController trong Scene! Hãy chắc chắn Scene có chứa GameObject RewardSelectionPanel.");
+                    }
+                }
+                GUILayout.EndHorizontal();
+
+                if (um.ForcedNextPerk != null)
+                {
+                    GUILayout.Space(4);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label($"<color=#00e5ff>★ Force Next Perk: {um.ForcedNextPerk.PerkName}</color>");
+                    if (GUILayout.Button("Hủy Force", btnDangerStyle, GUILayout.Width(80), GUILayout.Height(24)))
+                    {
+                        um.SetForcedNextPerk(null);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+                GUILayout.Space(8);
+                GUILayout.Label("<b>BỂ CHỨA PERK (PERK POOL)</b>", cardTitleStyle);
+
+                Roguelite.UpgradeSystem.PerkPool pool = um.PerkPool;
+                if (pool != null && pool.AllPerks != null && pool.AllPerks.Count > 0)
+                {
+                    foreach (Roguelite.UpgradeSystem.PerkData perk in pool.AllPerks)
+                    {
+                        if (perk == null) continue;
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"[{perk.Rarity}] {perk.PerkName}", GUILayout.Width(200));
+                        if (GUILayout.Button("+ Nhận 1", btnNormalStyle, GUILayout.Width(75), GUILayout.Height(24)))
+                        {
+                            um.AddPerk(perk);
+                        }
+                        bool isForced = um.ForcedNextPerk == perk;
+                        if (GUILayout.Button(isForced ? "★ Forced" : "Force Drop", isForced ? btnWarningStyle : btnPrimaryStyle, GUILayout.Width(90), GUILayout.Height(24)))
+                        {
+                            um.SetForcedNextPerk(perk);
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+                else
+                {
+                    GUILayout.Label("<color=#888888>PerkPool trống hoặc chưa được gán.</color>");
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.EndScrollView();
         }
 
         #endregion

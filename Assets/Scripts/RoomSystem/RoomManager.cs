@@ -12,6 +12,7 @@ namespace Roguelite.RoomSystem
     [RequireComponent(typeof(Collider2D))]
     public class RoomManager : MonoBehaviour
     {
+        public const string VERSION = "1.1.0";
         #region ====== SERIALIZE FIELDS ======
 
         [Header("===== Room Type Settings =====")]
@@ -53,6 +54,11 @@ namespace Roguelite.RoomSystem
         #endregion
 
         #region ====== RUNTIME STATE ======
+
+        /// <summary>
+        /// Trạng thái phòng đã dọn sạch quái/Boss hay chưa.
+        /// </summary>
+        public bool IsCleared { get; private set; } = false;
 
         /// <summary>
         /// Cờ đảm bảo phòng chỉ bị khóa đúng 1 lần khi Player bước vào.
@@ -342,12 +348,20 @@ namespace Roguelite.RoomSystem
         /// </summary>
         public void OnRoomCleared()
         {
+            IsCleared = true;
             // [BƯỚC 5] Room Cleared
             Debug.Log($"[RoomManager] Phòng {gameObject.name} đã được dọn sạch!");
 
             // [BƯỚC 6] Reward/Upgrade
-            // TODO: Ghép nối với hệ thống Reward/Upgrade (US-019, US-020)
-            Debug.Log($"[RoomManager] Chuẩn bị trao thưởng...");
+            Debug.Log($"[RoomManager] Trao thưởng Perk chọn 1 trong 3 cho người chơi...");
+            if (Roguelite.UI.RewardSelectionController.Instance != null)
+            {
+                Roguelite.UI.RewardSelectionController.Instance.OpenSelection();
+            }
+            else
+            {
+                Debug.LogWarning("[RoomManager] Không tìm thấy RewardSelectionController Instance trong Scene!");
+            }
 
             // [BƯỚC 7] Open Doors – Mở các cửa chặn để mở lối đi tiếp
             OpenDoors();

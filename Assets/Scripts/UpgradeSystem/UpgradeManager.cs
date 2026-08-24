@@ -29,6 +29,16 @@ namespace Roguelite.UpgradeSystem
         [SerializeField] private int epicWeight = 12;
         [Tooltip("Trọng số xuất hiện của Rarity: Legendary.")]
         [SerializeField] private int legendaryWeight = 3;
+
+        public PerkPool PerkPool => perkPool;
+        public int CommonWeight { get => commonWeight; set => commonWeight = value; }
+        public int RareWeight { get => rareWeight; set => rareWeight = value; }
+        public int EpicWeight { get => epicWeight; set => epicWeight = value; }
+        public int LegendaryWeight { get => legendaryWeight; set => legendaryWeight = value; }
+
+        private PerkData forcedNextPerk = null;
+        public PerkData ForcedNextPerk => forcedNextPerk;
+        public void SetForcedNextPerk(PerkData perk) { forcedNextPerk = perk; }
         [Header("Audio Settings")]
         [Tooltip("Âm thanh phát khi nhận Perk/Buff.")]
         [SerializeField] private AudioClip buffSFX;
@@ -197,8 +207,15 @@ namespace Roguelite.UpgradeSystem
                 return result;
             }
 
-            // 2. Rút ngẫu nhiên không trùng lặp theo trọng số
-            int itemsToGet = Mathf.Min(count, candidates.Count);
+            // 2. Rút ngẫu nhiên không trùng lặp theo trọng số (ưu tiên forcedNextPerk nếu có)
+            if (forcedNextPerk != null && candidates.Contains(forcedNextPerk))
+            {
+                result.Add(forcedNextPerk);
+                candidates.Remove(forcedNextPerk);
+                forcedNextPerk = null; // Reset sau khi áp dụng
+            }
+
+            int itemsToGet = Mathf.Min(count - result.Count, candidates.Count);
             for (int i = 0; i < itemsToGet; i++)
             {
                 PerkData chosen = PickWeightedPerk(candidates);

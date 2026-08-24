@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: AttackDmg%
   perkName: "N\u1ED9i L\u1EF1c Cu\u1ED9n Tr\xE0o"
-  description: 
+  description: "T\u0103ng 15% s\xE1t th\u01B0\u01A1ng v\u1EADt l\xFD g\xE2y ra."
   icon: {fileID: -656240267, guid: 355a380ada646b04f97b605e8f7909e6, type: 3}
   rarity: 1
   effectType: 0

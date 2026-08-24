@@ -242,6 +242,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isDead: 0
+  isGodMode: 0
   isInvincible: 0
   invincibilityTimer: 1
 --- !u!114 &285976679450404119
@@ -439,9 +440,9 @@ MonoBehaviour:
   logActions: 1
   logStateChanges: 1
   walkSpeed: 8
-  runSpeed: 15
-  jumpImpulse: 15
-  airWalkSpeed: 8.4
+  runSpeed: 14
+  jumpImpulse: 14
+  airWalkSpeed: 6.93
   attackMovementMultiplier: 0
   _isMoving: 0
   _isRunning: 0

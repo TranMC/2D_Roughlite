@@ -52,6 +52,10 @@ namespace Roguelite.Player
         [Tooltip("Trạng thái sinh tử của nhân vật.")]
         [SerializeField] private bool isDead = false;
 
+        [Header("God Mode Settings")]
+        [SerializeField] private bool isGodMode = false;
+        public bool IsGodMode { get => isGodMode; set => isGodMode = value; }
+
         [Header("Invincibility Settings")]
         [SerializeField] private bool isInvincible = false;
         [SerializeField] private float invincibilityTimer = 0.25f;
@@ -191,11 +195,11 @@ namespace Roguelite.Player
         /// <param name="knockback">Lực đẩy áp dụng</param>
         public void TakeDamage(float damage, Vector2 knockback)
         {
-            if (isDead || damage <= 0f || isInvincible)
+            if (isDead || damage <= 0f || isInvincible || isGodMode)
             {
-                if (isInvincible && logDamage && !isDead)
+                if ((isInvincible || isGodMode) && logDamage && !isDead)
                 {
-                    DebugLogger.Log($"{gameObject.name} is invincible, damage blocked", MODULE_NAME);
+                    DebugLogger.Log($"{gameObject.name} is invincible/godmode, damage blocked", MODULE_NAME);
                 }
                 return;
             }

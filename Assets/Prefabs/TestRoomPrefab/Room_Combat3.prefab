@@ -8335,7 +8335,7 @@ MonoBehaviour:
   directionalKnockback: 0
   targetLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 640
   enableDebugLog: 1
 --- !u!1 &4108774716247879394
 GameObject:

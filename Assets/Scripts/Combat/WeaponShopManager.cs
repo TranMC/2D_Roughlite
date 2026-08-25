@@ -13,6 +13,7 @@ namespace Roguelite.Combat
     /// </summary>
     public class WeaponShopManager : MonoBehaviour
     {
+        public const string VERSION = "1.1.0";
         private static WeaponShopManager instance;
         public static WeaponShopManager Instance
         {
@@ -102,9 +103,10 @@ namespace Roguelite.Combat
             if (wData == null) return;
 
             bool changed = false;
-            if (database != null && database.AllWeapons != null)
+            WeaponDatabase db = Database;
+            if (db != null && db.AllWeapons != null)
             {
-                foreach (var weapon in database.AllWeapons)
+                foreach (var weapon in db.AllWeapons)
                 {
                     if (weapon == null) continue;
                     string id = GetWeaponId(weapon);
@@ -152,6 +154,11 @@ namespace Roguelite.Combat
         public bool IsWeaponUnlocked(string weaponId)
         {
             if (string.IsNullOrEmpty(weaponId)) return false;
+            if (Database != null && Database.AllWeapons != null)
+            {
+                var w = Database.AllWeapons.Find(x => x != null && GetWeaponId(x) == weaponId);
+                if (w != null && w.IsDefaultUnlocked) return true;
+            }
             if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return false;
 
             var wData = SaveManager.Instance.CurrentSaveData.weaponData;
@@ -161,6 +168,7 @@ namespace Roguelite.Combat
         public bool IsWeaponUnlocked(WeaponData weapon)
         {
             if (weapon == null) return false;
+            if (weapon.IsDefaultUnlocked) return true;
             return IsWeaponUnlocked(GetWeaponId(weapon));
         }
 
@@ -182,6 +190,7 @@ namespace Roguelite.Combat
         public bool IsRequirementMet(WeaponData weapon)
         {
             if (weapon == null) return false;
+            if (weapon.IsDefaultUnlocked) return true;
             if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return false;
 
             return weapon.IsRequirementMet(SaveManager.Instance.CurrentSaveData.progressData);
@@ -290,7 +299,7 @@ namespace Roguelite.Combat
             if (weapon == null) return false;
 
             string weaponId = GetWeaponId(weapon);
-            if (!IsWeaponUnlocked(weaponId))
+            if (!IsWeaponUnlocked(weapon))
             {
                 Debug.LogWarning($"[WeaponShopManager] Vũ khí '{weapon.WeaponName}' chưa được mua! Không thể trang bị.");
                 return false;
@@ -298,6 +307,11 @@ namespace Roguelite.Combat
 
             if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return false;
             var wData = SaveManager.Instance.CurrentSaveData.weaponData;
+
+            if (weapon.IsDefaultUnlocked && !wData.unlockedWeaponIds.Contains(weaponId))
+            {
+                wData.unlockedWeaponIds.Add(weaponId);
+            }
 
             if (wData.equippedWeaponIds.Contains(weaponId)) return true;
 

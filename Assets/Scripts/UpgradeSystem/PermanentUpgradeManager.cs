@@ -15,6 +15,7 @@ namespace Roguelite.UpgradeSystem
     /// </summary>
     public class PermanentUpgradeManager : MonoBehaviour
     {
+        public const string VERSION = "1.2.0";
         private static PermanentUpgradeManager instance;
         public static PermanentUpgradeManager Instance
         {
@@ -45,7 +46,40 @@ namespace Roguelite.UpgradeSystem
         public static event Action<int> OnCurrencyChanged;
         public static event Action OnPermanentStatsApplied;
 
-        public PermanentUpgradeDatabase Database => database;
+        public PermanentUpgradeDatabase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = GetOrLoadPermanentUpgradeDatabase();
+                }
+                return database;
+            }
+            set => database = value;
+        }
+
+        public static PermanentUpgradeDatabase GetOrLoadPermanentUpgradeDatabase()
+        {
+            PermanentUpgradeDatabase db = Resources.Load<PermanentUpgradeDatabase>("PermanentUpgradeDatabase");
+            if (db == null)
+            {
+                var dbs = Resources.FindObjectsOfTypeAll<PermanentUpgradeDatabase>();
+                if (dbs != null && dbs.Length > 0) db = dbs[0];
+            }
+#if UNITY_EDITOR
+            if (db == null)
+            {
+                string[] guids = UnityEditor.AssetDatabase.FindAssets("t:PermanentUpgradeDatabase");
+                if (guids.Length > 0)
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                    db = UnityEditor.AssetDatabase.LoadAssetAtPath<PermanentUpgradeDatabase>(path);
+                }
+            }
+#endif
+            return db;
+        }
 
         private void Awake()
         {
@@ -149,6 +183,7 @@ namespace Roguelite.UpgradeSystem
         public bool IsRequirementMet(PermanentUpgradeData upgradeData)
         {
             if (upgradeData == null) return false;
+            if (upgradeData.IsDefaultUnlocked) return true;
             if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return false;
 
             return upgradeData.IsRequirementMet(SaveManager.Instance.CurrentSaveData.progressData);

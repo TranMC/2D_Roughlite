@@ -14,16 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponId: sword_steel
   weaponName: "Ki\u1EBFm Th\xE9p R\xE8n"
-  icon: {fileID: 0}
+  icon: {fileID: -1061360578, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
   description: "L\u01B0\u1EE1i ki\u1EBFm b\u1EB1ng th\xE9p tinh luy\u1EC7n, s\xE1t
     th\u01B0\u01A1ng \u1ED5n \u0111\u1ECBnh v\xE0 s\u1EAFc b\xE9n."
   damage: 18
   attackSpeed: 1.1
   range: 1.6
   knockback: {x: 3, y: 0}
-  shootSFX: {fileID: 0}
-  hitSFX: {fileID: 0}
-  hitboxMappings: []
   price: 150
   requiredEnemiesKilled: 15
   requiredRunsPlayed: 1

@@ -23,6 +23,7 @@ namespace Roguelite.Core
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        public const string VERSION = "1.1.0";
         public static GameManager Instance { get; private set; }
 
         [Header("Trạng thái Hiện tại")]
@@ -58,11 +59,11 @@ namespace Roguelite.Core
 
             // Tự động nhận diện trạng thái game dựa theo scene hiện tại đang active lúc chạy
             string activeSceneName = SceneManager.GetActiveScene().name;
-            if (activeSceneName == mainMenuSceneName)
+            if (activeSceneName == mainMenuSceneName || activeSceneName.ToLower().Contains("mainmenu"))
             {
                 ChangeState(GameState.MainMenu);
             }
-            else if (activeSceneName == gameplaySceneName)
+            else
             {
                 ChangeState(GameState.Gameplay);
             }

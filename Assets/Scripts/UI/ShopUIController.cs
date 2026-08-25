@@ -15,19 +15,41 @@ namespace Roguelite.UI
     }
 
     /// <summary>
-    /// Controller chính điều khiển toàn bộ Giao diện Shop (Shop Canvas / Shop Panel).
-    /// Quản lý chuyển Tab (Equipment vs Power), đồng bộ hiển thị Vàng và danh sách mặt hàng.
-    /// Version: 1.0.0
+    /// Controller chính điều khiển toàn bộ Giao diện Shop (Shop Canvas / DarkPanel / ShopPanel).
+    /// Hỗ trợ tìm kiếm kể cả khi Panel bị tắt (Inactive) từ đầu trong Scene,
+    /// tự động quản lý cả DarkPanel (làm tối màn hình) và ShopPanel (bảng nội dung).
+    /// Version: 1.8.0
     /// </summary>
     public class ShopUIController : MonoBehaviour
     {
-        public const string VERSION = "1.1.0";
-        public static ShopUIController Instance { get; private set; }
+        public const string VERSION = "1.8.0";
+        private static ShopUIController instance;
 
-        [Header("--- Shop Panel Root ---")]
-        [Tooltip("Panel chính của cửa hàng.")]
+        public static ShopUIController Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindFirstObjectByType<ShopUIController>(FindObjectsInactive.Include);
+                }
+                return instance;
+            }
+            private set => instance = value;
+        }
+
+        [Header("--- Root Panels to Toggle ---")]
+        [Tooltip("Panel tối làm nền mờ (DarkPanel).")]
+        [SerializeField] private GameObject darkPanel;
+
+        [Tooltip("Panel chính chứa nội dung cửa hàng (ShopPanel).")]
         [SerializeField] private GameObject shopPanel;
+
+        [Tooltip("Nút đóng cửa hàng (CloseBtn).")]
         [SerializeField] private Button closeButton;
+
+        [Tooltip("Tự động mở Shop ngay khi vào Scene (Mặc định: false - Chờ bấm E).")]
+        [SerializeField] private bool startOpen = false;
 
         [Header("--- Header & Currency ---")]
         [Tooltip("Text hiển thị tổng số tiền vàng của người chơi.")]
@@ -60,20 +82,56 @@ namespace Roguelite.UI
         private ShopTab currentTab = ShopTab.Equipment;
         private PermanentUpgradeCategory currentUpgradeCategory = PermanentUpgradeCategory.All;
         private readonly List<ShopSlotUI> spawnedSlots = new List<ShopSlotUI>();
+        private bool isOpening = false;
+
+        public bool IsOpen
+        {
+            get
+            {
+                if (shopPanel != null && shopPanel.activeInHierarchy) return true;
+                if (darkPanel != null && darkPanel.activeInHierarchy) return true;
+                return false;
+            }
+        }
 
         private void Awake()
         {
-            if (Instance == null)
+            if (instance == null)
             {
-                Instance = this;
+                instance = this;
             }
-            else if (Instance != this)
+            else if (instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
 
             SetupButtons();
+
+            if (!startOpen && !isOpening)
+            {
+                CloseShop();
+            }
+        }
+
+        private void Start()
+        {
+            SetupButtons();
+
+            if (startOpen)
+            {
+                OpenShop();
+            }
+        }
+
+        private void Update()
+        {
+            // Cho phép đóng nhanh Shop bằng phím Escape (cả New Input và Legacy)
+            bool escapePressed = Input.GetKeyDown(KeyCode.Escape) || (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame);
+            if (IsOpen && escapePressed)
+            {
+                CloseShop();
+            }
         }
 
         private void OnEnable()
@@ -88,7 +146,8 @@ namespace Roguelite.UI
             PermanentUpgradeManager.OnCurrencyChanged += HandleCurrencyChanged;
             SaveManager.OnSaveCompleted += HandleShopDataChanged;
 
-            SwitchTab(ShopTab.Equipment);
+            SetupButtons();
+            SwitchTab(currentTab);
             UpdateGoldDisplay();
         }
 
@@ -103,7 +162,7 @@ namespace Roguelite.UI
             SaveManager.OnSaveCompleted -= HandleShopDataChanged;
         }
 
-        private void SetupButtons()
+        public void SetupButtons()
         {
             if (equipmentTabButton != null)
             {
@@ -188,7 +247,6 @@ namespace Roguelite.UI
 
             if (contentContainer == null || slotPrefab == null)
             {
-                Debug.LogWarning("[ShopUIController] Thiếu Content Container hoặc Slot Prefab!");
                 return;
             }
 
@@ -326,7 +384,12 @@ namespace Roguelite.UI
 
         public void OpenShop()
         {
+            isOpening = true;
+            if (darkPanel != null) darkPanel.SetActive(true);
             if (shopPanel != null) shopPanel.SetActive(true);
+            isOpening = false;
+
+            SetupButtons();
             SwitchTab(currentTab);
             UpdateGoldDisplay();
         }
@@ -334,11 +397,12 @@ namespace Roguelite.UI
         public void CloseShop()
         {
             if (shopPanel != null) shopPanel.SetActive(false);
+            if (darkPanel != null) darkPanel.SetActive(false);
         }
 
         public void ToggleShop()
         {
-            if (shopPanel != null && shopPanel.activeSelf)
+            if (IsOpen)
             {
                 CloseShop();
             }

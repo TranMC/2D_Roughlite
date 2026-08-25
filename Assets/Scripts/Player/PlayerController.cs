@@ -8,6 +8,7 @@ using Roguelite.Player;
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(PlayerStats))]
 public class PlayerController : MonoBehaviour
 {
+    public const string VERSION = "1.3.0";
     Rigidbody2D rb;
     Animator animator;
 
@@ -174,8 +175,17 @@ public class PlayerController : MonoBehaviour
         baseWalkSpeed = walkSpeed;
         baseRunSpeed = runSpeed;
         baseJumpImpulse = jumpImpulse;
-   }
+    }
 
+    private void Start()
+    {
+        // Đảm bảo Input Action Map luôn ở trạng thái 'Player' khi điều khiển nhân vật
+        var playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
+        if (playerInput != null && playerInput.actions != null)
+        {
+            playerInput.SwitchCurrentActionMap("Player");
+        }
+    }
 
     private void Update()
     {
@@ -202,31 +212,18 @@ public class PlayerController : MonoBehaviour
     // Cập nhật vật lý mỗi khung hình cố định
     private void FixedUpdate()
     {
-
         float moveSpeed = CurrentMoveSpeed;
         if (IsAttacking) moveSpeed *= attackMovementMultiplier;
-        if(playerStats == null || !playerStats.LockVelocity)
+        if (playerStats == null || !playerStats.LockVelocity)
             rb.velocity = new Vector2(moveInput.x * moveSpeed, rb.velocity.y);
         animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
     }
 
-
-
-    private bool IsGameplayInputAllowed =>
-        GameManager.Instance == null || GameManager.Instance.CurrentState == GameState.Gameplay;
-
     // Xử lý di chuyển dựa trên input
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (!IsGameplayInputAllowed)
-        {
-            moveInput = Vector2.zero;
-            IsMoving = false;
-            return;
-        }
-
         moveInput = context.ReadValue<Vector2>();
-        if(IsAlive)
+        if (IsAlive)
         {
             IsMoving = moveInput != Vector2.zero;
             SetFacingDirection(moveInput);
@@ -267,10 +264,13 @@ public class PlayerController : MonoBehaviour
 
 
 
+    private bool IsGamePaused =>
+        GameManager.Instance != null && (GameManager.Instance.CurrentState == GameState.Paused || GameManager.Instance.CurrentState == GameState.GameOver || GameManager.Instance.CurrentState == GameState.Victory);
+
     // Xử lý chạy dựa trên input
     public void onRun(InputAction.CallbackContext context)
     {
-        if (!IsGameplayInputAllowed) return;
+        if (IsGamePaused) return;
 
         if (context.started)
         {
@@ -294,7 +294,7 @@ public class PlayerController : MonoBehaviour
     // Xử lý nhảy dựa trên input
     public void onJump(InputAction.CallbackContext context)
     {
-        if (!IsGameplayInputAllowed) return;
+        if (IsGamePaused) return;
 
         if (context.started && touchingDirections.IsGrounded && CanMove)
         {
@@ -326,7 +326,19 @@ public class PlayerController : MonoBehaviour
     // Xử lý tấn công dựa trên input
     public void onAttack(InputAction.CallbackContext context)
     {
-        if (!IsGameplayInputAllowed) return;
+        if (IsGamePaused) return;
+
+        // 1. Chặn tấn công khi Shop đang mở
+        if (Roguelite.UI.ShopUIController.Instance != null && Roguelite.UI.ShopUIController.Instance.IsOpen)
+        {
+            return;
+        }
+
+        // 2. Chặn tấn công khi đang click chuột trên giao diện UI (Buttons, Shop, Canvas...)
+        if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
 
         if (context.started)
         {

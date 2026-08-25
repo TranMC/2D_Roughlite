@@ -12,7 +12,7 @@ namespace Roguelite.SaveSystem
     {
         public static SaveManager Instance { get; private set; }
 
-        public static readonly int CURRENT_SAVE_VERSION = 5;
+        public static readonly int CURRENT_SAVE_VERSION = 6;
         public static readonly int CURRENT_SETTING_VERSION = 1;
 
         public const int AUTOSAVE_SLOT_INDEX = 0;
@@ -32,6 +32,8 @@ namespace Roguelite.SaveSystem
         private string settingFilePath;
 
         private bool isSaving = false;
+        private bool hasPendingSave = false;
+        private int pendingSlotIndex = -1;
         private bool isAutoSavePending = false;
         private Coroutine autoSaveDebounceCoroutine;
 
@@ -311,7 +313,12 @@ namespace Roguelite.SaveSystem
 
         public void SaveToDiskAsync(int targetSlotIndex = -1)
         {
-            if (isSaving) return;
+            if (isSaving)
+            {
+                hasPendingSave = true;
+                pendingSlotIndex = targetSlotIndex;
+                return;
+            }
             StartCoroutine(SaveToDiskCoroutine(targetSlotIndex));
         }
 
@@ -362,6 +369,14 @@ namespace Roguelite.SaveSystem
             Debug.Log($"[SaveManager] Lưu SaveData Slot {slotToUse} (AutoSave/Manual) thành công xuống đĩa (Async).");
             isSaving = false;
             OnSaveCompleted?.Invoke();
+
+            if (hasPendingSave)
+            {
+                hasPendingSave = false;
+                int nextSlot = pendingSlotIndex;
+                pendingSlotIndex = -1;
+                SaveToDiskAsync(nextSlot);
+            }
         }
 
         public void TriggerAutoSave(float delaySeconds = 0.1f)
@@ -500,6 +515,15 @@ namespace Roguelite.SaveSystem
             if (oldData.saveVersion < 5)
             {
                 oldData.saveVersion = 5;
+            }
+
+            if (oldData.saveVersion < 6)
+            {
+                oldData.saveVersion = 6;
+                if (oldData.weaponData == null)
+                {
+                    oldData.weaponData = new WeaponUnlockData();
+                }
             }
 
             return oldData;

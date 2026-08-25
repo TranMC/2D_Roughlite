@@ -8,7 +8,7 @@ namespace Roguelite.SaveSystem
     [Serializable]
     public class SaveData
     {
-        public int saveVersion = 5;
+        public int saveVersion = 6;
         public int slotIndex = 1;
         public string lastSavedTime = string.Empty;
 
@@ -18,7 +18,7 @@ namespace Roguelite.SaveSystem
 
         public SaveData()
         {
-            saveVersion = 5;
+            saveVersion = 6;
             slotIndex = 1;
             lastSavedTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             progressData = new PlayerProgressData();

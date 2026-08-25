@@ -20,6 +20,12 @@ namespace Roguelite.UI
         [SerializeField] private TextMeshProUGUI slotInfoText;
         [SerializeField] private Button slotButton;
 
+        [Header("Optional Extended UI References (Tùy chọn)")]
+        [SerializeField] private TextMeshProUGUI weaponText;
+        [SerializeField] private TextMeshProUGUI enemiesKilledText;
+        [SerializeField] private TextMeshProUGUI upgradesCountText;
+        [SerializeField] private TextMeshProUGUI saveTimeText;
+
         private System.Action<int> onSlotSelected;
 
         /// <summary>Slot này có phải Auto Save không.</summary>
@@ -29,8 +35,11 @@ namespace Roguelite.UI
         public void Setup(System.Action<int> callback)
         {
             onSlotSelected = callback;
-            slotButton.onClick.RemoveAllListeners();
-            slotButton.onClick.AddListener(() => onSlotSelected?.Invoke(slotIndex));
+            if (slotButton != null)
+            {
+                slotButton.onClick.RemoveAllListeners();
+                slotButton.onClick.AddListener(() => onSlotSelected?.Invoke(slotIndex));
+            }
             RefreshDisplay();
         }
 
@@ -61,7 +70,10 @@ namespace Roguelite.UI
             }
 
             // Hiển thị tiêu đề
-            slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
+            if (slotTitleText != null)
+            {
+                slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
+            }
 
             string timeInfo = string.IsNullOrEmpty(previewData.lastSavedTime)
                 ? "Chưa rõ"
@@ -70,15 +82,54 @@ namespace Roguelite.UI
             int runs = previewData.progressData != null ? previewData.progressData.totalRunsPlayed : 0;
             int room = previewData.progressData != null ? previewData.progressData.highestRoomReached : 0;
             int gold = previewData.progressData != null ? previewData.progressData.totalCurrency : 0;
+            int enemies = previewData.progressData != null ? previewData.progressData.totalEnemiesKilled : 0;
 
-            slotInfoText.text = $"Run: {runs} | Phòng: {room} | Vàng: {gold}\nLưu lúc: {timeInfo}";
+            string weapon = (previewData.weaponData != null && !string.IsNullOrEmpty(previewData.weaponData.equippedWeaponId))
+                ? FormatWeaponName(previewData.weaponData.equippedWeaponId)
+                : "Mặc định";
+
+            int upgradesCount = (previewData.abilityData != null && previewData.abilityData.abilityLevels != null)
+                ? previewData.abilityData.abilityLevels.Count
+                : 0;
+
+            // Cập nhật các UI phụ nếu được gán trong Inspector
+            if (weaponText != null) weaponText.text = $"Vũ khí: {weapon}";
+            if (enemiesKilledText != null) enemiesKilledText.text = $"Diệt quái: {enemies}";
+            if (upgradesCountText != null) upgradesCountText.text = $"Nâng cấp: {upgradesCount}";
+            if (saveTimeText != null) saveTimeText.text = $"Lưu lúc: {timeInfo}";
+
+            // Hiển thị tổng hợp dạng Rich Text lên slotInfoText với mã màu tương phản cao (High-Contrast)
+            if (slotInfoText != null)
+            {
+                slotInfoText.text = $"<color=#222222>Run:</color> <color=#B85C00><b>{runs}</b></color> | <color=#222222>Phòng:</color> <color=#15803D><b>{room}</b></color> | <color=#222222>Vàng:</color> <color=#B45309><b>{gold}</b></color>\n" +
+                                    $"<color=#222222>Quái diệt:</color> <color=#B91C1C><b>{enemies}</b></color> | <color=#222222>Vũ khí:</color> <color=#0369A1><b>{weapon}</b></color>\n" +
+                                    $"<size=85%><color=#555555>Lưu lúc: {timeInfo}</color></size>";
+            }
+        }
+
+        private string FormatWeaponName(string weaponId)
+        {
+            if (string.IsNullOrEmpty(weaponId)) return "Mặc định";
+            if (weaponId.Equals("sword_starter", System.StringComparison.OrdinalIgnoreCase)) return "Kiếm Thép";
+            string formatted = weaponId.Replace("_", " ");
+            return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(formatted);
         }
 
         /// <summary>Hiển thị trạng thái trống khi slot chưa có dữ liệu.</summary>
         private void SetEmptyDisplay()
         {
-            slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
-            slotInfoText.text = "[TRỐNG]";
+            if (slotTitleText != null)
+            {
+                slotTitleText.text = IsAutoSaveSlot ? "Auto Save" : $"Slot {slotIndex}";
+            }
+            if (slotInfoText != null)
+            {
+                slotInfoText.text = "<color=#666666><b>[TRỐNG - CHƯA CÓ DỮ LIỆU]</b></color>";
+            }
+            if (weaponText != null) weaponText.text = "Vũ khí: --";
+            if (enemiesKilledText != null) enemiesKilledText.text = "Diệt quái: 0";
+            if (upgradesCountText != null) upgradesCountText.text = "Nâng cấp: 0";
+            if (saveTimeText != null) saveTimeText.text = "";
         }
 
         /// <summary>Kiểm tra slot này có dữ liệu hay không.</summary>
@@ -90,7 +141,10 @@ namespace Roguelite.UI
         /// <summary>Bật/tắt nút bấm của slot này.</summary>
         public void SetInteractable(bool interactable)
         {
-            slotButton.interactable = interactable;
+            if (slotButton != null)
+            {
+                slotButton.interactable = interactable;
+            }
         }
 
         public int SlotIndex => slotIndex;

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using Roguelite.SaveSystem;
 
 public class SoundMixerManager : MonoBehaviour
 {
@@ -83,6 +84,17 @@ public class SoundMixerManager : MonoBehaviour
     {
         float clamped = Mathf.Clamp(linearLevel, MinLinear, 1f);
         PlayerPrefs.SetFloat(prefKey, clamped);
+
+        if (SaveManager.Instance != null && SaveManager.Instance.CurrentSettingData != null)
+        {
+            var setting = SaveManager.Instance.CurrentSettingData;
+            if (mixerParameter == "MasterVolume") setting.masterVolume = clamped;
+            else if (mixerParameter == "MusicVolume") setting.bgmVolume = clamped;
+            else if (mixerParameter == "SFXVolume") setting.sfxVolume = clamped;
+
+            SaveManager.Instance.SaveSettingData();
+        }
+
         ApplyMixerExposed(mixerParameter, clamped);
     }
 
@@ -99,6 +111,14 @@ public class SoundMixerManager : MonoBehaviour
 
     private static float LoadLinear(string prefKey)
     {
+        if (SaveManager.Instance != null && SaveManager.Instance.CurrentSettingData != null)
+        {
+            var setting = SaveManager.Instance.CurrentSettingData;
+            if (prefKey == MasterPrefKey) return Mathf.Clamp(setting.masterVolume, MinLinear, 1f);
+            if (prefKey == MusicPrefKey) return Mathf.Clamp(setting.bgmVolume, MinLinear, 1f);
+            if (prefKey == SfxPrefKey) return Mathf.Clamp(setting.sfxVolume, MinLinear, 1f);
+        }
+
         return Mathf.Clamp(PlayerPrefs.GetFloat(prefKey, DefaultLinear), MinLinear, 1f);
     }
 

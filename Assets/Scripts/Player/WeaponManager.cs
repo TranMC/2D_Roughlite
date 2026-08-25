@@ -1,6 +1,7 @@
 using UnityEngine;
 using Roguelite.Combat;
 using Roguelite.Core;
+using Roguelite.SaveSystem;
 
 namespace Roguelite.Player
 {
@@ -29,9 +30,36 @@ namespace Roguelite.Player
 
         private void Start()
         {
+            LoadSavedWeaponState();
+        }
+
+        private void LoadSavedWeaponState()
+        {
+            int targetIndex = defaultWeaponIndex;
+
+            if (SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null)
+            {
+                var weaponData = SaveManager.Instance.CurrentSaveData.weaponData;
+                if (weaponData != null && !string.IsNullOrEmpty(weaponData.equippedWeaponId) && unlockedWeapons != null)
+                {
+                    for (int i = 0; i < unlockedWeapons.Length; i++)
+                    {
+                        if (unlockedWeapons[i] != null)
+                        {
+                            string id = string.IsNullOrEmpty(unlockedWeapons[i].WeaponId) ? unlockedWeapons[i].name : unlockedWeapons[i].WeaponId;
+                            if (id == weaponData.equippedWeaponId)
+                            {
+                                targetIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (unlockedWeapons != null && unlockedWeapons.Length > 0)
             {
-                EquipWeapon(defaultWeaponIndex);
+                EquipWeapon(targetIndex);
             }
             else
             {
@@ -58,6 +86,22 @@ namespace Roguelite.Player
 
             currentWeaponIndex = index;
             currentWeapon = unlockedWeapons[currentWeaponIndex];
+
+            // Đồng bộ dữ liệu Save
+            if (currentWeapon != null && SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null)
+            {
+                var saveData = SaveManager.Instance.CurrentSaveData.weaponData;
+                if (saveData != null)
+                {
+                    string id = string.IsNullOrEmpty(currentWeapon.WeaponId) ? currentWeapon.name : currentWeapon.WeaponId;
+                    saveData.equippedWeaponId = id;
+                    if (!saveData.unlockedWeaponIds.Contains(id))
+                    {
+                        saveData.unlockedWeaponIds.Add(id);
+                    }
+                    SaveManager.Instance.TriggerAutoSave(0.5f);
+                }
+            }
 
             // === PHÁT EVENT ===
             CharacterEvents.weaponSwitched?.Invoke(gameObject, currentWeapon);

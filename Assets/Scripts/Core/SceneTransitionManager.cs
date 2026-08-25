@@ -325,7 +325,16 @@ namespace Roguelite.Core
 
             SetLoadingUIActive(false);
 
-            // 3. Auto Save khi chuyển tới Scene mới (nếu được yêu cầu)
+            // 3. Cập nhật highestRoomReached & Auto Save khi chuyển tới Scene mới
+            if (SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null)
+            {
+                int roomNumber = currentSequenceIndex + 1;
+                if (roomNumber > SaveManager.Instance.CurrentSaveData.progressData.highestRoomReached)
+                {
+                    SaveManager.Instance.CurrentSaveData.progressData.highestRoomReached = roomNumber;
+                }
+            }
+
             if (autoSaveOnArrival && SaveManager.Instance != null)
             {
                 Debug.Log($"[SceneTransitionManager] Đã tới scene '{targetSceneName}', kích hoạt Auto-Save...");

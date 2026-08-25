@@ -131,6 +131,12 @@ namespace Roguelite.Core
         /// </summary>
         public void StartNewRun()
         {
+            if (SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null)
+            {
+                SaveManager.Instance.CurrentSaveData.progressData.totalRunsPlayed++;
+                SaveManager.Instance.TriggerAutoSave(0.2f);
+            }
+
             ChangeState(GameState.Gameplay);
             LoadScene(gameplaySceneName);
         }

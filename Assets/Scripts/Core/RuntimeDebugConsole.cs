@@ -1278,7 +1278,7 @@ namespace Roguelite.Core
 
             if (targetRoom != null)
             {
-                player.transform.position = targetRoom.transform.position;
+                player.transform.position = new Vector3(targetRoom.transform.position.x, targetRoom.transform.position.y, 0f);
                 commandOutput = $"🚀 Đã dịch chuyển đến phòng tiếp theo: {targetRoom.gameObject.name}!";
             }
             else

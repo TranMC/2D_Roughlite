@@ -188,6 +188,17 @@ public class PlayerController : MonoBehaviour
         _wasGrounded = touchingDirections.IsGrounded;
     }
 
+    private void LateUpdate()
+    {
+        // Đảm bảo Player luôn ở Z = 0 trong không gian 2D, tránh lệch camera/parallax khi teleport
+        if (transform.position.z != 0f)
+        {
+            Vector3 pos = transform.position;
+            pos.z = 0f;
+            transform.position = pos;
+        }
+    }
+
     // Cập nhật vật lý mỗi khung hình cố định
     private void FixedUpdate()
     {

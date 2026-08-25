@@ -15,7 +15,25 @@ namespace Roguelite.UpgradeSystem
     /// </summary>
     public class PermanentUpgradeManager : MonoBehaviour
     {
-        public static PermanentUpgradeManager Instance { get; private set; }
+        private static PermanentUpgradeManager instance;
+        public static PermanentUpgradeManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindFirstObjectByType<PermanentUpgradeManager>();
+                    if (instance == null)
+                    {
+                        GameObject go = new GameObject("[PermanentUpgradeManager]");
+                        instance = go.AddComponent<PermanentUpgradeManager>();
+                        DontDestroyOnLoad(go);
+                    }
+                }
+                return instance;
+            }
+            private set => instance = value;
+        }
 
         [Header("Database Configuration")]
         [Tooltip("Database chứa tất cả Permanent Upgrade ScriptableObjects.")]
@@ -31,12 +49,12 @@ namespace Roguelite.UpgradeSystem
 
         private void Awake()
         {
-            if (Instance == null)
+            if (instance == null)
             {
-                Instance = this;
+                instance = this;
                 DontDestroyOnLoad(gameObject);
             }
-            else
+            else if (instance != this)
             {
                 Destroy(gameObject);
                 return;
@@ -126,11 +144,23 @@ namespace Roguelite.UpgradeSystem
         }
 
         /// <summary>
-        /// Kiểm tra xem người chơi có đủ tiền mua Cấp tiếp theo của Upgrade không.
+        /// Kiểm tra xem người chơi đã đạt đủ tất cả các điều kiện mở bán (Diệt quái, Runs, Rooms) hay chưa.
+        /// </summary>
+        public bool IsRequirementMet(PermanentUpgradeData upgradeData)
+        {
+            if (upgradeData == null) return false;
+            if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return false;
+
+            return upgradeData.IsRequirementMet(SaveManager.Instance.CurrentSaveData.progressData);
+        }
+
+        /// <summary>
+        /// Kiểm tra xem người chơi có đủ điều kiện mở bán và đủ tiền mua Cấp tiếp theo không.
         /// </summary>
         public bool CanAffordUpgrade(PermanentUpgradeData upgradeData)
         {
             if (upgradeData == null) return false;
+            if (!IsRequirementMet(upgradeData)) return false;
 
             int currentLevel = GetUpgradeLevel(upgradeData.UpgradeId);
             if (currentLevel >= upgradeData.MaxLevel) return false;
@@ -151,6 +181,12 @@ namespace Roguelite.UpgradeSystem
         public bool TryPurchaseUpgrade(PermanentUpgradeData upgradeData)
         {
             if (upgradeData == null) return false;
+
+            if (!IsRequirementMet(upgradeData))
+            {
+                Debug.LogWarning($"[PermanentUpgradeManager] Chưa đạt đủ điều kiện mở bán cho '{upgradeData.UpgradeName}'!");
+                return false;
+            }
 
             string upgradeId = upgradeData.UpgradeId;
             int currentLevel = GetUpgradeLevel(upgradeId);

@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ecd6a446b687cc145a6c8e26f5231c21, type: 3}
-  m_Name: Bow
+  m_Name: Weapon_sword_starter
   m_EditorClassIdentifier: 
-  weaponId: 01
-  weaponName: Bow
+  weaponId: sword_starter
+  weaponName: "Ki\u1EBFm G\u1ED7"
   icon: {fileID: 0}
-  description: 
-  damage: 10
-  attackSpeed: 1
-  range: 10
+  description: "V\u0169 kh\xED c\u01A1 b\u1EA3n d\xE0nh cho c\xE1c t\xE2n binh b\u1EAFt
+    \u0111\u1EA7u h\xE0nh tr\xECnh."
+  damage: 2
+  attackSpeed: 1.2
+  range: 1.5
   knockback: {x: 3, y: 0}
-  shootSFX: {fileID: 8300000, guid: 7cca524f94a5ce04f8599c0de2c38441, type: 3}
-  hitSFX: {fileID: 8300000, guid: 92f901f688bf2de4b8380c948e0cbf74, type: 3}
+  price: 0
+  requiredEnemiesKilled: 0
+  requiredRunsPlayed: 0
+  requiredHighestRoom: 0
+  isDefaultUnlocked: 1

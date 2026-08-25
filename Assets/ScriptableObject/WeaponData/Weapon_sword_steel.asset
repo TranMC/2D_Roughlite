@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd6a446b687cc145a6c8e26f5231c21, type: 3}
+  m_Name: Weapon_sword_steel
+  m_EditorClassIdentifier: 
+  weaponId: sword_steel
+  weaponName: "Ki\u1EBFm Th\xE9p R\xE8n"
+  icon: {fileID: 0}
+  description: "L\u01B0\u1EE1i ki\u1EBFm b\u1EB1ng th\xE9p tinh luy\u1EC7n, s\xE1t
+    th\u01B0\u01A1ng \u1ED5n \u0111\u1ECBnh v\xE0 s\u1EAFc b\xE9n."
+  damage: 18
+  attackSpeed: 1.1
+  range: 1.6
+  knockback: {x: 3, y: 0}
+  shootSFX: {fileID: 0}
+  hitSFX: {fileID: 0}
+  hitboxMappings: []
+  price: 150
+  requiredEnemiesKilled: 15
+  requiredRunsPlayed: 1
+  requiredHighestRoom: 2
+  isDefaultUnlocked: 0

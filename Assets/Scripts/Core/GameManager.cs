@@ -137,6 +137,12 @@ namespace Roguelite.Core
                 SaveManager.Instance.TriggerAutoSave(0.2f);
             }
 
+            // Reset loadout vũ khí support trang bị cho lượt run mới
+            if (Combat.WeaponShopManager.Instance != null)
+            {
+                Combat.WeaponShopManager.Instance.ResetEquippedWeaponsForNewRun();
+            }
+
             ChangeState(GameState.Gameplay);
             LoadScene(gameplaySceneName);
         }

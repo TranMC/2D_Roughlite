@@ -439,10 +439,10 @@ MonoBehaviour:
   logMovement: 0
   logActions: 1
   logStateChanges: 1
-  walkSpeed: 8
-  runSpeed: 14
+  walkSpeed: 5
+  runSpeed: 9
   jumpImpulse: 14
-  airWalkSpeed: 6.93
+  airWalkSpeed: 3
   attackMovementMultiplier: 0
   _isMoving: 0
   _isRunning: 0
@@ -558,15 +558,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4201934938828041213}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb64343dcde999941ba5cab8d23d6113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unlockedWeapons:
-  - {fileID: 11400000, guid: 5e4a24d1152421648bd95e8e969ac270, type: 2}
-  - {fileID: 11400000, guid: 31de177f1b46ba347b63b34aa9c7565c, type: 2}
-  defaultWeaponIndex: 0
 --- !u!1 &5146295657505998755
 GameObject:
   m_ObjectHideFlags: 0

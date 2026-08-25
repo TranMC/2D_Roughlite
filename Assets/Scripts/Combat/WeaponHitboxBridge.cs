@@ -53,39 +53,10 @@ namespace Roguelite.Combat
             if (player != gameObject) return;
             if (newWeapon == null) return;
 
-            // 1. Swap HitboxData
-            SwapHitboxData(newWeapon);
-
-            // 2. Cập nhật chỉ số sát thương & knockback trên tất cả Attack component
+            // Cập nhật chỉ số sát thương & knockback trên tất cả Attack component
             UpdateAttackStats(newWeapon);
 
-            Debug.Log($"[WeaponHitboxBridge] Đã swap hitbox cho vũ khí: {newWeapon.WeaponName}");
-        }
-
-        /// <summary>
-        /// Swap bộ HitboxData trên HitboxController theo WeaponData.
-        /// Nếu vũ khí không có mapping riêng → khôi phục về bộ mặc định.
-        /// </summary>
-        private void SwapHitboxData(WeaponData weapon)
-        {
-            if (hitboxController == null) return;
-
-            if (weapon.HasHitboxMappings)
-            {
-                // Vũ khí có bộ hitbox riêng → swap từng cặp
-                foreach (var mapping in weapon.HitboxMappings)
-                {
-                    if (!string.IsNullOrEmpty(mapping.animationStateName) && mapping.hitboxData != null)
-                    {
-                        hitboxController.SetHitboxDataForState(mapping.animationStateName, mapping.hitboxData);
-                    }
-                }
-            }
-            else
-            {
-                // Vũ khí không có hitbox mapping → khôi phục về mặc định
-                RestoreDefaultHitboxData();
-            }
+            Debug.Log($"[WeaponHitboxBridge] Đã cập nhật chỉ số cho vũ khí mới: {newWeapon.WeaponName}");
         }
 
         /// <summary>

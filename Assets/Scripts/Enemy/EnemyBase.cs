@@ -542,6 +542,24 @@ namespace Roguelite.Enemy
             OnDied?.Invoke();
             OnAnyEnemyDied?.Invoke(this);
 
+            // Tự động thưởng vàng và cập nhật tiến trình quái diệt
+            if (currencyReward > 0)
+            {
+                if (UpgradeSystem.PermanentUpgradeManager.Instance != null)
+                {
+                    UpgradeSystem.PermanentUpgradeManager.Instance.AddCurrency(currencyReward);
+                }
+                else if (SaveSystem.SaveManager.Instance != null && SaveSystem.SaveManager.Instance.CurrentSaveData != null)
+                {
+                    SaveSystem.SaveManager.Instance.CurrentSaveData.progressData.totalCurrency += currencyReward;
+                }
+            }
+
+            if (SaveSystem.SaveManager.Instance != null && SaveSystem.SaveManager.Instance.CurrentSaveData != null)
+            {
+                SaveSystem.SaveManager.Instance.CurrentSaveData.progressData.totalEnemiesKilled++;
+            }
+
             // Vô hiệu hóa tất cả các Collider để tránh nhận sát thương hoặc cản trở tiếp
             Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
             foreach (Collider2D col in colliders)

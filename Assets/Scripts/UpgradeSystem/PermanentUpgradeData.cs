@@ -26,6 +26,19 @@ namespace Roguelite.UpgradeSystem
         [Tooltip("Phân loại nhóm Nâng cấp.")]
         [SerializeField] private PermanentUpgradeCategory category = PermanentUpgradeCategory.Offense;
 
+        [Header("Unlock Requirements (Shop)")]
+        [Tooltip("Số lượng quái tiêu diệt tối thiểu để đủ điều kiện mở bán trong Cửa hàng.")]
+        [SerializeField] private int requiredEnemiesKilled = 0;
+
+        [Tooltip("Số lượt chơi (Runs) tối thiểu để đủ điều kiện mở bán.")]
+        [SerializeField] private int requiredRunsPlayed = 0;
+
+        [Tooltip("Cấp phòng sâu nhất tối thiểu để đủ điều kiện mở bán.")]
+        [SerializeField] private int requiredHighestRoom = 0;
+
+        [Tooltip("Mở bán sẵn ngay từ đầu game (không cần đạt điều kiện).")]
+        [SerializeField] private bool isDefaultUnlocked = true;
+
         [Header("Multi-Tier Configuration")]
         [Tooltip("Danh sách các bậc nâng cấp (Level 1 -> Level Max).")]
         [SerializeField] private List<PermanentUpgradeTier> tiers = new List<PermanentUpgradeTier>();
@@ -35,9 +48,26 @@ namespace Roguelite.UpgradeSystem
         public string UpgradeName => upgradeName;
         public string Description => description;
         public Sprite Icon => icon;
-        public PermanentUpgradeCategory Category => category;
-        public List<PermanentUpgradeTier> Tiers => tiers;
+        public PermanentUpgradeCategory Category { get => category; set => category = value; }
+        public int RequiredEnemiesKilled { get => requiredEnemiesKilled; set => requiredEnemiesKilled = value; }
+        public int RequiredRunsPlayed { get => requiredRunsPlayed; set => requiredRunsPlayed = value; }
+        public int RequiredHighestRoom { get => requiredHighestRoom; set => requiredHighestRoom = value; }
+        public bool IsDefaultUnlocked { get => isDefaultUnlocked; set => isDefaultUnlocked = value; }
+        public List<PermanentUpgradeTier> Tiers { get => tiers; set => tiers = value; }
         public int MaxLevel => tiers != null ? tiers.Count : 0;
+
+        /// <summary>
+        /// Kiểm tra xem người chơi đã đạt đủ tất cả điều kiện mở bán nâng cấp này hay chưa.
+        /// </summary>
+        public bool IsRequirementMet(Roguelite.SaveSystem.PlayerProgressData progress)
+        {
+            if (isDefaultUnlocked) return true;
+            if (progress == null) return false;
+
+            return progress.totalEnemiesKilled >= requiredEnemiesKilled
+                && progress.totalRunsPlayed >= requiredRunsPlayed
+                && progress.highestRoomReached >= requiredHighestRoom;
+        }
 
         /// <summary>
         /// Lấy dữ liệu Tier tương ứng với Cấp độ (1-indexed).

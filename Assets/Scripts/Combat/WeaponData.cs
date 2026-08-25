@@ -22,36 +22,49 @@ namespace Roguelite.Combat
         [SerializeField] private float range = 1.5f;
         [SerializeField] private Vector2 knockback = new Vector2(3f, 0f);
 
-        [Header("Âm thanh (SFX)")]
-        [SerializeField] private AudioClip shootSFX;
-        [SerializeField] private AudioClip hitSFX;
+        [Header("Cửa Hàng & Điều Kiện Mở Khóa")]
+        [Tooltip("Giá mua vũ khí trong Cửa hàng (Gold).")]
+        [SerializeField] private int price = 100;
 
-        [Header("Hitbox Data theo Animation State")]
-        [Tooltip("Gán bộ HitboxData riêng cho vũ khí này. Nếu để trống, dùng HitboxData mặc định trên Player.")]
-        [SerializeField] private WeaponHitboxMapping[] hitboxMappings;
+        [Tooltip("Số lượng quái tiêu diệt tối thiểu để đủ điều kiện mở khóa.")]
+        [SerializeField] private int requiredEnemiesKilled = 0;
 
-        [System.Serializable]
-        public struct WeaponHitboxMapping
-        {
-            [Tooltip("Tên animation state (vd: Attack1, Attack2, Attack3, AirAttack)")]
-            public string animationStateName;
-            public HitboxData hitboxData;
-        }
+        [Tooltip("Số lượt chơi (Runs) tối thiểu để đủ điều kiện mở khóa.")]
+        [SerializeField] private int requiredRunsPlayed = 0;
 
-        // === Properties (read-only) ===
-        public string WeaponId => weaponId;
-        public string WeaponName => weaponName;
+        [Tooltip("Cấp phòng sâu nhất (Highest Room) tối thiểu để đủ điều kiện mở khóa.")]
+        [SerializeField] private int requiredHighestRoom = 0;
+
+        [Tooltip("Đã tự động mở khóa mặc định ngay từ đầu game (Vd: Starter Sword).")]
+        [SerializeField] private bool isDefaultUnlocked = false;
+
+        // === Properties (Getters & Setters hỗ trợ Runtime Editing & Editor Tools) ===
+        public string WeaponId { get => weaponId; set => weaponId = value; }
+        public string WeaponName { get => weaponName; set => weaponName = value; }
         public Sprite Icon => icon;
         public string Description => description;
-        public float Damage => damage;
-        public float AttackSpeed => attackSpeed;
-        public float Range => range;
-        public Vector2 Knockback => knockback;
-        public AudioClip ShootSFX => shootSFX;
-        public AudioClip HitSFX => hitSFX;
-        public WeaponHitboxMapping[] HitboxMappings => hitboxMappings;
+        public float Damage { get => damage; set => damage = value; }
+        public float AttackSpeed { get => attackSpeed; set => attackSpeed = value; }
+        public float Range { get => range; set => range = value; }
+        public Vector2 Knockback { get => knockback; set => knockback = value; }
 
-        /// <summary>Kiểm tra vũ khí này có bộ hitbox mapping riêng hay không.</summary>
-        public bool HasHitboxMappings => hitboxMappings != null && hitboxMappings.Length > 0;
+        public int Price { get => price; set => price = value; }
+        public int RequiredEnemiesKilled { get => requiredEnemiesKilled; set => requiredEnemiesKilled = value; }
+        public int RequiredRunsPlayed { get => requiredRunsPlayed; set => requiredRunsPlayed = value; }
+        public int RequiredHighestRoom { get => requiredHighestRoom; set => requiredHighestRoom = value; }
+        public bool IsDefaultUnlocked { get => isDefaultUnlocked; set => isDefaultUnlocked = value; }
+
+        /// <summary>
+        /// Kiểm tra xem người chơi đã đạt đủ tất cả các điều kiện mở khóa để cho phép mua hay chưa.
+        /// </summary>
+        public bool IsRequirementMet(Roguelite.SaveSystem.PlayerProgressData progress)
+        {
+            if (isDefaultUnlocked) return true;
+            if (progress == null) return false;
+
+            return progress.totalEnemiesKilled >= requiredEnemiesKilled
+                && progress.totalRunsPlayed >= requiredRunsPlayed
+                && progress.highestRoomReached >= requiredHighestRoom;
+        }
     }
 }

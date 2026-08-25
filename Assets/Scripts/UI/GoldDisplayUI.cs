@@ -77,6 +77,21 @@ namespace Roguelite.UI
             RefreshDisplay();
         }
 
+        private int lastObservedGold = -1;
+
+        private void Update()
+        {
+            if (SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null && SaveManager.Instance.CurrentSaveData.progressData != null)
+            {
+                int currentGold = SaveManager.Instance.CurrentSaveData.progressData.totalCurrency;
+                if (currentGold != lastObservedGold)
+                {
+                    lastObservedGold = currentGold;
+                    UpdateGoldDisplay(currentGold);
+                }
+            }
+        }
+
         private void OnDisable()
         {
             UnbindEvents();

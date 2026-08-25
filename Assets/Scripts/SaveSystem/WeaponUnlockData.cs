@@ -9,13 +9,15 @@ namespace Roguelite.SaveSystem
     [Serializable]
     public class WeaponUnlockData
     {
+        public const int MAX_EQUIPPED_SLOTS = 3;
+
         public List<string> unlockedWeaponIds = new List<string>();
-        public string equippedWeaponId = string.Empty;
+        public List<string> equippedWeaponIds = new List<string>();
 
         public WeaponUnlockData()
         {
             unlockedWeaponIds = new List<string>() { "sword_starter" };
-            equippedWeaponId = "sword_starter";
+            equippedWeaponIds = new List<string>();
         }
     }
 }

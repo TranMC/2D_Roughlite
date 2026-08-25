@@ -2,6 +2,84 @@
 
 Tất cả các thay đổi lớn và sửa lỗi trong dự án 2D Roguelite sẽ được lưu trữ tại đây.
 
+## [v0.8.0] - 2026-08-25
+
+### ⚔️ 1. Tái Thiết Kế Kiến Trúc Hệ Thống Vũ Khí Thành Support Buff (Support Weapon Buff System)
+
+#### 💡 1.1. Đặt Vấn Đề & Triết Lý Thiết Kế
+*   **Hạn chế của hệ thống cũ**: Trước đây, vũ khí được thiết kế dưới dạng thiết bị cầm tay chuyển đổi qua phím tắt **Q** và thanh **Hotbar**. Cơ chế này gây rối luồng điều khiển trong game 2D Roguelite nhịp độ nhanh và tạo ra xung đột với hệ thống thẻ Perk nâng cấp trong trận.
+*   **Giải pháp Support Buff**: Chuyển đổi vai trò của Vũ khí thành các **Trang Bị Bổ Trợ (Support Buff Items)**. Thay vì cầm trực tiếp trên tay, người chơi sẽ chọn trang bị tối đa **3 vũ khí support** (`MAX_EQUIPPED_SLOTS = 3`) cho mỗi lượt run.
+*   **Cơ chế cộng dồn chỉ số (Buff Stacking)**: Các chỉ số Sát thương (`Damage`), Lực hất (`Knockback`), Tốc đánh (`AttackSpeed`) từ 1 đến 3 vũ khí support đang trang bị sẽ được tính toán và cộng dồn trực tiếp lên tất cả các thành phần đòn đánh (`Attack`) của Player theo công thức:
+    $$\text{BonusDamage} = \sum_{i=1}^{K} \text{Weapon}_i.\text{Damage} \quad (K \le 3)$$
+    $$\text{KnockbackVector} = \sum_{i=1}^{K} \text{Weapon}_i.\text{Knockback} \quad (K \le 3)$$
+
+#### 🔄 1.2. Cơ Chế Reset Loadout Trang Bị Theo Lượt Run (Run Loadout Reset)
+*   **Tách biệt Dữ liệu Vĩnh viễn & Dữ liệu Lượt chơi**:
+    *   `unlockedWeaponIds` (`List<string>`): Tiến trình sở hữu/mở khóa vĩnh viễn được lưu cố định trên đĩa save. Người chơi chỉ cần mua 1 lần để sở hữu vĩnh viễn.
+    *   `equippedWeaponIds` (`List<string>`): Danh sách 1–3 vũ khí support được chọn để mang vào lượt chơi hiện tại.
+*   **Vòng đời lượt run (Run Lifecycle Integration)**: Khi bắt đầu lượt run mới (`GameManager.StartNewRun()`), phương thức `WeaponShopManager.Instance.ResetEquippedWeaponsForNewRun()` tự động dọn dẹp `equippedWeaponIds` về mảng rỗng. Thiết kế này buộc người chơi phải suy nghĩ chiến thuật và lựa chọn lại bộ 3 vũ khí support trước mỗi lượt chơi mới.
+
+---
+
+### 🔮 2. Kiến Trúc Nâng Cấp Vĩnh Viễn Nhiều Bậc (Multi-Tier Permanent Upgrades & Milestones)
+
+#### 📈 2.1. Cấu Trúc Dữ Liệu Multi-Tier & Milestone Bonus
+*   **Lớp `PermanentUpgradeTier.cs`**: Định nghĩa thông số kỹ thuật cho từng cấp độ (Level 1 $\rightarrow$ Level 5) bao gồm `cost` (Giá vàng nâng cấp), `statType` (Chỉ số tác động), `statValue` (Giá trị cộng), `isPercent` (Cộng % hay Flat) và `isMilestone` (Cấp mốc đặc biệt).
+*   **Thưởng Mốc Milestone (`MilestoneBonusData`)**: Khi nâng cấp đạt cấp tối đa (Level 5), ngoài chỉ số tuyến tính thông thường, người chơi nhận thêm phần thưởng mốc Milestone đặc biệt (ví dụ: % tăng thêm trên tổng máu/sát thương hoặc kích hoạt hiệu ứng đặc biệt).
+
+#### 🎁 2.2. Danh Sách 5 Nâng Cấp Vĩnh Viễn Mẫu Chuẩn
+1.  `perm_max_health` (**Sinh Lực Thần Thánh**): Nhóm Defense - Tăng Max HP từ +15 đến +100. *Mốc Cấp 5*: Tặng thêm **+15% Max HP tổng** (*Máu Bất Tử*).
+2.  `perm_attack_damage` (**Cường Lực Chiến Tướng**): Nhóm Offense - Tăng Sát thương đòn đánh từ +5 đến +30. *Mốc Cấp 5*: Tặng thêm **+20% Sát thương tổng** (*Cuồng Nộ Báo Thù*).
+3.  `perm_walk_speed` (**Bộ Hành Thần Tốc**): Nhóm Utility - Tăng tốc độ đi bộ từ +0.5 đến +3.0. *Mốc Cấp 5*: Tặng thêm **+10% Walk Speed** (*Bước Chân Phong Thần*).
+4.  `perm_run_speed` (**Bứt Tốc Truy Kích**): Nhóm Utility - Tăng tốc độ chạy nhanh từ +0.8 đến +4.5. *Mốc Cấp 5*: Tặng thêm **+15% Run Speed** (*Phi Lôi Thần*).
+5.  `perm_jump_impulse` (**Bật Cao Phi Thường**): Nhóm Utility - Tăng lực bật nhảy từ +1.0 đến +6.0. *Mốc Cấp 5*: Tặng thêm **+20% Jump Impulse** (*Đôi Cánh Tự Do*).
+
+---
+
+### 🏆 3. Hệ Thống Điều Kiện Mở Bán Thành Tựu (Achievement Unlock Requirements)
+
+#### 🎯 3.1. Mô Hình Dữ Liệu Thành Tựu
+Tích hợp trực tiếp vào `WeaponData.cs` và `PermanentUpgradeData.cs`:
+*   `requiredEnemiesKilled` (`int`): Tổng số quái vật phải tiêu diệt tích lũy.
+*   `requiredRunsPlayed` (`int`): Tổng số lượt run đã tham gia.
+*   `requiredHighestRoom` (`int`): Cấp độ phòng sâu nhất từng đạt tới.
+*   `isDefaultUnlocked` (`bool`): Đánh dấu vật phẩm mở bán sẵn mặc định khi mới tạo save.
+
+#### 🧮 3.2. Thuật Toán Kiểm Tra Đủ Điều Kiện Mở Bán (`IsRequirementMet`)
+Phương thức kiểm tra logic điều kiện trước khi cho phép mua/trang bị trong Shop:
+$$\text{IsRequirementMet} = \text{IsDefaultUnlocked} \lor \left( \text{Kills} \ge \text{ReqKills} \land \text{Runs} \ge \text{ReqRuns} \land \text{Rooms} \ge \text{ReqRooms} \right)$$
+
+---
+
+### 💾 4. Quản Lý Save System & Tự Động Di Cư Dữ Liệu (Save Data Migration V8)
+
+*   **Nâng cấp Schema SaveData V8**:
+    *   Cập nhật `CURRENT_SAVE_VERSION = 8` trong `SaveData.cs` và `SaveManager.cs`.
+    *   Chuyển đổi trường `equippedWeaponId` (`string`) sang `equippedWeaponIds` (`List<string>`) trong `WeaponUnlockData.cs`.
+*   **Thuật toán Di cư An toàn (`MigrateSaveData`)**:
+    *   Trong `SaveManager.MigrateSaveData(oldData)`, hệ thống tự động phát hiện phiên bản save cũ (V4, V5, V6, V7) và khởi tạo cấu trúc mảng `equippedWeaponIds` mới.
+    *   Đảm bảo không bị hư hại (corrupt) hoặc đứt gãy dữ liệu tiến trình người chơi khi nâng cấp phiên bản game.
+
+---
+
+### 🛠️ 5. Công Cụ Unity Editor Tool & Console Debug F1 (Automation & Debugging)
+
+#### 🧰 5.1. Bộ Công Cụ Sinh Dữ Liệu Mẫu Trong Unity Editor
+*   **[WeaponEditorWindow.cs](file:///d:/UnityHub/Project/2D_Roughlite/Assets/Scripts/Combat/Editor/WeaponEditorWindow.cs)**: Mở từ Menu Unity `Tools/Roguelite/Weapon & Shop Editor` - Cho phép quét database, chỉnh sửa và sinh tự động 10 vũ khí mẫu chuẩn dữ liệu.
+*   **[PermanentUpgradeGeneratorWindow.cs](file:///d:/UnityHub/Project/2D_Roughlite/Assets/Scripts/UpgradeSystem/Editor/PermanentUpgradeGeneratorWindow.cs)**: Mở từ Menu Unity `Tools/Roguelite/Permanent Upgrade Generator` - Tự động tạo 5 ScriptableObject nâng cấp vĩnh viễn kèm 5 Tiers và Milestone Bonus.
+
+#### 🕹️ 5.2. Runtime Debug Console F1 (`RuntimeDebugConsole.cs`)
+*   **Tab `⚔️ Weapon Shop`**:
+    *   **Bảng `🎯 WEAPONS BUS SUPPORT ĐANG TRANG BỊ LƯỢT RUN NÀY (X/3 Slots)`**: Hiển thị tên vũ khí, ID, chỉ số cộng dồn (Damage, Knockback) và nút **`❌ Gỡ Support`** trực tiếp từng vũ khí.
+    *   **Tính Năng Chỉnh Sửa Trực Tiếp Chỉ Số (Inline Runtime Editor)**: Bấm nút **`✏️ Chỉnh Sửa Stats`** trên từng thẻ vũ khí để mở panel chỉnh sửa trực tiếp các chỉ số `Damage`, `Knockback X/Y`, `Attack Speed`, `Price (Gold)` và `Requirements` tại runtime với cơ chế tự động đồng bộ sang đòn đánh của Player.
+    *   **Thao Tác Trang Bị Nhanh**: Nút **`⚡ Trang Bị Nhanh`** cho phép mở khóa và đưa ngay vũ khí vào Support Slot trong 1 click, nút **`🔓 Mở Khóa Free`**, nút **`🔒 Khóa Lại`** và nút **`🔄 Reset Loadout Run`**.
+    *   **Bảng Hack Tiến Độ Test Điều Kiện**: Nút `+100 Quái`, `+5 Lượt Run`, `+5 Room Depth`, `+1,000 Gold`, `🔓 Mở Khóa Tất Cả Vũ Khí` và `🔒 Reset Mở Khóa`.
+    *   Lệnh Console CLI: `weapon unlockall`, `weapon reset`, `weapon buy <id>`, `weapon equip <id>`, `addkills <num>`, `addruns <num>`.
+
+---
+
+---
+
 ## [v0.7.0] - 2026-08-20
 
 ### 🔮 Hệ thống Permanent Upgrade & Tích hợp SaveManager (Sprint 5)

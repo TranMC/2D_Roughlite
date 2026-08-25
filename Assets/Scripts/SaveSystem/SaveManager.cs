@@ -12,7 +12,7 @@ namespace Roguelite.SaveSystem
     {
         public static SaveManager Instance { get; private set; }
 
-        public static readonly int CURRENT_SAVE_VERSION = 6;
+        public static readonly int CURRENT_SAVE_VERSION = 8;
         public static readonly int CURRENT_SETTING_VERSION = 1;
 
         public const int AUTOSAVE_SLOT_INDEX = 0;
@@ -523,6 +523,28 @@ namespace Roguelite.SaveSystem
                 if (oldData.weaponData == null)
                 {
                     oldData.weaponData = new WeaponUnlockData();
+                }
+            }
+
+            if (oldData.saveVersion < 7)
+            {
+                oldData.saveVersion = 7;
+                if (oldData.weaponData == null)
+                {
+                    oldData.weaponData = new WeaponUnlockData();
+                }
+            }
+
+            if (oldData.saveVersion < 8)
+            {
+                oldData.saveVersion = 8;
+                if (oldData.weaponData == null)
+                {
+                    oldData.weaponData = new WeaponUnlockData();
+                }
+                if (oldData.weaponData.equippedWeaponIds == null)
+                {
+                    oldData.weaponData.equippedWeaponIds = new System.Collections.Generic.List<string>();
                 }
             }
 

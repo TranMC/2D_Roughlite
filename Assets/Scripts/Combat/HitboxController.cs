@@ -132,7 +132,7 @@ namespace Roguelite.Combat
                     if (attack != null)
                     {
                         if (activeEntry.damageOverride > 0f)
-                            attack.AttackDamage = activeEntry.damageOverride;
+                            attack.BaseAttackDamage = activeEntry.damageOverride;
                         if (activeEntry.knockbackOverride != Vector2.zero)
                             attack.Knockback = activeEntry.knockbackOverride;
                     }

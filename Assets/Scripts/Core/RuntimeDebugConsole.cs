@@ -32,10 +32,11 @@ namespace Roguelite.Core
         private bool showConsole = false;
 
         // Khung vị trí cửa sổ (có thể di chuyển được)
-        private Rect windowRect = new Rect(20, 20, 780, 520);
+        private Rect windowRect = new Rect(20, 20, 780, 540);
         private int activeTab = 0;
-        private readonly string[] tabNames = { "📜 Console Logs", "⚡ Cheats & Actions", "🎁 Perks & Player Stats", "⚙️ Debug Modules", "📊 Performance Stats" };
+        private readonly string[] tabNames = { "📜 Console Logs", "⚡ Cheats & Actions", "⚔️ Weapon Shop", "🎁 Perks & Player Stats", "⚙️ Debug Modules", "📊 Performance Stats" };
         private Vector2 perkScrollPos;
+        private Vector2 weaponScrollPos;
 
         // === LOG CONSOLE DATA ===
         public struct LogEntry
@@ -61,6 +62,8 @@ namespace Roguelite.Core
         // Trạng thái Cheat
         private float currentSpeedMultiplier = 1.0f;
         private float currentDamageMultiplier = 1.0f;
+        public float CurrentDamageMultiplier => currentDamageMultiplier;
+        private System.Collections.Generic.HashSet<string> editingWeaponFoldouts = new System.Collections.Generic.HashSet<string>();
 
         // === PERFORMANCE STATS DATA ===
         private float deltaTime = 0.0f;
@@ -345,12 +348,15 @@ namespace Roguelite.Core
                     DrawCheatsTab();
                     break;
                 case 2:
-                    DrawPerksTab();
+                    DrawWeaponShopTab();
                     break;
                 case 3:
-                    DrawDebugModulesTab();
+                    DrawPerksTab();
                     break;
                 case 4:
+                    DrawDebugModulesTab();
+                    break;
+                case 5:
                     DrawPerformanceTab();
                     break;
             }
@@ -560,7 +566,361 @@ namespace Roguelite.Core
 
         #endregion
 
-        #region ====== TAB 3: PERKS & PLAYER STATS ======
+        #region ====== TAB 3: WEAPON SHOP & UNLOCKS ======
+
+        private void DrawWeaponShopTab()
+        {
+            weaponScrollPos = GUILayout.BeginScrollView(weaponScrollPos, GUILayout.Height(430));
+
+            var progress = SaveManager.Instance?.CurrentSaveData?.progressData;
+            int gold = progress != null ? progress.totalCurrency : 0;
+            int kills = progress != null ? progress.totalEnemiesKilled : 0;
+            int runs = progress != null ? progress.totalRunsPlayed : 0;
+            int rooms = progress != null ? progress.highestRoomReached : 0;
+
+            // --- SECTION 1: OVERVIEW & PROGRESS CHEATS ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("⚔️ <b>QUẢN LÝ WEAPON SHOP & ĐIỀU KIỆN MỞ KHÓA</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            GUILayout.Label($"• <b>Vàng (Gold):</b> <color=#ffcc00>{gold}</color> | <b>Quái đã diệt:</b> <color=#00e5ff>{kills}</color> | <b>Lượt Run:</b> <color=#00ff88>{runs}</color> | <b>Phòng sâu nhất:</b> {rooms}");
+            GUILayout.Space(6);
+
+            // Nút Thao Tác Nhanh Hack Tiến Trình Test Điều Kiện
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("+100 Quái", btnNormalStyle, GUILayout.Height(26)))
+            {
+                if (progress != null) progress.totalEnemiesKilled += 100;
+                commandOutput = "⚔️ Đã cộng +100 Quái diệt!";
+            }
+            if (GUILayout.Button("+5 Lượt Run", btnNormalStyle, GUILayout.Height(26)))
+            {
+                if (progress != null) progress.totalRunsPlayed += 5;
+                commandOutput = "🏃 Đã cộng +5 Lượt Run!";
+            }
+            if (GUILayout.Button("+5 Room Depth", btnNormalStyle, GUILayout.Height(26)))
+            {
+                if (progress != null) progress.highestRoomReached += 5;
+                commandOutput = "🏰 Đã cộng +5 Room Depth!";
+            }
+            if (GUILayout.Button("+1,000 Gold", btnWarningStyle, GUILayout.Height(26)))
+            {
+                AddGold(1000);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(4);
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("🔓 Mở Khóa Tất Cả Vũ Khí", btnPrimaryStyle, GUILayout.Height(28)))
+            {
+                if (WeaponShopManager.Instance != null)
+                {
+                    WeaponShopManager.Instance.UnlockAllWeapons();
+                    commandOutput = "🔓 Đã mở khóa toàn bộ vũ khí!";
+                }
+                else
+                {
+                    commandOutput = "⚠️ Chưa khởi tạo WeaponShopManager trong Scene!";
+                }
+            }
+
+            if (GUILayout.Button("🔒 Reset Mở Khóa Vũ Khí", btnDangerStyle, GUILayout.Height(28)))
+            {
+                if (WeaponShopManager.Instance != null)
+                {
+                    WeaponShopManager.Instance.ResetWeaponUnlocks();
+                    commandOutput = "🔒 Đã reset mở khóa vũ khí!";
+                }
+                else
+                {
+                    commandOutput = "⚠️ Chưa khởi tạo WeaponShopManager trong Scene!";
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+
+            GUILayout.Space(6);
+
+            // --- SECTION 2: EQUIPPED SUPPORT WEAPONS LOADOUT (TÙY CHỈNH TRỰC TIẾP) ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            WeaponDatabase db = WeaponShopManager.Instance != null ? WeaponShopManager.Instance.Database : null;
+            if (db == null)
+            {
+                db = WeaponShopManager.GetOrLoadWeaponDatabase();
+            }
+            var equippedIds = SaveManager.Instance?.CurrentSaveData?.weaponData?.equippedWeaponIds;
+            int equippedCount = equippedIds != null ? equippedIds.Count : 0;
+
+            GUILayout.Label($"🎯 <b>WEAPONS BUS SUPPORT ĐANG TRANG BỊ LƯỢT RUN NÀY (<color=#00ff88>{equippedCount}/{WeaponUnlockData.MAX_EQUIPPED_SLOTS}</color> Slots)</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            if (equippedIds != null && equippedIds.Count > 0)
+            {
+                float totalBonusDam = 0f;
+                float totalKnockbackX = 0f;
+                float totalKnockbackY = 0f;
+
+                foreach (string id in equippedIds)
+                {
+                    WeaponData w = db != null ? db.GetWeaponById(id) : null;
+                    if (w == null) continue;
+
+                    totalBonusDam += w.Damage;
+                    totalKnockbackX += w.Knockback.x;
+                    totalKnockbackY += w.Knockback.y;
+
+                    GUILayout.BeginHorizontal(logBoxStyle);
+                    GUILayout.Label($"🗡️ <b>{w.WeaponName}</b> <color=#888888>({id})</color> | Dam: <color=#ff4d4d>+{w.Damage}</color> | Knockback: <color=#00e5ff>({w.Knockback.x:F1}, {w.Knockback.y:F1})</color> | Spd: {w.AttackSpeed}");
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("❌ Gỡ Support", btnDangerStyle, GUILayout.Width(110), GUILayout.Height(22)))
+                    {
+                        WeaponShopManager.Instance?.UnequipSupportWeapon(w);
+                        commandOutput = $"🛡️ Đã gỡ Support Weapon '{w.WeaponName}'!";
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(2);
+                }
+
+                GUILayout.Space(4);
+                GUILayout.Label($"✨ <b>TỔNG CHỈ SỐ SUPPORT BUFF CỘNG DỒN UP LÊN PLAYER:</b> Damage: <color=#ff4d4d>+{totalBonusDam}</color> | Knockback: <color=#00e5ff>({totalKnockbackX:F1}, {totalKnockbackY:F1})</color>");
+            }
+            else
+            {
+                GUILayout.Label("<color=#ffcc00>⚠️ Chưa trang bị vũ khí support nào cho lượt run này. Hãy chọn vũ khí trong danh sách bên dưới để trang bị (Tối đa 3 vũ khí).</color>");
+            }
+
+            GUILayout.Space(6);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("🔄 Reset Loadout Run (Gỡ Tất Cả Slots)", btnWarningStyle, GUILayout.Height(26)))
+            {
+                WeaponShopManager.Instance?.ResetEquippedWeaponsForNewRun();
+                commandOutput = "🔄 Đã reset loadout vũ khí support về trống!";
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+
+            GUILayout.Space(6);
+
+            // --- SECTION 3: WEAPON DATABASE LIST ---
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("📜 <b>DANH SÁCH VŨ KHÍ TRONG DATABASE (CHỈNH SỬA & TRANG BỊ TRỰC TIẾP)</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            if (db != null && db.AllWeapons != null && db.AllWeapons.Count > 0)
+            {
+                foreach (WeaponData weapon in db.AllWeapons)
+                {
+                    if (weapon == null) continue;
+
+                    string weaponId = WeaponShopManager.Instance != null
+                        ? WeaponShopManager.Instance.GetWeaponId(weapon)
+                        : (string.IsNullOrEmpty(weapon.WeaponId) ? weapon.name : weapon.WeaponId);
+
+                    bool isUnlocked = WeaponShopManager.Instance != null && WeaponShopManager.Instance.IsWeaponUnlocked(weaponId);
+                    bool isEquipped = WeaponShopManager.Instance != null && WeaponShopManager.Instance.IsWeaponEquipped(weapon);
+                    bool isReqMet = weapon.IsRequirementMet(progress);
+                    bool isEditing = editingWeaponFoldouts.Contains(weaponId);
+
+                    GUILayout.BeginVertical(logBoxStyle);
+                    GUILayout.BeginHorizontal();
+
+                    string statusTag = isEquipped ? "<color=#00ff88>[ĐÃ TRANG BỊ SUPPORT]</color>" : (isUnlocked ? "<color=#00e5ff>[ĐÃ MỞ KHÓA - CHO PHÉP TRANG BỊ]</color>" : (isReqMet ? "<color=#ffcc00>[ĐỦ ĐIỀU KIỆN MUA]</color>" : "<color=#ff4d4d>[KHÓA]</color>"));
+
+                    GUILayout.Label($"<b>{weapon.WeaponName}</b> <color=#888888>({weaponId})</color> {statusTag}");
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label($"Giá: <color=#ffcc00>{weapon.Price} G</color>");
+
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.Label($"• Support Buff: Dam <color=#ff4d4d>+{weapon.Damage}</color> | Knockback <color=#00e5ff>({weapon.Knockback.x:F1}, {weapon.Knockback.y:F1})</color> | Spd {weapon.AttackSpeed:F2}");
+
+                    if (!isUnlocked && !weapon.IsDefaultUnlocked)
+                    {
+                        string kC = kills >= weapon.RequiredEnemiesKilled ? "#00ff88" : "#ff4d4d";
+                        string rC = runs >= weapon.RequiredRunsPlayed ? "#00ff88" : "#ff4d4d";
+                        string rmC = rooms >= weapon.RequiredHighestRoom ? "#00ff88" : "#ff4d4d";
+                        GUILayout.Label($"• <b>Yêu cầu:</b> Quái (<color={kC}>{kills}/{weapon.RequiredEnemiesKilled}</color>) | Runs (<color={rC}>{runs}/{weapon.RequiredRunsPlayed}</color>) | Rooms (<color={rmC}>{rooms}/{weapon.RequiredHighestRoom}</color>)");
+                    }
+
+                    GUILayout.Space(4);
+
+                    // --- HÀNG NÚT THAO TÁC TRANG BỊ & TÙY CHỈNH ---
+                    GUILayout.BeginHorizontal();
+
+                    // Nút Mở/Tắt Bảng Chỉnh Sửa Chỉ Số
+                    GUIStyle editBtnStyle = isEditing ? btnToggleOnStyle : btnNormalStyle;
+                    if (GUILayout.Button(isEditing ? "✏️ Đóng Bảng Sửa" : "✏️ Chỉnh Sửa Stats", editBtnStyle, GUILayout.Width(130), GUILayout.Height(24)))
+                    {
+                        if (isEditing) editingWeaponFoldouts.Remove(weaponId);
+                        else editingWeaponFoldouts.Add(weaponId);
+                    }
+
+                    // Nút Trang Bị Trực Tiếp Nhanh (Bỏ qua khóa)
+                    if (GUILayout.Button("⚡ Trang Bị Nhanh", btnPrimaryStyle, GUILayout.Width(130), GUILayout.Height(24)))
+                    {
+                        var wData = SaveManager.Instance?.CurrentSaveData?.weaponData;
+                        if (wData != null)
+                        {
+                            if (!wData.unlockedWeaponIds.Contains(weaponId))
+                            {
+                                wData.unlockedWeaponIds.Add(weaponId);
+                            }
+                            WeaponShopManager.Instance?.EquipSupportWeapon(weapon);
+                            commandOutput = $"⚡ Đã mở khóa & trang bị trực tiếp '{weapon.WeaponName}'!";
+                        }
+                    }
+
+                    if (!isUnlocked)
+                    {
+                        if (GUILayout.Button("🔓 Mở Khóa Free", btnNormalStyle, GUILayout.Width(110), GUILayout.Height(24)))
+                        {
+                            var wData = SaveManager.Instance?.CurrentSaveData?.weaponData;
+                            if (wData != null && !wData.unlockedWeaponIds.Contains(weaponId))
+                            {
+                                wData.unlockedWeaponIds.Add(weaponId);
+                                SaveManager.Instance.TriggerAutoSave(0.5f);
+                                commandOutput = $"🔓 Đã mở khóa free '{weapon.WeaponName}'!";
+                            }
+                        }
+
+                        GUI.enabled = isReqMet && gold >= weapon.Price;
+                        if (GUILayout.Button($"🛒 Mua ({weapon.Price}G)", btnWarningStyle, GUILayout.Width(110), GUILayout.Height(24)))
+                        {
+                            if (WeaponShopManager.Instance != null)
+                            {
+                                WeaponShopManager.Instance.TryPurchaseWeapon(weapon);
+                                commandOutput = $"🛒 Đã mua '{weapon.WeaponName}'!";
+                            }
+                        }
+                        GUI.enabled = true;
+                    }
+                    else
+                    {
+                        if (isEquipped)
+                        {
+                            if (GUILayout.Button("✓ Gỡ Support (-)", btnDangerStyle, GUILayout.Width(120), GUILayout.Height(24)))
+                            {
+                                if (WeaponShopManager.Instance != null)
+                                {
+                                    WeaponShopManager.Instance.UnequipSupportWeapon(weapon);
+                                    commandOutput = $"🛡️ Đã gỡ Support Weapon '{weapon.WeaponName}'!";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int currentEquippedCount = WeaponShopManager.Instance != null ? WeaponShopManager.Instance.GetEquippedCount() : 0;
+                            GUI.enabled = currentEquippedCount < 3;
+                            if (GUILayout.Button("+ Trang Bị Support", btnPrimaryStyle, GUILayout.Width(140), GUILayout.Height(24)))
+                            {
+                                if (WeaponShopManager.Instance != null)
+                                {
+                                    WeaponShopManager.Instance.EquipSupportWeapon(weapon);
+                                    commandOutput = $"🗡️ Đã trang bị Support Weapon '{weapon.WeaponName}'!";
+                                }
+                            }
+                            GUI.enabled = true;
+                        }
+
+                        if (GUILayout.Button("🔒 Khóa Lại", btnDangerStyle, GUILayout.Width(90), GUILayout.Height(24)))
+                        {
+                            var wData = SaveManager.Instance?.CurrentSaveData?.weaponData;
+                            if (wData != null)
+                            {
+                                wData.unlockedWeaponIds.Remove(weaponId);
+                                wData.equippedWeaponIds.Remove(weaponId);
+                                WeaponShopManager.Instance?.ApplyEquippedWeaponBuffsToActivePlayer();
+                                commandOutput = $"🔒 Đã khóa lại vũ khí '{weapon.WeaponName}'!";
+                            }
+                        }
+                    }
+
+                    GUILayout.EndHorizontal();
+
+                    // --- BẢNG TÙY CHỈNH CHỈ SỐ RUNTIME TẠI CHỖ (INLINE RUNTIME EDITOR) ---
+                    if (isEditing)
+                    {
+                        GUILayout.Space(6);
+                        GUILayout.BeginVertical(cardBoxStyle);
+                        GUILayout.Label($"🛠️ <b>TÙY CHỈNH CHỈ SỐ RUNTIME: {weapon.WeaponName}</b>", cardTitleStyle);
+                        GUILayout.Space(4);
+
+                        // 1. Damage Editor
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>Sát thương (Damage):</b> <color=#ff4d4d>{weapon.Damage}</color>", GUILayout.Width(220));
+                        if (GUILayout.Button("-10", btnNormalStyle, GUILayout.Width(45), GUILayout.Height(22))) { weapon.Damage = Mathf.Max(0, weapon.Damage - 10); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("-5", btnNormalStyle, GUILayout.Width(40), GUILayout.Height(22))) { weapon.Damage = Mathf.Max(0, weapon.Damage - 5); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+5", btnPrimaryStyle, GUILayout.Width(40), GUILayout.Height(22))) { weapon.Damage += 5; OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+10", btnPrimaryStyle, GUILayout.Width(45), GUILayout.Height(22))) { weapon.Damage += 10; OnWeaponStatEdited(weapon); }
+                        GUILayout.EndHorizontal();
+
+                        // 2. Knockback X Editor
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>Lực hất X (Knockback X):</b> <color=#00e5ff>{weapon.Knockback.x:F1}</color>", GUILayout.Width(220));
+                        if (GUILayout.Button("-1.0", btnNormalStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(Mathf.Max(0, weapon.Knockback.x - 1f), weapon.Knockback.y); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+1.0", btnPrimaryStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(weapon.Knockback.x + 1f, weapon.Knockback.y); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+5.0", btnPrimaryStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(weapon.Knockback.x + 5f, weapon.Knockback.y); OnWeaponStatEdited(weapon); }
+                        GUILayout.EndHorizontal();
+
+                        // 3. Knockback Y Editor
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>Lực hất Y (Knockback Y):</b> <color=#00e5ff>{weapon.Knockback.y:F1}</color>", GUILayout.Width(220));
+                        if (GUILayout.Button("-1.0", btnNormalStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(weapon.Knockback.x, Mathf.Max(0, weapon.Knockback.y - 1f)); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+1.0", btnPrimaryStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(weapon.Knockback.x, weapon.Knockback.y + 1f); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+5.0", btnPrimaryStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Knockback = new Vector2(weapon.Knockback.x, weapon.Knockback.y + 5f); OnWeaponStatEdited(weapon); }
+                        GUILayout.EndHorizontal();
+
+                        // 4. Attack Speed Editor
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>Tốc đánh (Attack Speed):</b> {weapon.AttackSpeed:F2}", GUILayout.Width(220));
+                        if (GUILayout.Button("-0.1", btnNormalStyle, GUILayout.Width(45), GUILayout.Height(22))) { weapon.AttackSpeed = Mathf.Max(0.1f, weapon.AttackSpeed - 0.1f); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+0.1", btnPrimaryStyle, GUILayout.Width(45), GUILayout.Height(22))) { weapon.AttackSpeed += 0.1f; OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+0.5", btnPrimaryStyle, GUILayout.Width(45), GUILayout.Height(22))) { weapon.AttackSpeed += 0.5f; OnWeaponStatEdited(weapon); }
+                        GUILayout.EndHorizontal();
+
+                        // 5. Price Editor
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"• <b>Giá bán (Price):</b> <color=#ffcc00>{weapon.Price} G</color>", GUILayout.Width(220));
+                        if (GUILayout.Button("-100", btnNormalStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Price = Mathf.Max(0, weapon.Price - 100); OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+100", btnWarningStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Price += 100; OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("+500", btnWarningStyle, GUILayout.Width(50), GUILayout.Height(22))) { weapon.Price += 500; OnWeaponStatEdited(weapon); }
+                        if (GUILayout.Button("Free (0G)", btnPrimaryStyle, GUILayout.Width(75), GUILayout.Height(22))) { weapon.Price = 0; OnWeaponStatEdited(weapon); }
+                        GUILayout.EndHorizontal();
+
+                        // 6. Requirements Editor
+                        GUILayout.BeginHorizontal();
+                        if (GUILayout.Button("🧹 Clear Mọi Yêu Cầu (Về 0)", btnWarningStyle, GUILayout.Height(22)))
+                        {
+                            weapon.RequiredEnemiesKilled = 0;
+                            weapon.RequiredRunsPlayed = 0;
+                            weapon.RequiredHighestRoom = 0;
+                            OnWeaponStatEdited(weapon);
+                            commandOutput = $"🧹 Đã xóa mọi yêu cầu mở bán của '{weapon.WeaponName}'!";
+                        }
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.EndVertical();
+                    }
+
+                    GUILayout.EndVertical();
+                    GUILayout.Space(4);
+                }
+            }
+            else
+            {
+                GUILayout.Label("<color=#ffcc00>⚠️ Chưa tìm thấy WeaponDatabase hoặc chưa gán vũ khí!</color>");
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.EndScrollView();
+        }
+
+        #endregion
+
+        #region ====== TAB 4: PERKS & PLAYER STATS ======
 
         private void DrawPerksTab()
         {
@@ -586,11 +946,23 @@ namespace Roguelite.Core
                     GUILayout.Label($"• <b>Move Speed (Walk/Run):</b> {playerController.walkSpeed:F1} / {playerController.runSpeed:F1}");
                     GUILayout.Label($"• <b>Speed Hiện Tại:</b> {playerController.CurrentMoveSpeed:F1}");
                 }
+
+                // --- SÁT THƯƠNG ĐÒN ĐÁNH REALTIME ---
+                Roguelite.Combat.Attack playerAttack = playerStats.GetComponentInChildren<Roguelite.Combat.Attack>(true);
+                float baseDam = playerAttack != null ? playerAttack.BaseAttackDamage : 10f;
+                float supportDam = Roguelite.Combat.WeaponShopManager.Instance != null ? Roguelite.Combat.WeaponShopManager.Instance.GetTotalSupportDamage() : 0f;
+                float totalDam = playerAttack != null ? playerAttack.GetCalculatedDamage() : (baseDam + supportDam) * currentDamageMultiplier;
+
+                GUILayout.Label($"• <b>Sát Thương Gây Ra (Attack Damage):</b> <color=#ff4d4d><b>{totalDam:F1}</b></color> (Gốc: {baseDam:F1} + Support Buff: +{supportDam:F1}) | Multiplier: x{currentDamageMultiplier:F1}");
             }
             else
             {
                 GUILayout.Label("<color=#ffcc00>⚠️ Không tìm thấy PlayerStats trong Scene!</color>");
             }
+
+            var equippedSupportIds = SaveManager.Instance?.CurrentSaveData?.weaponData?.equippedWeaponIds;
+            int supportCount = equippedSupportIds != null ? equippedSupportIds.Count : 0;
+            GUILayout.Label($"• <b>Support Weapon Buffs ({supportCount}/3):</b> {(supportCount > 0 ? string.Join(", ", equippedSupportIds) : "<color=#888888>Trống</color>")}");
 
             int gold = SaveManager.Instance?.CurrentSaveData?.progressData?.totalCurrency ?? 0;
             GUILayout.Label($"• <b>Gold Tích Lũy:</b> <color=#ffcc00>{gold}</color>");
@@ -753,7 +1125,14 @@ namespace Roguelite.Core
                 {
                     SaveManager.Instance.CurrentSaveData.progressData = new PlayerProgressData();
                 }
-                SaveManager.Instance.CurrentSaveData.progressData.totalCurrency += amount;
+                if (Roguelite.UpgradeSystem.PermanentUpgradeManager.Instance != null)
+                {
+                    Roguelite.UpgradeSystem.PermanentUpgradeManager.Instance.AddCurrency(amount);
+                }
+                else
+                {
+                    SaveManager.Instance.CurrentSaveData.progressData.totalCurrency += amount;
+                }
                 SaveManager.Instance.SaveToDiskSync();
                 commandOutput = $"💰 Đã cộng +{amount} vàng (Tổng: {SaveManager.Instance.CurrentSaveData.progressData.totalCurrency})!";
                 DebugLogger.LogSuccess($"[DebugTool] {commandOutput}");
@@ -908,6 +1287,13 @@ namespace Roguelite.Core
             }
         }
 
+        private void OnWeaponStatEdited(WeaponData weapon)
+        {
+            if (weapon == null) return;
+            commandOutput = $"✏️ Đã cập nhật chỉ số '{weapon.WeaponName}': Sát thương {weapon.Damage}, Knockback ({weapon.Knockback.x:F1}, {weapon.Knockback.y:F1}), Spd {weapon.AttackSpeed:F2}";
+            WeaponShopManager.Instance?.ApplyEquippedWeaponBuffsToActivePlayer();
+        }
+
         private void SetSpeedMultiplier(float multiplier)
         {
             currentSpeedMultiplier = multiplier;
@@ -941,7 +1327,7 @@ namespace Roguelite.Core
 
             if (cmd == "help")
             {
-                commandOutput = "Lệnh: godmode, heal, gold [num], speed [mult], damage [mult], killroom, skipboss, nextroom";
+                commandOutput = "Lệnh: godmode, heal, gold [num], speed [mult], damage [mult], killroom, skipboss, nextroom, weapon unlockall/reset/equip [id]/buy [id], addkills [num], addruns [num]";
             }
             else if (cmd == "godmode" || cmd == "god")
             {
@@ -963,6 +1349,75 @@ namespace Roguelite.Core
                 string[] parts = cmd.Split(' ');
                 int amount = (parts.Length > 1 && int.TryParse(parts[1], out int val)) ? val : 1000;
                 AddGold(amount);
+            }
+            else if (cmd.StartsWith("addkills"))
+            {
+                string[] parts = cmd.Split(' ');
+                int amount = (parts.Length > 1 && int.TryParse(parts[1], out int val)) ? val : 100;
+                var progress = SaveManager.Instance?.CurrentSaveData?.progressData;
+                if (progress != null)
+                {
+                    progress.totalEnemiesKilled += amount;
+                    commandOutput = $"⚔️ Đã cộng +{amount} Quái diệt (Tổng: {progress.totalEnemiesKilled})!";
+                }
+            }
+            else if (cmd.StartsWith("addruns"))
+            {
+                string[] parts = cmd.Split(' ');
+                int amount = (parts.Length > 1 && int.TryParse(parts[1], out int val)) ? val : 5;
+                var progress = SaveManager.Instance?.CurrentSaveData?.progressData;
+                if (progress != null)
+                {
+                    progress.totalRunsPlayed += amount;
+                    commandOutput = $"🏃 Đã cộng +{amount} Lượt Run (Tổng: {progress.totalRunsPlayed})!";
+                }
+            }
+            else if (cmd.StartsWith("weapon"))
+            {
+                string[] parts = cmd.Split(' ');
+                string subCmd = parts.Length > 1 ? parts[1].ToLower() : "";
+                string arg = parts.Length > 2 ? parts[2] : "";
+
+                if (subCmd == "unlockall")
+                {
+                    WeaponShopManager.Instance?.UnlockAllWeapons();
+                    commandOutput = "🔓 Đã mở khóa toàn bộ vũ khí!";
+                }
+                else if (subCmd == "reset")
+                {
+                    WeaponShopManager.Instance?.ResetWeaponUnlocks();
+                    commandOutput = "🔒 Đã reset mở khóa vũ khí!";
+                }
+                else if (subCmd == "equip" && !string.IsNullOrEmpty(arg))
+                {
+                    WeaponData w = WeaponShopManager.Instance?.Database?.GetWeaponById(arg);
+                    if (w != null)
+                    {
+                        WeaponShopManager.Instance.EquipSupportWeapon(w);
+                        commandOutput = $"🗡️ Đã trang bị Support Weapon '{w.WeaponName}'!";
+                    }
+                    else
+                    {
+                        commandOutput = $"❌ Không tìm thấy vũ khí với ID '{arg}'!";
+                    }
+                }
+                else if (subCmd == "buy" && !string.IsNullOrEmpty(arg))
+                {
+                    WeaponData w = WeaponShopManager.Instance?.Database?.GetWeaponById(arg);
+                    if (w != null)
+                    {
+                        bool success = WeaponShopManager.Instance.TryPurchaseWeapon(w);
+                        commandOutput = success ? $"🛒 Mua thành công '{w.WeaponName}'!" : $"❌ Mua thất bại '{w.WeaponName}'!";
+                    }
+                    else
+                    {
+                        commandOutput = $"❌ Không tìm thấy vũ khí với ID '{arg}'!";
+                    }
+                }
+                else
+                {
+                    commandOutput = "Cú pháp: weapon [unlockall | reset | buy <id> | equip <id>]";
+                }
             }
             else if (cmd.StartsWith("speed"))
             {

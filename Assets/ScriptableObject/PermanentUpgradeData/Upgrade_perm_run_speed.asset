@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35c7aafb4df9ec645806528d737d7106, type: 3}
+  m_Name: Upgrade_perm_run_speed
+  m_EditorClassIdentifier: 
+  upgradeId: perm_run_speed
+  upgradeName: "B\u1EE9t T\u1ED1c Truy K\xEDch"
+  description: "T\u0103ng t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n ch\u1EA1y nhanh (Run
+    Speed) v\u0129nh vi\u1EC5n."
+  icon: {fileID: 0}
+  category: 3
+  requiredEnemiesKilled: 30
+  requiredRunsPlayed: 2
+  requiredHighestRoom: 3
+  isDefaultUnlocked: 0
+  tiers:
+  - tierIndex: 1
+    cost: 90
+    statType: 3
+    statValue: 0.8
+    isPercent: 0
+    isMilestone: 0
+    milestoneBonus:
+      bonusDescription: 
+      statType: 0
+      statValue: 0
+      isPercent: 0
+      specialBehaviorKey: 
+  - tierIndex: 2
+    cost: 180
+    statType: 3
+    statValue: 1.6
+    isPercent: 0
+    isMilestone: 0
+    milestoneBonus:
+      bonusDescription: 
+      statType: 0
+      statValue: 0
+      isPercent: 0
+      specialBehaviorKey: 
+  - tierIndex: 3
+    cost: 270
+    statType: 3
+    statValue: 2.4
+    isPercent: 0
+    isMilestone: 0
+    milestoneBonus:
+      bonusDescription: 
+      statType: 0
+      statValue: 0
+      isPercent: 0
+      specialBehaviorKey: 
+  - tierIndex: 4
+    cost: 360
+    statType: 3
+    statValue: 3.2
+    isPercent: 0
+    isMilestone: 0
+    milestoneBonus:
+      bonusDescription: 
+      statType: 0
+      statValue: 0
+      isPercent: 0
+      specialBehaviorKey: 
+  - tierIndex: 5
+    cost: 450
+    statType: 3
+    statValue: 4.5
+    isPercent: 0
+    isMilestone: 1
+    milestoneBonus:
+      bonusDescription: "Phi L\xF4i Th\u1EA7n: +15% T\u1ED1c \u0111\u1ED9 ch\u1EA1y
+        nhanh!"
+      statType: 3
+      statValue: 0.15
+      isPercent: 1
+      specialBehaviorKey: perm_run_speed_milestone_tier_5

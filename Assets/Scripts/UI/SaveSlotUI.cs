@@ -84,9 +84,11 @@ namespace Roguelite.UI
             int gold = previewData.progressData != null ? previewData.progressData.totalCurrency : 0;
             int enemies = previewData.progressData != null ? previewData.progressData.totalEnemiesKilled : 0;
 
-            string weapon = (previewData.weaponData != null && !string.IsNullOrEmpty(previewData.weaponData.equippedWeaponId))
-                ? FormatWeaponName(previewData.weaponData.equippedWeaponId)
-                : "Mặc định";
+            int equippedCount = (previewData.weaponData != null && previewData.weaponData.equippedWeaponIds != null)
+                ? previewData.weaponData.equippedWeaponIds.Count
+                : 0;
+
+            string weapon = equippedCount > 0 ? $"{equippedCount}/3 Support" : "Trống (0/3)";
 
             int upgradesCount = (previewData.abilityData != null && previewData.abilityData.abilityLevels != null)
                 ? previewData.abilityData.abilityLevels.Count

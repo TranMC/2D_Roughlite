@@ -27,16 +27,65 @@ namespace Roguelite.Combat
         // (tránh đánh trúng cùng 1 mục tiêu nhiều lần trong 1 đòn)
         private HashSet<int> hitTargets = new HashSet<int>();
 
+        public float BaseAttackDamage
+        {
+            get => baseAttackDamage;
+            set
+            {
+                baseAttackDamage = value;
+                isDamageInitialized = true;
+            }
+        }
+
         public float AttackDamage
         {
-            get => attackDamage;
-            set => attackDamage = value;
+            get => GetCalculatedDamage();
+            set
+            {
+                baseAttackDamage = value;
+                isDamageInitialized = true;
+            }
         }
 
         public Vector2 Knockback
         {
             get => knockback;
             set => knockback = value;
+        }
+
+        public float GetCalculatedDamage()
+        {
+            InitializeDamage();
+            float currentDam = baseAttackDamage;
+
+            // Nếu là đòn đánh của Player -> cộng dồn Support Weapon Buffs & Debug Multiplier
+            if (transform.parent != null && transform.parent.GetComponent<PlayerStats>() != null)
+            {
+                if (WeaponShopManager.Instance != null)
+                {
+                    currentDam += WeaponShopManager.Instance.GetTotalSupportDamage();
+                }
+
+                if (RuntimeDebugConsole.Instance != null)
+                {
+                    currentDam *= RuntimeDebugConsole.Instance.CurrentDamageMultiplier;
+                }
+            }
+
+            return currentDam;
+        }
+
+        public Vector2 GetCalculatedKnockback()
+        {
+            Vector2 currentKnockback = knockback;
+            if (transform.parent != null && transform.parent.GetComponent<PlayerStats>() != null)
+            {
+                if (WeaponShopManager.Instance != null)
+                {
+                    currentKnockback += WeaponShopManager.Instance.GetTotalSupportKnockback();
+                }
+            }
+            return currentKnockback;
         }
 
         private void Awake()
@@ -74,7 +123,7 @@ namespace Roguelite.Combat
         public void ApplyDamageModifier(float flatBonus, float percentBonus)
         {
             InitializeDamage();
-            attackDamage = (baseAttackDamage + flatBonus) * (1f + percentBonus);
+            baseAttackDamage = (baseAttackDamage + flatBonus) * (1f + percentBonus);
         }
 
         private void OnEnable()
@@ -130,10 +179,14 @@ namespace Roguelite.Combat
 
                 hitTargets.Add(targetId);
 
+                // Tính toán sát thương và lực hất thực tế tại thời điểm trúng đòn
+                float calculatedDamage = GetCalculatedDamage();
+                Vector2 calculatedKnockback = GetCalculatedKnockback();
+
                 // Xác định hướng knockback dựa trên localScale.x của cha (hướng mặt của nhân vật tấn công)
                 Transform parentTransform = transform.parent;
                 float faceDirection = parentTransform != null ? parentTransform.localScale.x : 1f;
-                Vector2 deliveredKnockback = faceDirection > 0f ? knockback : new Vector2(-knockback.x, knockback.y);
+                Vector2 deliveredKnockback = faceDirection > 0f ? calculatedKnockback : new Vector2(-calculatedKnockback.x, calculatedKnockback.y);
 
                 // Light hit-stop trước TakeDamage để death hit-stop (Medium/Heavy) có thể ghi đè sau
                 bool isPlayerAttack = parentTransform != null && parentTransform.GetComponent<PlayerStats>() != null;
@@ -143,12 +196,12 @@ namespace Roguelite.Combat
                 }
 
                 // Thực hiện gây sát thương và áp dụng knockback
-                damageable.TakeDamage(attackDamage, deliveredKnockback);
+                damageable.TakeDamage(calculatedDamage, deliveredKnockback);
 
                 if (logAttackHits)
                 {
                     string attackerName = parentTransform != null ? parentTransform.name : gameObject.name;
-                    Debug.Log($"[Attack] {attackerName} va chạm gây sát thương lên {collision.name}: {attackDamage} dmg, Knockback: {deliveredKnockback}");
+                    Debug.Log($"[Attack] {attackerName} va chạm gây sát thương lên {collision.name}: {calculatedDamage} dmg, Knockback: {deliveredKnockback}");
                 }
 
                 // --- HÚT MÁU & BÁO THÙ (LIFESTEAL, LOW_HP_LIFESTEAL, VENGEANCE_DAMAGE) ---

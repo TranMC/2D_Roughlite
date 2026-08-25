@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd6a446b687cc145a6c8e26f5231c21, type: 3}
+  m_Name: Weapon_sword_excalibur
+  m_EditorClassIdentifier: 
+  weaponId: sword_excalibur
+  weaponName: "Th\xE1nh Ki\u1EBFm Chi\u1EBFn Th\u1EAFng"
+  icon: {fileID: -35648574, guid: 7e75db3c3d6736e4fad3ac812a44341b, type: 3}
+  description: "V\u0169 kh\xED t\u1ED1i th\u01B0\u1EE3ng ph\xE1t ra h\xE0o quang
+    th\xE1nh linh, qu\xE9t s\u1EA1ch m\u1ECDi b\xF3ng t\u1ED1i."
+  damage: 45
+  attackSpeed: 1.4
+  range: 2.4
+  knockback: {x: 3, y: 0}
+  price: 1200
+  requiredEnemiesKilled: 250
+  requiredRunsPlayed: 10
+  requiredHighestRoom: 10
+  isDefaultUnlocked: 0

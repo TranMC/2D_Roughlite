@@ -18,8 +18,10 @@ namespace Roguelite.UI
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private Button buyButton;
+        [SerializeField] private TextMeshProUGUI requirementText;
         [SerializeField] private GameObject milestoneBadge;
         [SerializeField] private GameObject maxLevelBadge;
+        [SerializeField] private GameObject lockedBadge;
 
         private PermanentUpgradeData currentUpgrade;
         private Action<PermanentUpgradeData> onBuyClickedCallback;
@@ -60,6 +62,7 @@ namespace Roguelite.UI
             int currentLevel = PermanentUpgradeManager.Instance.GetUpgradeLevel(currentUpgrade.UpgradeId);
             int maxLevel = currentUpgrade.MaxLevel;
             bool isMaxed = currentLevel >= maxLevel;
+            bool isReqMet = PermanentUpgradeManager.Instance.IsRequirementMet(currentUpgrade);
 
             // Icon & Tên
             if (iconImage != null && currentUpgrade.Icon != null)
@@ -85,6 +88,41 @@ namespace Roguelite.UI
                 descriptionText.text = currentUpgrade.Description;
             }
 
+            // Requirement text
+            if (requirementText != null)
+            {
+                if (currentUpgrade.IsDefaultUnlocked || isReqMet)
+                {
+                    requirementText.text = "<color=#00ff88>✓ Đã mở bán</color>";
+                }
+                else
+                {
+                    var reqs = new System.Collections.Generic.List<string>();
+                    var progress = Roguelite.SaveSystem.SaveManager.Instance?.CurrentSaveData?.progressData;
+                    int kills = progress != null ? progress.totalEnemiesKilled : 0;
+                    int runs = progress != null ? progress.totalRunsPlayed : 0;
+                    int rooms = progress != null ? progress.highestRoomReached : 0;
+
+                    if (currentUpgrade.RequiredEnemiesKilled > 0)
+                    {
+                        string c = kills >= currentUpgrade.RequiredEnemiesKilled ? "#00ff88" : "#ff4d4d";
+                        reqs.Add($"Diệt quái: <color={c}>{kills}/{currentUpgrade.RequiredEnemiesKilled}</color>");
+                    }
+                    if (currentUpgrade.RequiredRunsPlayed > 0)
+                    {
+                        string c = runs >= currentUpgrade.RequiredRunsPlayed ? "#00ff88" : "#ff4d4d";
+                        reqs.Add($"Runs: <color={c}>{runs}/{currentUpgrade.RequiredRunsPlayed}</color>");
+                    }
+                    if (currentUpgrade.RequiredHighestRoom > 0)
+                    {
+                        string c = rooms >= currentUpgrade.RequiredHighestRoom ? "#00ff88" : "#ff4d4d";
+                        reqs.Add($"Rooms: <color={c}>{rooms}/{currentUpgrade.RequiredHighestRoom}</color>");
+                    }
+
+                    requirementText.text = reqs.Count > 0 ? string.Join(" | ", reqs) : "Chưa mở bán";
+                }
+            }
+
             // Milestone Badge check
             PermanentUpgradeTier nextTier = currentUpgrade.GetTier(currentLevel + 1);
             if (milestoneBadge != null)
@@ -98,6 +136,12 @@ namespace Roguelite.UI
                 maxLevelBadge.SetActive(isMaxed);
             }
 
+            // Locked Badge check
+            if (lockedBadge != null)
+            {
+                lockedBadge.SetActive(!isReqMet);
+            }
+
             // Cost & Buy button state
             if (isMaxed)
             {
@@ -107,10 +151,13 @@ namespace Roguelite.UI
             else
             {
                 int cost = currentUpgrade.GetCostForNextLevel(currentLevel);
-                if (costText != null) costText.text = $"{cost} Gold";
+                if (costText != null)
+                {
+                    costText.text = !isReqMet ? "<color=#ff4d4d>Chưa đủ ĐK</color>" : $"{cost} Gold";
+                }
 
                 bool canAfford = PermanentUpgradeManager.Instance.CanAffordUpgrade(currentUpgrade);
-                if (buyButton != null) buyButton.interactable = canAfford;
+                if (buyButton != null) buyButton.interactable = isReqMet && canAfford;
             }
         }
 

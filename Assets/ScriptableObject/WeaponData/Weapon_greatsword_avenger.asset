@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd6a446b687cc145a6c8e26f5231c21, type: 3}
+  m_Name: Weapon_greatsword_avenger
+  m_EditorClassIdentifier: 
+  weaponId: greatsword_avenger
+  weaponName: "\u0110\u1EA1i \u0110ao B\xE1o Th\xF9"
+  icon: {fileID: 394460942, guid: 2effa94f85d18a640af642a0b088e70f, type: 3}
+  description: "Thanh \u0111\u1EA1i \u0111ao n\u1EB7ng n\u1EC1 v\u1EDBi s\xE1t th\u01B0\u01A1ng
+    di\u1EC7n r\u1ED9ng b\u1ED9c ph\xE1."
+  damage: 32
+  attackSpeed: 0.75
+  range: 2.2
+  knockback: {x: 3, y: 0}
+  price: 400
+  requiredEnemiesKilled: 50
+  requiredRunsPlayed: 3
+  requiredHighestRoom: 5
+  isDefaultUnlocked: 0

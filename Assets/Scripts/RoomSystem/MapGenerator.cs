@@ -74,9 +74,9 @@ namespace Roguelite.RoomSystem
             var player = FindObjectOfType<PlayerController>();
             if (player != null)
             {
-                // Dịch chuyển người chơi đến tâm phòng Boss
-                player.transform.position = bossRoom.transform.position;
-                Debug.Log($"[MapGenerator] Đã dịch chuyển Player tới phòng Boss tại: {bossRoom.transform.position}");
+                // Dịch chuyển người chơi đến tâm phòng Boss (giữ Z = 0f cho 2D)
+                player.transform.position = new Vector3(bossRoom.transform.position.x, bossRoom.transform.position.y, 0f);
+                Debug.Log($"[MapGenerator] Đã dịch chuyển Player tới phòng Boss tại: {player.transform.position}");
             }
             else
             {

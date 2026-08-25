@@ -12,7 +12,7 @@ namespace Roguelite.RoomSystem
     [RequireComponent(typeof(Collider2D))]
     public class RoomManager : MonoBehaviour
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.1.1";
         #region ====== SERIALIZE FIELDS ======
 
         [Header("===== Room Type Settings =====")]

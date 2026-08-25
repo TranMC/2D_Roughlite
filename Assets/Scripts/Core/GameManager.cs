@@ -33,8 +33,8 @@ namespace Roguelite.Core
         public static event Action<GameState> OnGameStateChanged;
 
         [Header("Cấu hình Tên Scene")]
-        [SerializeField] private string mainMenuSceneName = "MainMenuScene";
-        [SerializeField] private string gameplaySceneName = "SampleScene";
+        [SerializeField] private string mainMenuSceneName = "MainMenu";
+        [SerializeField] private string gameplaySceneName = "Scene1";
 
         private void Awake()
         {
@@ -135,6 +135,12 @@ namespace Roguelite.Core
             {
                 SaveManager.Instance.CurrentSaveData.progressData.totalRunsPlayed++;
                 SaveManager.Instance.TriggerAutoSave(0.2f);
+            }
+
+            // Reset sequence chuyển cảnh về màn đầu tiên
+            if (SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.ResetSequence();
             }
 
             // Reset loadout vũ khí support trang bị cho lượt run mới

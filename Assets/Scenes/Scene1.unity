@@ -7119,6 +7119,10 @@ PrefabInstance:
       propertyPath: hpTextTMP
       value: 
       objectReference: {fileID: 489990868}
+    - target: {fileID: 8111000013, guid: c4d8e2f1a0b9473c9e6d5a4b3c2d1e0f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1221346570, guid: 007c2c5ab8515d849ab60f07b0515ecb, type: 3}
     - target: {fileID: 8111000021, guid: c4d8e2f1a0b9473c9e6d5a4b3c2d1e0f, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.000015258789
@@ -7134,7 +7138,7 @@ PrefabInstance:
     - target: {fileID: 8111000033, guid: c4d8e2f1a0b9473c9e6d5a4b3c2d1e0f, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -725444098, guid: 0c4b881b69a7e4a438923b5262efe6db, type: 3}
+      objectReference: {fileID: 882874497, guid: 007c2c5ab8515d849ab60f07b0515ecb, type: 3}
     - target: {fileID: 5518948723907218087, guid: c4d8e2f1a0b9473c9e6d5a4b3c2d1e0f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.5

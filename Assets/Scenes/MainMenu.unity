@@ -3813,7 +3813,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ROUGUELITE
+  m_text: ROGUELITE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 29c84d1facdf06e4c9ab3386d8933d0b, type: 2}
   m_sharedMaterial: {fileID: 1020561543942003478, guid: 29c84d1facdf06e4c9ab3386d8933d0b, type: 2}

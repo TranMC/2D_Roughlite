@@ -576,8 +576,8 @@ namespace Roguelite.Core
                 {
                     GameObject esObj = new GameObject("EventSystem");
                     esObj.AddComponent<EventSystem>();
-                    esObj.AddComponent<StandaloneInputModule>();
-                    Debug.Log("[SceneTransitionManager] Đã tự động tạo EventSystem cho Scene mới.");
+                    esObj.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+                    Debug.Log("[SceneTransitionManager] Đã tự động tạo EventSystem (InputSystemUIInputModule) cho Scene mới.");
                 }
             }
         }

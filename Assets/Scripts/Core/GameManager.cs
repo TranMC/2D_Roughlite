@@ -96,32 +96,58 @@ namespace Roguelite.Core
             {
                 case GameState.MainMenu:
                     Time.timeScale = 1f;
+                    SwitchPlayerInputActionMap("UI");
                     break;
                 case GameState.Gameplay:
                     Time.timeScale = 1f;
+                    SwitchPlayerInputActionMap("Player");
                     break;
                 case GameState.Paused:
                     Time.timeScale = 0f;
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    SwitchPlayerInputActionMap("UI");
                     break;
                 case GameState.RewardSelection:
                     Time.timeScale = 0f;
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    SwitchPlayerInputActionMap("UI");
                     break;
                 case GameState.GameOver:
                     Time.timeScale = 0f; // Đóng băng gameplay khi thua cuộc
                     Cursor.visible = true;
                     Cursor.lockState = CursorLockMode.None;
+                    SwitchPlayerInputActionMap("UI");
                     SaveManager.Instance?.TriggerAutoSave();
                     break;
                 case GameState.Victory:
                     Time.timeScale = 0f; // Đóng băng gameplay khi chiến thắng
                     Cursor.visible = true;
                     Cursor.lockState = CursorLockMode.None;
+                    SwitchPlayerInputActionMap("UI");
                     SaveManager.Instance?.TriggerAutoSave();
                     break;
             }
 
             // Kích hoạt Event để các module khác nhận diện
             OnGameStateChanged?.Invoke(currentState);
+        }
+
+        /// <summary>
+        /// Đồng bộ ActionMap của PlayerInput với trạng thái trò chơi (UI / Player).
+        /// </summary>
+        public void SwitchPlayerInputActionMap(string mapName)
+        {
+            var playerInput = FindFirstObjectByType<UnityEngine.InputSystem.PlayerInput>(FindObjectsInactive.Include);
+            if (playerInput != null && playerInput.actions != null)
+            {
+                var targetMap = playerInput.actions.FindActionMap(mapName);
+                if (targetMap != null)
+                {
+                    playerInput.SwitchCurrentActionMap(mapName);
+                }
+            }
         }
 
         // --- CÁC PHƯƠNG THỨC TIỆN ÍCH ĐIỀU PHỐI VÒNG LẶP CHƠI ---

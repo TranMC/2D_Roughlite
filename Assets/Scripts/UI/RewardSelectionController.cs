@@ -342,6 +342,9 @@ namespace Roguelite.UI
             if (PauseMenuManager.IsMenuOpen)
                 return;
 
+            if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameState.Gameplay)
+                return;
+
             if (playerInput != null && playerInput.currentActionMap != null &&
                 playerInput.currentActionMap.name == "UI")
             {

@@ -72,6 +72,12 @@ namespace Roguelite.UI
 
         private void ShowGameOverUI()
         {
+            // Đóng bảng chọn Perk nếu đang mở để tránh block Raycast/UI
+            if (RewardSelectionController.IsSelectionOpen)
+            {
+                RewardSelectionController.HideForPauseMenu();
+            }
+
             if (gameOverPanel != null)
             {
                 gameOverPanel.SetActive(true);
@@ -91,6 +97,22 @@ namespace Roguelite.UI
             // Mở khóa con trỏ chuột để người chơi thao tác nút bấm UI
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+
+            // Đảm bảo PlayerInput chuyển sang ActionMap UI để InputSystemUIInputModule nhận diện chuột / bàn phím
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SwitchPlayerInputActionMap("UI");
+            }
+            else
+            {
+                var playerInput = FindFirstObjectByType<UnityEngine.InputSystem.PlayerInput>(FindObjectsInactive.Include);
+                playerInput?.SwitchCurrentActionMap("UI");
+            }
+
+            if (UnityEngine.EventSystems.EventSystem.current != null && retryButton != null)
+            {
+                UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(retryButton.gameObject);
+            }
         }
 
         private void HideGameOverUI()

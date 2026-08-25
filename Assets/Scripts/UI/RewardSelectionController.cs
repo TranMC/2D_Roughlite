@@ -185,6 +185,7 @@ namespace Roguelite.UI
 
             IsSelectionOpen = true;
             PauseForSelection();
+            SoundManager.PlaySound(SoundType.PERK_SELECT);
 
             // Chạy animation mở panel bằng CanvasGroup và Scale
             if (panelOpenCoroutine != null) StopCoroutine(panelOpenCoroutine);

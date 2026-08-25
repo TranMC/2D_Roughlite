@@ -1498,7 +1498,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -3076639234504770889, guid: 924cba577e2444b46aae0d2f56bab16d, type: 2}
-  m_audioClip: {fileID: 8300000, guid: c43ee8edcfb4cf84a9c346e76b33f88d, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8282b70d2d7a5104a8b63fdb6254a9f1, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -4512,6 +4512,20 @@ MonoBehaviour:
     - {fileID: 8300000, guid: eb491a4de6595a246bbef0f211e2bd73, type: 3}
     - {fileID: 8300000, guid: 54cd8769272b7ca4c9a1386d106f621d, type: 3}
     - {fileID: 8300000, guid: 7d65afb5fe7bb7e41a03b001f5acfbde, type: 3}
+  - name: PLAYER_DEATH
+    sounds:
+    - {fileID: 8300000, guid: e89ea100e6541294c8af1afefb469cab, type: 3}
+  - name: BOSS_DEATH
+    sounds:
+    - {fileID: 8300000, guid: 40c3c51cd34820c409074a84f0a9b8f6, type: 3}
+  - name: PERK_SELECT
+    sounds:
+    - {fileID: 8300000, guid: 4829425c12f6e474ebad5c08fed3d504, type: 3}
+  - name: GAME_OVER
+    sounds:
+    - {fileID: 8300000, guid: 483cf52472d19d643a400115eaec76ae, type: 3}
+  - name: VICTORY
+    sounds: []
 --- !u!82 &1556034718
 AudioSource:
   m_ObjectHideFlags: 0

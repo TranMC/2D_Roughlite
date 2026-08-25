@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +21,11 @@ namespace Roguelite.UI
         [Tooltip("Mảng chứa 3 RewardCardUI để hiển thị 3 lựa chọn.")]
         [SerializeField] private RewardCardUI[] rewardCards;
 
+        [Header("Animation Settings")]
+        [SerializeField] private float openAnimationDuration = 0.25f;
+        [SerializeField] private float cardStaggerDelay = 0.08f;
+        [SerializeField] private CanvasGroup panelCanvasGroup;
+
         [Header("Input")]
         [SerializeField] private PlayerInput playerInput;
 
@@ -39,6 +45,8 @@ namespace Roguelite.UI
         }
 
         private List<PerkData> currentOptions = new List<PerkData>();
+        private bool isProcessingSelection = false;
+        private Coroutine panelOpenCoroutine;
 
         private void Awake()
         {
@@ -46,6 +54,13 @@ namespace Roguelite.UI
 
             if (playerInput == null || !playerInput.gameObject.scene.IsValid())
                 playerInput = FindFirstObjectByType<PlayerInput>();
+
+            if (selectionPanel != null && panelCanvasGroup == null)
+            {
+                panelCanvasGroup = selectionPanel.GetComponent<CanvasGroup>();
+                if (panelCanvasGroup == null)
+                    panelCanvasGroup = selectionPanel.AddComponent<CanvasGroup>();
+            }
 
             // Awake chạy trước Start — tránh race khi OpenSelection() được gọi sớm (Context Menu)
             // rồi Start() tắt panel nhưng vẫn giữ input/timeScale ở trạng thái "đang mở".
@@ -79,7 +94,7 @@ namespace Roguelite.UI
 
         private void Update()
         {
-            if (!IsSelectionOpen) return;
+            if (!IsSelectionOpen || isProcessingSelection) return;
 
             if (PauseMenuManager.IsMenuOpen)
                 return;
@@ -144,6 +159,7 @@ namespace Roguelite.UI
 
             EnsurePanelVisible();
             BindCardButtons();
+            isProcessingSelection = false;
 
             for (int i = 0; i < rewardCards.Length; i++)
             {
@@ -151,6 +167,7 @@ namespace Roguelite.UI
                 {
                     rewardCards[i].gameObject.SetActive(true);
                     rewardCards[i].SetupCard(currentOptions[i]);
+                    rewardCards[i].PlayEntranceAnimation(i * cardStaggerDelay);
                 }
                 else
                 {
@@ -169,13 +186,61 @@ namespace Roguelite.UI
             IsSelectionOpen = true;
             PauseForSelection();
 
+            // Chạy animation mở panel bằng CanvasGroup và Scale
+            if (panelOpenCoroutine != null) StopCoroutine(panelOpenCoroutine);
+            panelOpenCoroutine = StartCoroutine(AnimateOpenPanelRoutine());
+
             Debug.Log("[RewardSelectionController] Đã mở bảng chọn Perk, trò chơi tạm dừng.");
+        }
+
+        private IEnumerator AnimateOpenPanelRoutine()
+        {
+            if (panelCanvasGroup == null) yield break;
+
+            panelCanvasGroup.alpha = 0f;
+            Vector3 startScale = Vector3.one * 0.88f;
+            selectionPanel.transform.localScale = startScale;
+
+            float elapsed = 0f;
+            while (elapsed < openAnimationDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / openAnimationDuration);
+                float smoothT = Mathf.Sin(t * Mathf.PI * 0.5f); // Ease out
+
+                panelCanvasGroup.alpha = t;
+                selectionPanel.transform.localScale = Vector3.Lerp(startScale, Vector3.one, smoothT);
+                yield return null;
+            }
+
+            panelCanvasGroup.alpha = 1f;
+            selectionPanel.transform.localScale = Vector3.one;
+            panelOpenCoroutine = null;
         }
 
         public void ChoosePerk(int index)
         {
-            if (!IsSelectionOpen) return;
+            if (!IsSelectionOpen || isProcessingSelection) return;
             if (index < 0 || index >= currentOptions.Count) return;
+
+            isProcessingSelection = true;
+            StartCoroutine(ChoosePerkRoutine(index));
+        }
+
+        private IEnumerator ChoosePerkRoutine(int index)
+        {
+            if (index >= 0 && index < rewardCards.Length && rewardCards[index] != null)
+            {
+                rewardCards[index].TriggerClickEffect();
+            }
+
+            float delay = 0.08f;
+            float elapsed = 0f;
+            while (elapsed < delay)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                yield return null;
+            }
 
             PerkData chosenPerk = currentOptions[index];
             if (chosenPerk != null && UpgradeManager.Instance != null)
@@ -192,9 +257,12 @@ namespace Roguelite.UI
             if (selectionPanel != null)
             {
                 selectionPanel.SetActive(false);
+                if (panelCanvasGroup != null) panelCanvasGroup.alpha = 1f;
+                selectionPanel.transform.localScale = Vector3.one;
             }
 
             IsSelectionOpen = false;
+            isProcessingSelection = false;
             currentOptions.Clear();
 
             ResumeFromSelection();
@@ -208,9 +276,14 @@ namespace Roguelite.UI
         private void HideSelectionPanel()
         {
             if (selectionPanel != null)
+            {
                 selectionPanel.SetActive(false);
+                if (panelCanvasGroup != null) panelCanvasGroup.alpha = 1f;
+                selectionPanel.transform.localScale = Vector3.one;
+            }
 
             IsSelectionOpen = false;
+            isProcessingSelection = false;
         }
 
         /// <summary>

@@ -220,6 +220,10 @@ MonoBehaviour:
   rareOutline: {fileID: 2100000, guid: a1daa8f6a9ceb9a4d918cfd298387432, type: 2}
   epicOutline: {fileID: 2100000, guid: 4dc3766bff686c34aa591df87611e2d1, type: 2}
   legendaryOutline: {fileID: 2100000, guid: 359cf8974271eab4fa918a4b58740e85, type: 2}
+  hoverScale: 1.08
+  hoverOffsetY: 12
+  animationSpeed: 15
+  clickPunchScale: 0.92
 --- !u!1 &7234530694861711017
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,7 +78,7 @@ namespace Roguelite.UI
             {
                 if (currentWeapon.IsDefaultUnlocked || isUnlocked)
                 {
-                    requirementText.text = "<color=#00ff88>✓ Đã mở khóa</color>";
+                    requirementText.text = "<color=#00ff88>Đã mở khoá</color>";
                 }
                 else
                 {
@@ -134,7 +134,7 @@ namespace Roguelite.UI
 
                 if (isEquipped)
                 {
-                    if (btnText != null) btnText.text = "✓ Gỡ Support";
+                    if (btnText != null) btnText.text = "Go Support";
                     equipButton.interactable = true;
                 }
                 else

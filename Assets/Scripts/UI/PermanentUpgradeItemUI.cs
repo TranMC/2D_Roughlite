@@ -93,7 +93,7 @@ namespace Roguelite.UI
             {
                 if (currentUpgrade.IsDefaultUnlocked || isReqMet)
                 {
-                    requirementText.text = "<color=#00ff88>✓ Đã mở bán</color>";
+                    requirementText.text = "<color=#00ff88>Da mo ban</color>";
                 }
                 else
                 {

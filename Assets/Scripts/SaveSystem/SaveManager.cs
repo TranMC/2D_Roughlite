@@ -10,7 +10,26 @@ namespace Roguelite.SaveSystem
     /// </summary>
     public class SaveManager : MonoBehaviour
     {
-        public static SaveManager Instance { get; private set; }
+        public const string SCRIPT_VERSION = "1.1.0";
+        private static SaveManager instance;
+        public static SaveManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = FindFirstObjectByType<SaveManager>();
+                    if (instance == null)
+                    {
+                        GameObject go = new GameObject("[SaveManager]");
+                        instance = go.AddComponent<SaveManager>();
+                        DontDestroyOnLoad(go);
+                    }
+                }
+                return instance;
+            }
+            private set => instance = value;
+        }
 
         public static readonly int CURRENT_SAVE_VERSION = 8;
         public static readonly int CURRENT_SETTING_VERSION = 1;
@@ -22,7 +41,19 @@ namespace Roguelite.SaveSystem
         private const string LEGACY_SAVE_FILE_NAME = "save_data.json";
         private const string SETTING_FILE_NAME = "settings.json";
 
-        public SaveData CurrentSaveData { get; private set; }
+        private SaveData currentSaveData;
+        public SaveData CurrentSaveData
+        {
+            get
+            {
+                if (currentSaveData == null)
+                {
+                    LoadFromDisk();
+                }
+                return currentSaveData;
+            }
+            private set => currentSaveData = value;
+        }
         public SettingData CurrentSettingData { get; private set; }
 
         public int CurrentSlotIndex { get; private set; } = 1;
@@ -46,14 +77,14 @@ namespace Roguelite.SaveSystem
 
         private void Awake()
         {
-            if (Instance == null)
+            if (instance == null)
             {
-                Instance = this;
+                instance = this;
                 DontDestroyOnLoad(gameObject);
                 LoadSettingData(); // Nạp setting trước để biết lastActiveSlotIndex
-                SetCurrentSlot(CurrentSettingData.lastActiveSlotIndex, autoLoad: false);
+                SetCurrentSlot(CurrentSettingData.lastActiveSlotIndex, autoLoad: true);
             }
-            else
+            else if (instance != this)
             {
                 Destroy(gameObject);
             }

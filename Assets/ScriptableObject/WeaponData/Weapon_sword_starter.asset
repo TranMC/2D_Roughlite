@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponId: sword_starter
   weaponName: "Ki\u1EBFm G\u1ED7"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 04ad676a04f84504cbecd794dc89c378, type: 3}
   description: "V\u0169 kh\xED c\u01A1 b\u1EA3n d\xE0nh cho c\xE1c t\xE2n binh b\u1EAFt
     \u0111\u1EA7u h\xE0nh tr\xECnh."
   damage: 2

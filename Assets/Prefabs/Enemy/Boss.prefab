@@ -216,8 +216,8 @@ GameObject:
   - component: {fileID: 4993949982838921559}
   - component: {fileID: 1511933857840140689}
   - component: {fileID: 9048081162553063204}
-  - component: {fileID: 7884530137687428089}
   - component: {fileID: 278020154219810005}
+  - component: {fileID: 2170466266511189419}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -390,6 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 297ee626b0d48274293c7d4859fec687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currencyReward: 500
   maxHP: 500
   currentHP: 0
   moveSpeed: 4
@@ -397,7 +398,7 @@ MonoBehaviour:
   idleDuration: 2
   patrolDuration: 3
   patrolAnchor: {fileID: 0}
-  patrolRange: 5
+  patrolRange: 5.28
   detectionRange: 5
   attackRange: 2.5
   attackCooldown: 1
@@ -441,7 +442,22 @@ MonoBehaviour:
   healthBar: {fileID: 3040243229772024297, guid: e0bc9716994d30a42ba2ae764c34e46d, type: 3}
   healthBarPadding: 0
   healthBarWorldSize: {x: 5.5, y: 1.2}
---- !u!114 &7884530137687428089
+--- !u!114 &278020154219810005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533622752072390192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486e905cdef394747af74a515ba6b4f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider: {fileID: 0}
+  circleCollider: {fileID: 0}
+  attackComponent: {fileID: 0}
+--- !u!114 &2170466266511189419
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -461,21 +477,6 @@ MonoBehaviour:
   - animationStateName: enemy7_attack3
     hitboxData: {fileID: 11400000, guid: 4651c8eb9cca22a41a06e31c5aa0b2a7, type: 2}
   animator: {fileID: 1511933857840140689}
---- !u!114 &278020154219810005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3533622752072390192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 486e905cdef394747af74a515ba6b4f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boxCollider: {fileID: 0}
-  circleCollider: {fileID: 0}
-  attackComponent: {fileID: 0}
 --- !u!1 &4218480304956992236
 GameObject:
   m_ObjectHideFlags: 0

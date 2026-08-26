@@ -240,6 +240,19 @@ namespace Roguelite.Editor
             else
                 Debug.LogWarning("[HitboxSetup] Boss prefab not found, skipping.");
 
+            // WorldBoss
+            var worldBossPath = "Assets/Prefabs/Enemy/WorldBoss.prefab";
+            if (File.Exists(worldBossPath))
+            {
+                // WorldBoss uses Enemy1 animations and supports both "enemy1_attack" and "Attack" state names
+                RemoveBrokenEntityHitboxHandler(worldBossPath);
+                var worldBossMap = BuildEnemyMappings("Enemy1");
+                worldBossMap["Attack"] = "Enemy1_Attack1_HitboxData";
+                AddControllerToSinglePrefab(worldBossPath, "WorldBoss", worldBossMap);
+            }
+            else
+                Debug.LogWarning("[HitboxSetup] WorldBoss prefab not found, skipping.");
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("[HitboxSetup] HitboxController added to all prefabs.");
@@ -513,6 +526,7 @@ namespace Roguelite.Editor
             foreach (var key in new[] { "Enemy1","Enemy2","Enemy3","Enemy4","Enemy5","Enemy7" })
                 CheckPrefab($"Assets/Prefabs/Enemy/{key}.prefab", key);
             CheckPrefab("Assets/Prefabs/Enemy/Boss.prefab", "Boss");
+            CheckPrefab("Assets/Prefabs/Enemy/WorldBoss.prefab", "WorldBoss");
         }
 
         private void CheckAsset(string name)

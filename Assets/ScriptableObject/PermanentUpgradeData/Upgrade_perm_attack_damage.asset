@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: "C\u01B0\u1EDDng L\u1EF1c Chi\u1EBFn T\u01B0\u1EDBng"
   description: "Gia t\u0103ng S\xE1t Th\u01B0\u01A1ng \u0110\xF2n \u0110\xE1nh (Attack
     Damage) v\u0129nh vi\u1EC5n."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 22c9528c4b55fe3439c2234fbd441cbb, type: 3}
   category: 1
   requiredEnemiesKilled: 20
   requiredRunsPlayed: 1

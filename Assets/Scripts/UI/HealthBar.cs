@@ -25,7 +25,10 @@ public class HealthBar : MonoBehaviour
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        gameObject.SetActive(false);
+        if (rectTransform != null)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void SetWorldDisplaySize(Vector2 size)
@@ -149,9 +152,12 @@ public class HealthBar : MonoBehaviour
             rectTransform = GetComponent<RectTransform>();
         }
 
-        rectTransform.pivot = new Vector2(0.5f, 0f);
-        rectTransform.anchorMin = new Vector2(0.5f, 0f);
-        rectTransform.anchorMax = new Vector2(0.5f, 0f);
+        if (rectTransform != null)
+        {
+            rectTransform.pivot = new Vector2(0.5f, 0f);
+            rectTransform.anchorMin = new Vector2(0.5f, 0f);
+            rectTransform.anchorMax = new Vector2(0.5f, 0f);
+        }
         worldSpaceConfigured = true;
     }
 
@@ -162,8 +168,11 @@ public class HealthBar : MonoBehaviour
             rectTransform = GetComponent<RectTransform>();
         }
 
-        rectTransform.sizeDelta = worldDisplaySize;
-        transform.localScale = Vector3.one;
+        if (rectTransform != null)
+        {
+            rectTransform.sizeDelta = worldDisplaySize;
+            transform.localScale = Vector3.one;
+        }
     }
 
     /// <summary>Ép các phần tử con fill full khung, tránh Image giữ native size 500px.</summary>

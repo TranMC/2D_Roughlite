@@ -48,11 +48,11 @@ GameObject:
   - component: {fileID: 285976679450404119}
   - component: {fileID: 2152392908269816835}
   - component: {fileID: 8012567144743504470}
-  - component: {fileID: 3733895618793157169}
   - component: {fileID: 6742864124527369752}
   - component: {fileID: 8912345678901234567}
   - component: {fileID: 8912345678901234568}
   - component: {fileID: 6418219321696546404}
+  - component: {fileID: 1400581467859506576}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -483,28 +483,6 @@ MonoBehaviour:
   _isGrounded: 0
   _isOnWall: 0
   _isOnCeiling: 0
---- !u!114 &3733895618793157169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4201934938828041213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitboxDataSets:
-  - animationStateName: player_attack1
-    hitboxData: {fileID: 11400000, guid: c23cbe8e4dbe81d4e8e2502363e8e22f, type: 2}
-  - animationStateName: player_attack2
-    hitboxData: {fileID: 11400000, guid: 681ac5a8894c91247a2b48159e2a1baa, type: 2}
-  - animationStateName: player_attack3
-    hitboxData: {fileID: 11400000, guid: d41da71884a948149b86f5f4d8c8226f, type: 2}
-  - animationStateName: Air Attack
-    hitboxData: {fileID: 11400000, guid: 16a2f4ce990f75646a59b497cbfec08a, type: 2}
-  animator: {fileID: 1641182201220779459}
 --- !u!114 &6742864124527369752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,6 +541,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb64343dcde999941ba5cab8d23d6113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1400581467859506576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201934938828041213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2123fbfe1df86d5409bd9984e786768b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxDataSets:
+  - animationStateName: player_attack1
+    hitboxData: {fileID: 11400000, guid: c23cbe8e4dbe81d4e8e2502363e8e22f, type: 2}
+  - animationStateName: player_attack2
+    hitboxData: {fileID: 11400000, guid: 681ac5a8894c91247a2b48159e2a1baa, type: 2}
+  - animationStateName: player_attack3
+    hitboxData: {fileID: 11400000, guid: d41da71884a948149b86f5f4d8c8226f, type: 2}
+  - animationStateName: Air Attack
+    hitboxData: {fileID: 11400000, guid: 16a2f4ce990f75646a59b497cbfec08a, type: 2}
+  animator: {fileID: 1641182201220779459}
 --- !u!1 &5146295657505998755
 GameObject:
   m_ObjectHideFlags: 0

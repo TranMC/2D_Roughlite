@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 3915187313469624478}
   - component: {fileID: 1861812004124264773}
   - component: {fileID: 5980216449542715404}
-  - component: {fileID: 8026932122016239818}
+  - component: {fileID: 7423082046563924891}
   m_Layer: 0
   m_Name: Enemy7
   m_TagString: Untagged
@@ -470,7 +470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec009e5737c96554889b88e680c21c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  currencyReward: 10
+  maxHP: 250
   currentHP: 0
   moveSpeed: 4
   patrolSpeed: 2
@@ -514,7 +515,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8026932122016239818
+--- !u!114 &7423082046563924891
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

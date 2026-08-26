@@ -20,7 +20,7 @@ MonoBehaviour:
   damage: 3
   attackSpeed: 1.6
   range: 1.8
-  knockback: {x: 3, y: 0}
+  knockback: {x: 0, y: 0}
   price: 0
   requiredEnemiesKilled: 0
   requiredRunsPlayed: 0

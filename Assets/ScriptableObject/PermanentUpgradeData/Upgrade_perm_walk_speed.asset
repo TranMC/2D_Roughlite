@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: "B\u1ED9 H\xE0nh Th\u1EA7n T\u1ED1c"
   description: "T\u0103ng t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n \u0111i b\u1ED9 (Walk
     Speed) v\u0129nh vi\u1EC5n."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 08ca848a8bf2e334cb505f6e4ebe5660, type: 3}
   category: 3
   requiredEnemiesKilled: 10
   requiredRunsPlayed: 1

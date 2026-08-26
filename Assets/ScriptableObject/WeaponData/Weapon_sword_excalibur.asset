@@ -20,7 +20,7 @@ MonoBehaviour:
   damage: 45
   attackSpeed: 1.4
   range: 2.4
-  knockback: {x: 3, y: 0}
+  knockback: {x: 0, y: 0}
   price: 1200
   requiredEnemiesKilled: 250
   requiredRunsPlayed: 10

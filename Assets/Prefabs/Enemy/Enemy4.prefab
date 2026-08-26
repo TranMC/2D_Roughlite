@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2310104762855899391}
   - component: {fileID: 858357958811906506}
   - component: {fileID: 5830661335590533197}
-  - component: {fileID: 5063908862801518355}
+  - component: {fileID: 840259353481544673}
   m_Layer: 0
   m_Name: Enemy4
   m_TagString: Untagged
@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec009e5737c96554889b88e680c21c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currencyReward: 75
   maxHP: 100
   currentHP: 0
   moveSpeed: 4
@@ -211,7 +212,7 @@ MonoBehaviour:
     m_Bits: 64
   enableDebug: 1
   logBehavior: 1
---- !u!114 &5063908862801518355
+--- !u!114 &840259353481544673
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

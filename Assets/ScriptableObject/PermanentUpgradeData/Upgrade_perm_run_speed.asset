@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: "B\u1EE9t T\u1ED1c Truy K\xEDch"
   description: "T\u0103ng t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n ch\u1EA1y nhanh (Run
     Speed) v\u0129nh vi\u1EC5n."
-  icon: {fileID: 0}
+  icon: {fileID: 1774247718, guid: c3e21933180390c4a946dd0944852f7c, type: 3}
   category: 3
   requiredEnemiesKilled: 30
   requiredRunsPlayed: 2

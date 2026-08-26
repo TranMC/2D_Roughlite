@@ -35839,7 +35839,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesToSpawn:
-  - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
+  - enemyPrefab: {fileID: 4754853106353189020, guid: f09f81224713f92418689dfb5c1b6816, type: 3}
     spawnOffset: {x: 20.158237, y: 3.8282204}
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}

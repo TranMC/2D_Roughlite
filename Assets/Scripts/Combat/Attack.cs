@@ -58,12 +58,26 @@ namespace Roguelite.Combat
             InitializeDamage();
             float currentDam = baseAttackDamage;
 
-            // Nếu là đòn đánh của Player -> cộng dồn Support Weapon Buffs & Debug Multiplier
+            // Nếu là đòn đánh của Player -> cộng dồn Support Weapon Buffs & BuffZone DamageBoost & Debug Multiplier
             if (transform.parent != null && transform.parent.GetComponent<PlayerStats>() != null)
             {
                 if (WeaponShopManager.Instance != null)
                 {
                     currentDam += WeaponShopManager.Instance.GetTotalSupportDamage();
+                }
+
+                Roguelite.BuffSystem.PlayerBuffManager buffManager = transform.parent.GetComponent<Roguelite.BuffSystem.PlayerBuffManager>();
+                if (buffManager == null)
+                {
+                    buffManager = transform.parent.GetComponentInChildren<Roguelite.BuffSystem.PlayerBuffManager>();
+                }
+                if (buffManager != null)
+                {
+                    float buffBonus = buffManager.GetTotalDamageBonusPercent();
+                    if (buffBonus > 0f)
+                    {
+                        currentDam *= (1f + buffBonus);
+                    }
                 }
 
                 if (RuntimeDebugConsole.Instance != null)

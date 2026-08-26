@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Roguelite.Combat;
 using Roguelite.Core;
 using Roguelite.UpgradeSystem;
+using Roguelite.BuffSystem;
 
 namespace Roguelite.Player
 {
@@ -90,12 +91,14 @@ namespace Roguelite.Player
         }
 
         private PlayerController playerController;
+        private PlayerBuffManager playerBuffManager;
         private Coroutine lockVelocityCoroutine;
 
         private void Awake()
         {
             // Lấy tham chiếu tới bộ điều khiển nhân vật chính
             playerController = GetComponent<PlayerController>();
+            playerBuffManager = GetComponent<PlayerBuffManager>();
 
             // Lưu giá trị max health cơ bản ban đầu
             baseMaxHealth = maxHealth;
@@ -204,17 +207,43 @@ namespace Roguelite.Player
                 return;
             }
 
+            // --- XỬ LÝ BUFF GIẢM SÁT THƯƠNG (DAMAGE REDUCTION) ---
+            if (playerBuffManager == null)
+            {
+                playerBuffManager = GetComponent<PlayerBuffManager>();
+                if (playerBuffManager == null)
+                {
+                    playerBuffManager = GetComponentInChildren<PlayerBuffManager>();
+                }
+            }
+
+            if (playerBuffManager != null)
+            {
+                float reduction = playerBuffManager.GetTotalDamageReductionPercent();
+                if (reduction > 0f)
+                {
+                    float originalDamage = damage;
+                    damage *= (1f - reduction);
+                    if (logDamage)
+                    {
+                        DebugLogger.Log($"[BuffZone] Damage reduced by {reduction * 100f:F0}%: {originalDamage:F1} → {damage:F1}", MODULE_NAME);
+                    }
+                }
+            }
+
             // --- XỬ LÝ HƠI THỞ CUỐI CÙNG (LAST_STAND) ---
             if (currentHealth - damage <= 0f && !hasUsedLastStand)
             {
                 if (UpgradeManager.Instance != null && UpgradeManager.Instance.HasSpecialBehavior("last_stand", out int lastStandStack))
                 {
                     float duration = 3.0f;
+                    Sprite lastStandIcon = null;
                     foreach (var kvp in UpgradeManager.Instance.ActivePerks)
                     {
                         if (kvp.Key.SpecialBehaviorKey == "last_stand")
                         {
                             duration = kvp.Key.EffectValue;
+                            lastStandIcon = kvp.Key.Icon;
                             break;
                         }
                     }
@@ -223,6 +252,21 @@ namespace Roguelite.Player
                     isInvincible = true;
                     customInvincibilityDuration = duration;
                     timeSinceHit = 0f;
+
+                    // Hiển thị icon trên đầu Player giống BuffZone
+                    if (playerBuffManager == null)
+                    {
+                        playerBuffManager = GetComponent<PlayerBuffManager>();
+                        if (playerBuffManager == null)
+                        {
+                            playerBuffManager = GetComponentInChildren<PlayerBuffManager>();
+                        }
+                    }
+
+                    if (playerBuffManager != null && lastStandIcon != null)
+                    {
+                        playerBuffManager.ApplyBuff("last_stand", lastStandIcon, duration);
+                    }
 
                     DebugLogger.LogWarning($"[LastStand] Player kích hoạt Hơi Thở Cuối Cùng! Thoát chết và bất tử trong {duration}s.", MODULE_NAME);
 

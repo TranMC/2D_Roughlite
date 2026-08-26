@@ -16,6 +16,10 @@ namespace Roguelite.BuffSystem
         [Tooltip("Thời gian buff có hiệu lực (giây).")]
         [SerializeField] private float duration = 10f;
 
+        [Header("Effect Value")]
+        [Tooltip("Giá trị hiệu ứng của buff:\n- DamageBoost: Tỷ lệ tăng sát thương (VD: 0.3 = +30%)\n- DamageReduction: Tỷ lệ giảm sát thương (VD: 0.3 = giảm 30%)\n- Regeneration: Lượng HP hồi mỗi giây (VD: 5 = 5 HP/s)")]
+        [SerializeField] private float effectValue = 0.3f;
+
         [Header("Visual")]
         [Tooltip("Icon hiển thị phía trên đầu player khi có buff.")]
         [SerializeField] private Sprite icon;
@@ -26,6 +30,7 @@ namespace Roguelite.BuffSystem
         public BuffType BuffType => buffType;
         public string DisplayName => displayName;
         public float Duration => duration;
+        public float EffectValue => effectValue;
         public Sprite Icon => icon;
         public GameObject ZoneParticlePrefab => zoneParticlePrefab;
     }

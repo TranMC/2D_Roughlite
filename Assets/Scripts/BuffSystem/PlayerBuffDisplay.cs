@@ -99,7 +99,7 @@ namespace Roguelite.BuffSystem
                     continue;
                 }
 
-                renderer.sprite = buffs[i].Definition.Icon;
+                renderer.sprite = buffs[i].Icon;
                 SetRendererAlpha(renderer, maxAlpha);
             }
 
@@ -130,8 +130,12 @@ namespace Roguelite.BuffSystem
 
                 SpriteRenderer renderer = iconRenderers[i];
                 float remainingTime = activeDisplayInfos[i].RemainingTime;
+                float totalDuration = activeDisplayInfos[i].TotalDuration;
 
-                if (remainingTime <= warningThreshold)
+                // Nếu tổng thời gian ngắn hơn warningThreshold thì bắt đầu nháy ở nửa sau thời gian hiệu lực
+                float threshold = totalDuration > 0f ? Mathf.Min(warningThreshold, totalDuration * 0.5f) : warningThreshold;
+
+                if (remainingTime <= threshold)
                 {
                     float alpha = Mathf.Lerp(minAlpha, maxAlpha, (Mathf.Sin(blinkTime) + 1f) / 2f);
                     SetRendererAlpha(renderer, alpha);

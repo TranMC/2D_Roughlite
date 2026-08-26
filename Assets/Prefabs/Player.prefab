@@ -244,7 +244,7 @@ MonoBehaviour:
   isDead: 0
   isGodMode: 0
   isInvincible: 0
-  invincibilityTimer: 1
+  invincibilityTimer: 0.5
 --- !u!114 &285976679450404119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,7 +440,7 @@ MonoBehaviour:
   logActions: 1
   logStateChanges: 1
   walkSpeed: 5
-  runSpeed: 9
+  runSpeed: 7
   jumpImpulse: 14
   airWalkSpeed: 3
   attackMovementMultiplier: 0

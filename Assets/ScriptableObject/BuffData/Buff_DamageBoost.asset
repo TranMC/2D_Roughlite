@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffType: 0
   displayName: "T\u0103ng S\u1EAFt Th\u01B0\u01A1ng"
-  duration: 10
+  duration: 15
+  effectValue: 0.7
   icon: {fileID: 21300000, guid: 22c9528c4b55fe3439c2234fbd441cbb, type: 3}
   zoneParticlePrefab: {fileID: 2411818202806667133, guid: e793a279c1eb8cc41b53478bfd34d363, type: 3}

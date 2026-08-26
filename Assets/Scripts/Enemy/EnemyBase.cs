@@ -358,8 +358,8 @@ namespace Roguelite.Enemy
 
             float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
 
-            // --- Lost Target: Player ra khỏi tầm phát hiện ---
-            if (distanceToPlayer > detectionRange)
+            // --- Lost Target: Player ra khỏi tầm phát hiện (Thêm dung sai 1.2x để tránh State Flutter) ---
+            if (distanceToPlayer > detectionRange * 1.2f)
             {
                 playerTarget = null;
                 TransitionToState(EnemyState.Idle);
@@ -667,7 +667,8 @@ namespace Roguelite.Enemy
                 // Fallback: tính vị trí kiểm tra tự động dựa trên Collider
                 Collider2D col = GetComponent<Collider2D>();
                 float offsetX = col != null ? col.bounds.extents.x : 0.5f;
-                float bottomY = col != null ? col.bounds.min.y : transform.position.y - 0.5f;
+                // Nâng Y lên 0.1f để raycast không bị lọt/kẹt khi bắt đầu đúng ngay mép mặt đất
+                float bottomY = col != null ? col.bounds.min.y + 0.1f : transform.position.y - 0.4f;
                 checkPosition = new Vector2(
                     transform.position.x + (facingDirection * offsetX),
                     bottomY
@@ -681,7 +682,9 @@ namespace Roguelite.Enemy
 
         protected virtual bool IsWallAhead()
         {
-            Vector2 origin = transform.position;
+            // Nâng tâm bắn raycast lên một chút (Vd: +0.5f) thay vì bắn ngay sát gót chân
+            // Bắn ngay gót chân dễ bị cọ vào sàn đất và nhầm tưởng sàn là tường.
+            Vector2 origin = (Vector2)transform.position + new Vector2(0f, 0.5f);
             Vector2 direction = Vector2.right * facingDirection;
 
             RaycastHit2D hit = Physics2D.Raycast(origin, direction, wallCheckDistance, groundLayer);

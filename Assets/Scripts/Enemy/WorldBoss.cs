@@ -333,8 +333,8 @@ namespace Roguelite.Enemy
 
             float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
 
-            // Player ra ngoài tầm phát hiện
-            if (distanceToPlayer > detectionRange)
+            // Player ra ngoài tầm phát hiện (Thêm dung sai 1.2x để tránh State Flutter)
+            if (distanceToPlayer > detectionRange * 1.2f)
             {
                 playerTarget = null;
                 if (isGrounded)
@@ -474,6 +474,57 @@ namespace Roguelite.Enemy
         // =====================================================================
         //  ATTACK SYSTEM & METEOR RAIN ULTIMATE (ĐẾM 4 ĐÒN ĐÁNH)
         // =====================================================================
+
+        /// <summary>
+        /// Override AttackLogic để KHÔNG chuyển Chase ngay lập tức.
+        /// EnemyBase.AttackLogic() gọi PerformAttack() rồi TransitionToState(Chase) cùng frame,
+        /// khiến animation + hitbox bị cancel trước khi kịp chạy.
+        /// Fix: dùng Coroutine đợi attackLockDuration xong mới chuyển state.
+        /// </summary>
+        private Coroutine attackLogicCoroutine;
+
+        protected override void AttackLogic()
+        {
+            // Chỉ bắt đầu đòn đánh MỘT LẦN, không gọi lại mỗi frame
+            if (attackLogicCoroutine != null) return;
+
+            StopMovement();
+            attackLogicCoroutine = StartCoroutine(AttackLogicCoroutine());
+        }
+
+        private IEnumerator AttackLogicCoroutine()
+        {
+            // Thực hiện đòn đánh
+            PerformAttack();
+
+            // Đặt cooldown
+            attackCooldownTimer = attackCooldown;
+
+            // Đợi cho animation + hitbox hoàn thành
+            // Lấy thời gian khóa từ AttackPattern nếu có, fallback sang attackCooldown
+            float waitTime = attackCooldown;
+            if (IsAttackingPattern && ActivePattern != null)
+            {
+                waitTime = ActivePattern.AttackLockDuration;
+            }
+
+            yield return new WaitForSeconds(waitTime);
+
+            attackLogicCoroutine = null;
+
+            // Sau khi đòn đánh hoàn tất, chuyển về Chase hoặc Idle
+            if (!isDead)
+            {
+                if (playerTarget != null && IsTargetAlive())
+                {
+                    TransitionToState(EnemyState.Chase);
+                }
+                else
+                {
+                    TransitionToState(EnemyState.Idle);
+                }
+            }
+        }
 
         protected override void PerformAttack()
         {
@@ -868,6 +919,16 @@ namespace Roguelite.Enemy
         protected override void OnStateEnter(EnemyState enteringState, EnemyState previousState)
         {
             base.OnStateEnter(enteringState, previousState);
+
+            // Cancel attack coroutine khi bị hit hoặc chết
+            if (enteringState == EnemyState.Hit || enteringState == EnemyState.Dead)
+            {
+                if (attackLogicCoroutine != null)
+                {
+                    StopCoroutine(attackLogicCoroutine);
+                    attackLogicCoroutine = null;
+                }
+            }
 
             if (anim != null)
             {

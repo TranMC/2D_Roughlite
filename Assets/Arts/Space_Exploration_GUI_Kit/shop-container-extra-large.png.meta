@@ -1,10 +1,7 @@
 fileFormatVersion: 2
-guid: b8d58338d003e9b4892fc675b7d2e47d
+guid: a1494d59711f5d545b3bf1fbeb765131
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: -2040968831447055330
-    second: shop-container-extra-large_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -111,28 +108,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: shop-container-extra-large_0
-      rect:
-        serializedVersion: 2
-        x: 21
-        y: 23
-        width: 3142
-        height: 1858
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e1444fb49a50da3e0800000000000000
-      internalID: -2040968831447055330
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -143,8 +119,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      shop-container-extra-large_0: -2040968831447055330
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

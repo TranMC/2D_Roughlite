@@ -193,13 +193,13 @@ MonoBehaviour:
   currentHP: 0
   moveSpeed: 7
   patrolSpeed: 5
-  idleDuration: 2
-  patrolDuration: 15
+  idleDuration: 1
+  patrolDuration: 5
   patrolAnchor: {fileID: 0}
   patrolRange: 30
   detectionRange: 7.75
-  attackRange: 3.87
-  attackCooldown: 1.06
+  attackRange: 3
+  attackCooldown: 0.9
   hitStaggerDuration: 0.3
   edgeCheckPoint: {fileID: 0}
   edgeCheckDistance: 1.5
@@ -246,7 +246,7 @@ MonoBehaviour:
   jumpForwardSpeed: 5.5
   jumpCooldown: 0
   jumpHeightThreshold: 1.2
-  groundCheckRadius: 0.35
+  groundCheckRadius: 0.8
   groundCheckOffset: {x: 0, y: -0.8}
   attacksBeforeMeteor: 4
   meteorDamage: 60

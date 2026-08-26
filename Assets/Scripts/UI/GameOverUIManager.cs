@@ -3,12 +3,15 @@ using UnityEngine.UI;
 using TMPro;
 using Roguelite.Core;
 using Roguelite.SaveSystem;
+using Roguelite.UpgradeSystem;
+using Roguelite.Combat;
 
 namespace Roguelite.UI
 {
     /// <summary>
-    /// Quản lý giao diện Game Over khi người chơi bị đánh bại.
-    /// Hiển thị màn hình thua, thống kê số liệu lượt chơi và cung cấp nút Chơi lại / Về Menu chính.
+    /// Quản lý giao diện Báo Cáo Kết Thúc Lượt Chạy (Run Summary / Game Over / Victory).
+    /// Hiển thị chi tiết số liệu thống kê lượt chơi (Vàng, Quái diệt, Chiều sâu phòng, Perk, Vũ khí)
+    /// và cung cấp nút Chạy Lượt Mới / Về Menu chính.
     /// </summary>
     public class GameOverUIManager : MonoBehaviour
     {
@@ -51,8 +54,8 @@ namespace Roguelite.UI
 
         private void Start()
         {
-            // Mặc định ẩn giao diện khi chưa vào Game Over
-            if (GameManager.Instance == null || GameManager.Instance.CurrentState != GameState.GameOver)
+            // Mặc định ẩn giao diện khi chưa vào GameOver hoặc Victory
+            if (GameManager.Instance == null || (GameManager.Instance.CurrentState != GameState.GameOver && GameManager.Instance.CurrentState != GameState.Victory))
             {
                 HideGameOverUI();
             }
@@ -62,7 +65,11 @@ namespace Roguelite.UI
         {
             if (state == GameState.GameOver)
             {
-                ShowGameOverUI();
+                ShowRunSummaryUI(isVictory: false);
+            }
+            else if (state == GameState.Victory)
+            {
+                ShowRunSummaryUI(isVictory: true);
             }
             else
             {
@@ -70,7 +77,11 @@ namespace Roguelite.UI
             }
         }
 
-        private void ShowGameOverUI()
+        /// <summary>
+        /// Hiển thị bảng tổng kết lượt chạy với đầy đủ thông số chi tiết.
+        /// </summary>
+        /// <param name="isVictory">True nếu thắng WorldBoss, False nếu Player bị hạ gục</param>
+        private void ShowRunSummaryUI(bool isVictory)
         {
             // Đóng bảng chọn Perk nếu đang mở để tránh block Raycast/UI
             if (RewardSelectionController.IsSelectionOpen)
@@ -83,15 +94,57 @@ namespace Roguelite.UI
                 gameOverPanel.SetActive(true);
             }
 
+            // 1. Cập nhật Tiêu Đề theo kết quả
             if (titleText != null)
             {
-                titleText.text = "GAME OVER";
+                if (isVictory)
+                {
+                    titleText.text = "<color=#00ff88>Chiến Thắng (VICTORY)!</color>\n<size=65%><color=#00e5ff>Hoàn thành lượt chạy xuất sắc</color></size>";
+                }
+                else
+                {
+                    titleText.text = "<color=#ff4d4d>Thất Bại (GAME OVER)</color>\n<size=65%><color=#aaaaaa>Kết thúc lượt chạy</color></size>";
+                }
             }
 
-            if (currencySummaryText != null && SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData != null)
+            // 2. Thu thập và định dạng dữ liệu thống kê chi tiết
+            if (currencySummaryText != null)
             {
-                int totalCurrency = SaveManager.Instance.CurrentSaveData.progressData.totalCurrency;
-                currencySummaryText.text = $"Tổng vàng sở hữu: {totalCurrency}";
+                var progress = SaveManager.Instance?.CurrentSaveData?.progressData;
+                int totalCurrency = progress != null ? progress.totalCurrency : 0;
+                int kills = progress != null ? progress.totalEnemiesKilled : 0;
+                int runs = progress != null ? progress.totalRunsPlayed : 0;
+                int highestRoom = progress != null ? progress.highestRoomReached : 0;
+
+                int perksCount = UpgradeManager.Instance != null && UpgradeManager.Instance.ActivePerks != null 
+                    ? UpgradeManager.Instance.ActivePerks.Count : 0;
+
+                int equippedWeapons = SaveManager.Instance?.CurrentSaveData?.weaponData?.equippedWeaponIds != null 
+                    ? SaveManager.Instance.CurrentSaveData.weaponData.equippedWeaponIds.Count : 0;
+
+                string statusLine = isVictory 
+                    ? "<b>Kết quả:</b> <color=#00ff88>Đã hạ gục World Boss!</color>" 
+                    : "<b>Kết quả:</b> <color=#ff4d4d>Bị đánh bại trên đường đi</color>";
+
+                currencySummaryText.text = 
+                    $"{statusLine}\n" +
+                    $"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                    $"<b>Tổng quái đã diệt:</b> <color=#00e5ff>{kills}</color>\n" +
+                    $"<b>Phòng sâu nhất đạt được:</b> <color=#ffcc00>Phòng {highestRoom}</color>\n" +
+                    $"<b>Lượt chạy thứ:</b> <color=#ffffff>#{runs}</color>\n" +
+                    $"<b>Số Perk đã thu thập:</b> <color=#00ff88>{perksCount} Perks</color>\n" +
+                    $"<b>Vũ khí Support hỗ trợ:</b> <color=#00e5ff>{equippedWeapons}/{WeaponUnlockData.MAX_EQUIPPED_SLOTS} Slots</color>\n" +
+                    $"<b>Tổng vàng sở hữu:</b> <color=#ffcc00><b>{totalCurrency} Vàng</b></color>";
+            }
+
+            // Cập nhật text nút bấm
+            if (retryButton != null)
+            {
+                var btnText = retryButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (btnText != null)
+                {
+                    btnText.text = isVictory ? "Chạy Lượt Mới" : "Chơi Lại";
+                }
             }
 
             // Mở khóa con trỏ chuột để người chơi thao tác nút bấm UI

@@ -5,6 +5,7 @@ using UnityEngine;
 using Roguelite.Combat;
 using Roguelite.Core;
 using Roguelite.RoomSystem;
+using Roguelite.SaveSystem;
 
 namespace Roguelite.Enemy
 {
@@ -18,7 +19,7 @@ namespace Roguelite.Enemy
     /// </summary>
     public class WorldBoss : BossBase
     {
-        public const string VERSION = "1.6.0";
+        public const string VERSION = "1.8.1";
 
         #region ====== SERIALIZE FIELDS - HEALTHBAR & DISPLAY ======
 
@@ -125,6 +126,10 @@ namespace Roguelite.Enemy
         private static Sprite s_SharedExplosionSprite;
         private static Material s_SharedSpriteMaterial;
         private static float s_LastHitStopTime = 0f;
+
+        // Biến Dummy Mode cho Sandbox Tool
+        private bool isDummyMode = false;
+        public bool IsDummyMode { get => isDummyMode; set => isDummyMode = value; }
 
         /// <summary>Số đòn đánh đã tích lũy hiện tại.</summary>
         public int CurrentAttackCount => currentAttackCount;
@@ -1043,6 +1048,95 @@ namespace Roguelite.Enemy
             explosion.transform.localScale = Vector3.one * (meteorImpactRadius * 1.8f);
 
             Destroy(explosion, 0.2f);
+        }
+
+        public override void TakeDamage(float damage, Vector2 knockback)
+        {
+            if (isDummyMode)
+            {
+                // Dummy Mode: hiển thị hiệu ứng trúng đòn nhưng giữ đầy máu để test combo
+                base.TakeDamage(0f, knockback);
+                currentHP = maxHP;
+                UpdateHealthBar(0f, currentHP);
+                return;
+            }
+
+            base.TakeDamage(damage, knockback);
+        }
+
+        // =====================================================================
+        //  DEBUG & COMBAT SANDBOX INTEGRATION
+        // =====================================================================
+
+        /// <summary>
+        /// Ép Boss tung chiêu Mưa Thiên Thạch ngay lập tức (phục vụ Sandbox Debug).
+        /// </summary>
+        public void ForceTriggerMeteorRain()
+        {
+            if (!isDead && !isCastingMeteor)
+            {
+                currentAttackCount = 0;
+                StartCoroutine(MeteorRainUltimateCoroutine());
+            }
+        }
+
+        /// <summary>
+        /// Ép chuyển Boss sang Phase mong muốn (0, 1, 2) tức thì.
+        /// </summary>
+        public void ForceSetPhase(int targetPhase)
+        {
+            if (isDead) return;
+            targetPhase = Mathf.Clamp(targetPhase, 0, TotalPhases - 1);
+
+            if (targetPhase > 0 && targetPhase <= PhaseThresholds.Length)
+            {
+                currentHP = maxHP * (PhaseThresholds[targetPhase - 1] - 0.02f);
+            }
+            else
+            {
+                currentHP = maxHP;
+            }
+
+            UpdateHealthBar(0f, currentHP);
+            Debug.Log($"[WorldBoss] [DebugSandbox] Đã ép Boss chuyển sang Phase {targetPhase}!");
+        }
+
+        /// <summary>
+        /// Hồi đầy máu cho Boss.
+        /// </summary>
+        public void ResetBossHealth()
+        {
+            currentHP = maxHP;
+            UpdateHealthBar(0f, currentHP);
+        }
+
+        /// <summary>
+        /// Xử lý khi World Boss bị tiêu diệt: cộng thưởng tiến trình và kích hoạt màn hình tổng kết Chiến Thắng lượt chạy.
+        /// </summary>
+        protected override void HandleDeath()
+        {
+            base.HandleDeath();
+
+            // Thưởng thêm vàng và ghi nhận tiến trình diệt World Boss
+            if (SaveManager.Instance != null && SaveManager.Instance.CurrentSaveData?.progressData != null)
+            {
+                SaveManager.Instance.CurrentSaveData.progressData.totalEnemiesKilled += 1;
+                SaveManager.Instance.CurrentSaveData.progressData.totalCurrency += 500;
+                SaveManager.Instance.SaveToDiskSync();
+            }
+
+            // Đợi 2s để animation chết chạy xong, sau đó chuyển trạng thái GameState.Victory để hiển thị UI tổng kết lượt chạy
+            StartCoroutine(TriggerRunVictorySummaryCoroutine());
+        }
+
+        private IEnumerator TriggerRunVictorySummaryCoroutine()
+        {
+            yield return new WaitForSecondsRealtime(2.0f);
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.ChangeState(GameState.Victory);
+            }
         }
 
         // =====================================================================

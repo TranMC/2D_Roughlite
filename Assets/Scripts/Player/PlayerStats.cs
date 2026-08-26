@@ -36,6 +36,34 @@ namespace Roguelite.Player
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
 
+        /// <summary>
+        /// Điều chỉnh trực tiếp lượng máu tối đa (dành cho Debug Tool).
+        /// </summary>
+        public void SetMaxHealthDirect(float newMax)
+        {
+            maxHealth = Mathf.Max(1f, newMax);
+            currentHealth = Mathf.Min(currentHealth, maxHealth);
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            healthChanged?.Invoke(currentHealth, maxHealth);
+        }
+
+        /// <summary>
+        /// Điều chỉnh trực tiếp lượng máu hiện tại (dành cho Debug Tool).
+        /// </summary>
+        public void SetCurrentHealthDirect(float newHp)
+        {
+            currentHealth = Mathf.Clamp(newHp, 0f, maxHealth);
+            if (currentHealth <= 0f && !isDead)
+            {
+                Die();
+            }
+            else
+            {
+                OnHealthChanged?.Invoke(currentHealth, maxHealth);
+                healthChanged?.Invoke(currentHealth, maxHealth);
+            }
+        }
+
         // Sự kiện xảy ra khi máu thay đổi (lượng máu hiện tại, lượng máu tối đa)
         public event Action<float, float> OnHealthChanged;
         

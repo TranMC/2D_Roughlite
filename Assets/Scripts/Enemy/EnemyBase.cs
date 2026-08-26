@@ -47,6 +47,9 @@ namespace Roguelite.Enemy
         [Tooltip("Lượng máu hiện tại (tự gán = maxHP lúc Start).")]
         [SerializeField] protected float currentHP;
 
+        public float MaxHP => maxHP;
+        public float CurrentHP => currentHP;
+
         [Header("===== Movement Settings =====")]
         [Tooltip("Tốc độ di chuyển khi rượt đuổi Player.")]
         [SerializeField] protected float moveSpeed = 4f;
@@ -425,7 +428,7 @@ namespace Roguelite.Enemy
             TakeDamage(damage, Vector2.zero);
         }
 
-        public void TakeDamage(float damage, Vector2 knockback)
+        public virtual void TakeDamage(float damage, Vector2 knockback)
         {
             if (isDead || damage <= 0f) return;
 

@@ -23,6 +23,9 @@ namespace Roguelite.Enemy
         /// <summary>Phase hiện tại (read-only cho bên ngoài).</summary>
         public int CurrentPhase => currentPhase;
 
+        /// <summary>Các ngưỡng chuyển phase.</summary>
+        public float[] PhaseThresholds => phaseThresholds;
+
         /// <summary>Tổng số phase (bao gồm phase 0 mặc định).</summary>
         public int TotalPhases => phaseThresholds.Length + 1;
 

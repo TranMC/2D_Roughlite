@@ -145,6 +145,16 @@ namespace Roguelite.UpgradeSystem
             }
         }
 
+        /// <summary>
+        /// Xóa toàn bộ Perk đang active (phục vụ Debug Tool và Reset Run).
+        /// </summary>
+        public void ClearAllActivePerks()
+        {
+            activePerks.Clear();
+            ApplyPerksToCurrentPlayer();
+            Debug.Log("[UpgradeManager] Đã xóa sạch toàn bộ active perks!");
+        }
+
 
         /// <summary>
         /// Áp dụng lại toàn bộ active perks lên Player hiện tại.

@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
     public float jumpImpulse = 10f;
+    public float jumpForce { get => jumpImpulse; set => jumpImpulse = value; }
     public float airWalkSpeed = 3f;
 
     private float baseWalkSpeed;

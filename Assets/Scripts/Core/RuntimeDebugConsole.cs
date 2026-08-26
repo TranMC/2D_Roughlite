@@ -1309,6 +1309,58 @@ namespace Roguelite.Core
 
             GUILayout.Space(4);
 
+            // Frame Rate & V-Sync Controls
+            GUILayout.BeginVertical(cardBoxStyle);
+            GUILayout.Label("🖥️ <b>CÀI ĐẶT TỐC ĐỘ KHUNG HÌNH (FPS LIMIT & V-SYNC)</b>", cardTitleStyle);
+            GUILayout.Space(4);
+
+            int currentTarget = Application.targetFrameRate;
+            int vsync = QualitySettings.vSyncCount;
+            string targetStr = currentTarget == -1 ? "Không Giới Hạn (Unlimited)" : $"{currentTarget} FPS";
+            string vsyncStr = vsync > 0 ? $"<color=#00ff88>BẬT (Theo Màn Hình: {Screen.currentResolution.refreshRateRatio.value:F0}Hz)</color>" : "<color=#ffcc00>TẮT (Theo Target FPS)</color>";
+
+            GUILayout.Label($"<b>Target FPS:</b> <color=#00e5ff>{targetStr}</color> | <b>V-Sync:</b> {vsyncStr}");
+            GUILayout.Space(4);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Chọn FPS Nhanh:", GUILayout.Width(110));
+
+            if (GUILayout.Button("144 FPS", (currentTarget == 144 && vsync == 0) ? btnToggleOnStyle : btnNormalStyle, GUILayout.Height(26)))
+            {
+                SetFPS(144, false);
+            }
+            if (GUILayout.Button("120 FPS", (currentTarget == 120 && vsync == 0) ? btnToggleOnStyle : btnNormalStyle, GUILayout.Height(26)))
+            {
+                SetFPS(120, false);
+            }
+            if (GUILayout.Button("60 FPS", (currentTarget == 60 && vsync == 0) ? btnToggleOnStyle : btnNormalStyle, GUILayout.Height(26)))
+            {
+                SetFPS(60, false);
+            }
+            if (GUILayout.Button("240 FPS", (currentTarget == 240 && vsync == 0) ? btnToggleOnStyle : btnNormalStyle, GUILayout.Height(26)))
+            {
+                SetFPS(240, false);
+            }
+            if (GUILayout.Button("🔓 Max (Unlimited)", (currentTarget == -1 && vsync == 0) ? btnToggleOnStyle : btnPrimaryStyle, GUILayout.Height(26)))
+            {
+                SetFPS(-1, false);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(4);
+
+            GUILayout.BeginHorizontal();
+            bool isVsyncOn = vsync > 0;
+            if (GUILayout.Button(isVsyncOn ? "🔄 V-Sync: ĐANG BẬT (Khóa theo màn hình)" : "🔄 V-Sync: ĐANG TẮT (Dùng Target FPS)", isVsyncOn ? btnWarningStyle : btnNormalStyle, GUILayout.Height(26)))
+            {
+                SetFPS(currentTarget, !isVsyncOn);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+
+            GUILayout.Space(4);
+
             // DebugLogger Modules
             GUILayout.BeginVertical(cardBoxStyle);
             GUILayout.Label("⚙️ <b>QUẢN LÝ DEBUGLOGGER MODULES</b>", cardTitleStyle);
@@ -1325,6 +1377,20 @@ namespace Roguelite.Core
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+        }
+
+        private void SetFPS(int targetFps, bool enableVsync)
+        {
+            QualitySettings.vSyncCount = enableVsync ? 1 : 0;
+            Application.targetFrameRate = enableVsync ? -1 : targetFps;
+
+            if (Roguelite.SaveSystem.SaveManager.Instance != null && Roguelite.SaveSystem.SaveManager.Instance.CurrentSettingData != null)
+            {
+                Roguelite.SaveSystem.SaveManager.Instance.CurrentSettingData.enableVSync = enableVsync;
+                Roguelite.SaveSystem.SaveManager.Instance.CurrentSettingData.targetFrameRate = targetFps;
+                Roguelite.SaveSystem.SaveManager.Instance.SaveSettingData();
+            }
+            commandOutput = enableVsync ? "🔄 Đã BẬT V-Sync (Khóa theo tần số quét màn hình)!" : $"🖥️ Đã đặt Target FPS thành: {(targetFps == -1 ? "Không giới hạn" : targetFps + " FPS")}!";
         }
 
         #endregion

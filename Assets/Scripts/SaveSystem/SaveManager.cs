@@ -307,16 +307,45 @@ namespace Roguelite.SaveSystem
 
                 CurrentSettingData = loadedSetting;
                 CurrentSlotIndex = Mathf.Clamp(CurrentSettingData.lastActiveSlotIndex, MIN_SLOT_INDEX, MAX_SLOT_INDEX);
+                ApplySettings(CurrentSettingData);
                 Debug.Log("[SaveManager] Tải SettingData thành công.");
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[SaveManager] Lỗi đọc file SettingData ({ex.Message}). Fallback về mặc định.");
                 CurrentSettingData = new SettingData();
+                ApplySettings(CurrentSettingData);
                 SaveSettingData();
             }
 
             return CurrentSettingData;
+        }
+
+        /// <summary>
+        /// Áp dụng các cài đặt Đồ họa, Tốc độ khung hình (FPS Limit / 144Hz / VSync) và Âm thanh lên game.
+        /// </summary>
+        public void ApplySettings(SettingData settings)
+        {
+            if (settings == null) return;
+
+            // 1. Cài đặt V-Sync và Target Frame Rate
+            QualitySettings.vSyncCount = settings.enableVSync ? 1 : 0;
+            if (settings.enableVSync)
+            {
+                Application.targetFrameRate = -1; // V-Sync sẽ tự đồng bộ theo màn hình
+            }
+            else
+            {
+                Application.targetFrameRate = settings.targetFrameRate > 0 ? settings.targetFrameRate : -1;
+            }
+
+            // 2. Cài đặt Độ phân giải
+            if (settings.screenWidth > 0 && settings.screenHeight > 0)
+            {
+                Screen.SetResolution(settings.screenWidth, settings.screenHeight, settings.isFullscreen);
+            }
+
+            Debug.Log($"[SaveManager] Áp dụng Setting: TargetFPS={Application.targetFrameRate}, VSync={QualitySettings.vSyncCount}, Screen={settings.screenWidth}x{settings.screenHeight}");
         }
 
         public void SaveSettingData()

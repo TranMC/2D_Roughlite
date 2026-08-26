@@ -66,8 +66,14 @@ namespace Roguelite.Combat
             }
         }
 
+        private void OnDisable()
+        {
+            DeactivateHitboxes();
+        }
+
         /// <summary>
         /// Tìm HitboxData phù hợp với animation state hiện tại của Animator.
+        /// Hỗ trợ cả short name hash, full name và Sub-State Machine path.
         /// </summary>
         private HitboxData GetCurrentHitboxData()
         {
@@ -79,8 +85,19 @@ namespace Roguelite.Combat
 
                 foreach (var kvp in dataLookup)
                 {
-                    if (stateInfo.IsName(kvp.Key))
+                    if (string.IsNullOrEmpty(kvp.Key)) continue;
+
+                    // 1. So khớp shortNameHash (chuẩn xác nhất cho mọi sub-state machine)
+                    if (stateInfo.shortNameHash == Animator.StringToHash(kvp.Key))
                         return kvp.Value;
+
+                    // 2. So khớp trực tiếp hoặc qua SubStateMachine prefix
+                    if (stateInfo.IsName(kvp.Key) ||
+                        stateInfo.IsName("Attack." + kvp.Key) ||
+                        stateInfo.IsName("Base Layer.Attack." + kvp.Key))
+                    {
+                        return kvp.Value;
+                    }
                 }
             }
             return null;
@@ -107,12 +124,8 @@ namespace Roguelite.Combat
 
             var activeEntry = entry.Value;
 
-            // Tắt toàn bộ hitbox children trước
-            foreach (var kvp in childLookup)
-            {
-                if (kvp.Value.activeSelf)
-                    kvp.Value.SetActive(false);
-            }
+            // Tắt toàn bộ hitbox children trước khi kích hoạt child mới
+            DeactivateHitboxes();
 
             // Kích hoạt child mục tiêu
             if (!string.IsNullOrEmpty(activeEntry.hitboxChildName) &&
@@ -145,16 +158,14 @@ namespace Roguelite.Combat
                 Debug.LogWarning($"[HitboxController] {gameObject.name}: Không tìm thấy child '{activeEntry.hitboxChildName}'.");
             }
 
-            // Auto-deactivate
-            if (activeEntry.autoDeactivateTime > 0f)
-            {
-                if (autoDeactivateCoroutine != null) StopCoroutine(autoDeactivateCoroutine);
-                autoDeactivateCoroutine = StartCoroutine(AutoDeactivateRoutine(activeEntry.autoDeactivateTime));
-            }
+            // Auto-deactivate (nếu không đặt thời gian cụ thể, đặt fallback an toàn 0.35s để tránh hitbox bị treo vĩnh viễn)
+            float deactivateDelay = activeEntry.autoDeactivateTime > 0f ? activeEntry.autoDeactivateTime : 0.35f;
+            if (autoDeactivateCoroutine != null) StopCoroutine(autoDeactivateCoroutine);
+            autoDeactivateCoroutine = StartCoroutine(AutoDeactivateRoutine(deactivateDelay));
         }
 
         /// <summary>
-        /// Được gọi từ Animation Event. Tắt toàn bộ hitbox.
+        /// Được gọi từ Animation Event hoặc khi chuyển State. Tắt triệt để toàn bộ hitbox.
         /// </summary>
         public void DeactivateHitboxes()
         {
@@ -164,11 +175,19 @@ namespace Roguelite.Combat
                 autoDeactivateCoroutine = null;
             }
 
+            if (childLookup == null) return;
+
             foreach (var kvp in childLookup)
             {
-                if (kvp.Value.activeSelf)
-                    kvp.Value.SetActive(false);
-                // When reactivated, ActivateHitbox will re-enable the collider
+                if (kvp.Value != null)
+                {
+                    if (kvp.Value.activeSelf)
+                        kvp.Value.SetActive(false);
+
+                    var col = kvp.Value.GetComponent<Collider2D>();
+                    if (col != null && col.enabled)
+                        col.enabled = false;
+                }
             }
         }
 

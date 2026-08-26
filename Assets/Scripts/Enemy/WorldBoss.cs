@@ -18,7 +18,7 @@ namespace Roguelite.Enemy
     /// </summary>
     public class WorldBoss : BossBase
     {
-        public const string VERSION = "1.3.0";
+        public const string VERSION = "1.6.0";
 
         #region ====== SERIALIZE FIELDS - HEALTHBAR & DISPLAY ======
 
@@ -113,8 +113,18 @@ namespace Roguelite.Enemy
         private bool isJumping = false;
         private float jumpCooldownTimer = 0f;
 
+        // Biến theo dõi và giải cứu chống kẹt vào vật thể
+        private float stuckTimer = 0f;
+        private float lastPositionX = 0f;
+
         private bool ownsHealthBarInstance = false;
         private Material originalMaterial;
+
+        // Shared static assets tối ưu hiệu năng cho Mưa Thiên Thạch (tránh GC Alloc & lag FPS)
+        private static Sprite s_SharedMeteorSprite;
+        private static Sprite s_SharedExplosionSprite;
+        private static Material s_SharedSpriteMaterial;
+        private static float s_LastHitStopTime = 0f;
 
         /// <summary>Số đòn đánh đã tích lũy hiện tại.</summary>
         public int CurrentAttackCount => currentAttackCount;
@@ -146,6 +156,20 @@ namespace Roguelite.Enemy
             OnPhaseChanged += HandlePhaseChanged;
             SetupHealthBar();
             OnDamageTaken += UpdateHealthBar;
+
+            // Thiết lập vật lý không ma sát để tránh Boss bị dính/kẹt vào bề mặt tường
+            SetupFrictionlessPhysics();
+
+            // Khởi tạo trước shared resources cho VFX để tránh lag khi Boss ra chiêu
+            EnsureSharedResources();
+
+            // Tự động tìm kiếm Player trên toàn bộ phòng Boss và vào trạng thái Chase ngay lập tức
+            AcquirePlayerTarget();
+            if (playerTarget != null && IsTargetAlive())
+            {
+                FaceTarget(playerTarget.position);
+                TransitionToState(EnemyState.Chase);
+            }
         }
 
         protected override void Update()
@@ -247,13 +271,21 @@ namespace Roguelite.Enemy
                 return;
             }
 
-            // 2. Nếu đang rượt đuổi (Chase) và mục tiêu đã trong tầm đánh -> Chuyển sang Attack ngay khi chạm đất
-            if (CurrentState == EnemyState.Chase && playerTarget != null && IsTargetAlive())
+            // 2. Nếu đang rượt đuổi (Chase) hoặc phát hiện mục tiêu khi tiếp đất:
+            if (playerTarget != null && IsTargetAlive())
             {
                 float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
+                FaceTarget(playerTarget.position);
+
                 if (distanceToPlayer <= attackRange && attackCooldownTimer <= 0f)
                 {
                     TransitionToState(EnemyState.Attack);
+                    return;
+                }
+
+                if (CurrentState != EnemyState.Chase && CurrentState != EnemyState.Attack)
+                {
+                    TransitionToState(EnemyState.Chase);
                 }
             }
         }
@@ -295,11 +327,64 @@ namespace Roguelite.Enemy
         }
 
         /// <summary>
+        /// Tự động gán PhysicsMaterial2D không ma sát để Boss trượt mượt mà dọc theo tường và vật cản.
+        /// </summary>
+        private void SetupFrictionlessPhysics()
+        {
+            PhysicsMaterial2D frictionlessMat = new PhysicsMaterial2D("Frictionless_Boss")
+            {
+                friction = 0f,
+                bounciness = 0f
+            };
+
+            if (rb != null)
+            {
+                rb.sharedMaterial = frictionlessMat;
+            }
+
+            Collider2D[] colliders = GetComponentsInChildren<Collider2D>();
+            foreach (var col in colliders)
+            {
+                if (col != null && !col.isTrigger)
+                {
+                    col.sharedMaterial = frictionlessMat;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Dò tìm chướng ngại vật & tường đa điểm (Chân, Bụng, Đầu) với khoảng cách thích ứng theo kích thước Boss.
+        /// </summary>
+        protected override bool IsWallAhead()
+        {
+            Collider2D col = GetComponent<Collider2D>();
+            float extentsX = col != null ? col.bounds.extents.x : 0.6f;
+            float extentsY = col != null ? col.bounds.extents.y : 1.0f;
+
+            // Điểm bắt đầu bắn tia: mép ngoài cùng của Collider theo hướng nhìn
+            float originX = transform.position.x + (facingDirection * (extentsX + 0.05f));
+            float checkDist = Mathf.Max(wallCheckDistance, 1.2f);
+            Vector2 direction = Vector2.right * facingDirection;
+
+            // Dò 3 độ cao: Chân (bậc thấp), Bụng (vật cản vừa), Đầu (tường cao)
+            Vector2 footPos = new Vector2(originX, transform.position.y - (extentsY * 0.6f));
+            Vector2 waistPos = new Vector2(originX, transform.position.y);
+            Vector2 headPos = new Vector2(originX, transform.position.y + (extentsY * 0.6f));
+
+            RaycastHit2D hitFoot = Physics2D.Raycast(footPos, direction, checkDist, groundLayer);
+            RaycastHit2D hitWaist = Physics2D.Raycast(waistPos, direction, checkDist, groundLayer);
+            RaycastHit2D hitHead = Physics2D.Raycast(headPos, direction, checkDist, groundLayer);
+
+            return (hitFoot.collider != null || hitWaist.collider != null || hitHead.collider != null);
+        }
+
+        /// <summary>
         /// Thực hiện cú nhảy để vượt tường, vượt vực hoặc nhảy lên bục cao.
         /// </summary>
-        public void PerformJump(float forwardSpeed, float verticalForce)
+        public void PerformJump(float forwardSpeed, float verticalForce, bool forceJump = false)
         {
-            if (rb == null || !isGrounded || jumpCooldownTimer > 0f) return;
+            if (rb == null || (!isGrounded && !forceJump)) return;
+            if (!forceJump && jumpCooldownTimer > 0f) return;
 
             isJumping = true;
             jumpCooldownTimer = jumpCooldown;
@@ -316,35 +401,60 @@ namespace Roguelite.Enemy
         }
 
         // =====================================================================
-        //  CHASE LOGIC OVERRIDE (TÍCH HỢP NHẢY KHI TRUY ĐUỔI)
+        //  TARGET ACQUISITION & CHASE LOGIC OVERRIDE (ARENA AGGRO & NO DE-AGGRO)
         // =====================================================================
+
+        /// <summary>
+        /// Tự động tìm kiếm mục tiêu Player trên toàn bộ đấu trường Boss (không giới hạn bởi detectionRange nhỏ).
+        /// </summary>
+        public void AcquirePlayerTarget()
+        {
+            if (playerTarget != null && IsTargetAlive()) return;
+
+            // 1. Dò tìm diện rộng quanh Boss (bán kính 35m bao phủ cả phòng)
+            Collider2D playerCollider = Physics2D.OverlapCircle(transform.position, Mathf.Max(detectionRange, 35f), playerLayer);
+            if (playerCollider != null)
+            {
+                playerTarget = playerCollider.transform;
+                return;
+            }
+
+            // 2. Tìm qua Tag "Player"
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                playerTarget = playerObj.transform;
+                return;
+            }
+
+            // 3. Tìm qua PlayerController
+            PlayerController pc = FindObjectOfType<PlayerController>();
+            if (pc != null)
+            {
+                playerTarget = pc.transform;
+            }
+        }
 
         protected override void ChaseLogic()
         {
             if (playerTarget == null || !IsTargetAlive())
             {
-                playerTarget = null;
-                if (isGrounded)
+                AcquirePlayerTarget();
+
+                if (playerTarget == null || !IsTargetAlive())
                 {
-                    TransitionToState(EnemyState.Idle);
+                    playerTarget = null;
+                    if (isGrounded)
+                    {
+                        TransitionToState(EnemyState.Idle);
+                    }
+                    return;
                 }
-                return;
             }
 
             float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
 
-            // Player ra ngoài tầm phát hiện (Thêm dung sai 1.2x để tránh State Flutter)
-            if (distanceToPlayer > detectionRange * 1.2f)
-            {
-                playerTarget = null;
-                if (isGrounded)
-                {
-                    TransitionToState(EnemyState.Idle);
-                }
-                return;
-            }
-
-            // Quay mặt về phía Player
+            // Quay mặt về phía Player liên tục
             FaceTarget(playerTarget.position);
 
             // Trong tầm đánh cận chiến (chỉ tấn công khi đã tiếp đất)
@@ -354,14 +464,49 @@ namespace Roguelite.Enemy
                 {
                     if (attackCooldownTimer <= 0f)
                     {
+                        FaceTarget(playerTarget.position);
                         TransitionToState(EnemyState.Attack);
+                        return;
                     }
                     else
                     {
-                        StopMovement();
+                        // Giữ mặt luôn hướng theo Player và duy trì áp lực, tránh đứng đơ nhìn nhau
+                        FaceTarget(playerTarget.position);
+                        if (distanceToPlayer > attackRange * 0.6f)
+                        {
+                            MoveHorizontal(moveSpeed * 0.55f);
+                        }
+                        else
+                        {
+                            StopMovement();
+                        }
+                        return;
                     }
-                    return;
                 }
+            }
+
+            // --- KIỂM TRA CHỐNG KẸT VẬT THỂ (UNSTUCK AUTO JUMP RECOVERY) ---
+            if (isGrounded && !isJumping)
+            {
+                float currentX = transform.position.x;
+                bool isActuallyStationary = Mathf.Abs(currentX - lastPositionX) < 0.02f && Mathf.Abs(rb.velocity.x) < 0.15f;
+
+                if (isActuallyStationary && distanceToPlayer > attackRange)
+                {
+                    stuckTimer += Time.deltaTime;
+                    if (stuckTimer >= 0.25f)
+                    {
+                        stuckTimer = 0f;
+                        Debug.Log($"[WorldBoss] {gameObject.name} phát hiện bị kẹt vào vật thể! Tự động kích hoạt cú nhảy giải cứu.");
+                        PerformJump(jumpForwardSpeed * 1.3f, jumpForce * 1.1f, true);
+                        return;
+                    }
+                }
+                else
+                {
+                    stuckTimer = Mathf.Max(0f, stuckTimer - Time.deltaTime * 2f);
+                }
+                lastPositionX = currentX;
             }
 
             // --- XỬ LÝ NHẢY VƯỢT ĐỊA HÌNH ---
@@ -379,7 +524,7 @@ namespace Roguelite.Enemy
             // 2. Nếu có tường chắn phía trước và đang tiếp đất -> Nhảy qua tường
             if (wallAhead && isGrounded && jumpCooldownTimer <= 0f)
             {
-                PerformJump(jumpForwardSpeed, jumpForce);
+                PerformJump(jumpForwardSpeed * 1.15f, jumpForce);
                 return;
             }
 
@@ -415,8 +560,44 @@ namespace Roguelite.Enemy
             MoveHorizontal(moveSpeed);
         }
 
+        protected override void IdleLogic()
+        {
+            StopMovement();
+
+            // Tự động tìm Player nếu chưa có
+            AcquirePlayerTarget();
+
+            // Nếu đã có mục tiêu còn sống -> chuyển Chase ngay lập tức, không chờ hết idleTimer
+            if (playerTarget != null && IsTargetAlive())
+            {
+                FaceTarget(playerTarget.position);
+                TransitionToState(EnemyState.Chase);
+                return;
+            }
+
+            if (idleTimer > 0f)
+            {
+                idleTimer -= Time.deltaTime;
+            }
+            else
+            {
+                Flip();
+                TransitionToState(EnemyState.Patrol);
+                return;
+            }
+        }
+
         protected override void PatrolLogic()
         {
+            // Tự động tìm Player khi tuần tra
+            AcquirePlayerTarget();
+            if (playerTarget != null && IsTargetAlive())
+            {
+                FaceTarget(playerTarget.position);
+                TransitionToState(EnemyState.Chase);
+                return;
+            }
+
             // Kiểm tra mép vực hoặc tường khi tuần tra
             if (IsAtEdge() || IsWallAhead())
             {
@@ -467,6 +648,7 @@ namespace Roguelite.Enemy
 
             if (DetectPlayer())
             {
+                if (playerTarget != null) FaceTarget(playerTarget.position);
                 TransitionToState(EnemyState.Chase);
             }
         }
@@ -488,27 +670,44 @@ namespace Roguelite.Enemy
             // Chỉ bắt đầu đòn đánh MỘT LẦN, không gọi lại mỗi frame
             if (attackLogicCoroutine != null) return;
 
+            if (playerTarget != null)
+            {
+                FaceTarget(playerTarget.position);
+            }
             StopMovement();
             attackLogicCoroutine = StartCoroutine(AttackLogicCoroutine());
         }
 
         private IEnumerator AttackLogicCoroutine()
         {
+            // Đảm bảo xoay đúng hướng mục tiêu trước khi ra đòn
+            if (playerTarget != null)
+            {
+                FaceTarget(playerTarget.position);
+            }
+
             // Thực hiện đòn đánh
             PerformAttack();
 
-            // Đặt cooldown
-            attackCooldownTimer = attackCooldown;
-
-            // Đợi cho animation + hitbox hoàn thành
-            // Lấy thời gian khóa từ AttackPattern nếu có, fallback sang attackCooldown
-            float waitTime = attackCooldown;
+            // Xác định thời gian khóa đòn đánh (đồng bộ với thời lượng animation vung đòn)
+            float lockDuration = 0.6f;
             if (IsAttackingPattern && ActivePattern != null)
             {
-                waitTime = ActivePattern.AttackLockDuration;
+                lockDuration = ActivePattern.AttackLockDuration;
+            }
+            else
+            {
+                // Độ dài của clip animation attack là 0.6s
+                lockDuration = 0.6f;
             }
 
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(lockDuration);
+
+            // Sau khi animation đòn đánh hoàn tất, đặt cooldown ngắn để Boss tiếp tục truy đuổi linh hoạt
+            attackCooldownTimer = attackCooldown;
+
+            // Đảm bảo tắt hitbox an toàn khi kết thúc thời gian đòn đánh
+            CleanupAttackHitboxes();
 
             attackLogicCoroutine = null;
 
@@ -571,8 +770,9 @@ namespace Roguelite.Enemy
                 AudioSource.PlayClipAtPoint(meteorCastSound, transform.position);
             }
 
-            // Tính toán số lượng thiên thạch theo Phase hiện tại
-            int totalMeteors = baseMeteorCount + (CurrentPhase * 2);
+            // Tính toán số lượng thiên thạch tối ưu theo Phase (6 đến 10 quả, uy lực và không gây lag)
+            int totalMeteors = Mathf.Clamp(baseMeteorCount + (CurrentPhase * 2), 6, 10);
+            float effectiveRadius = Mathf.Min(meteorSpawnRadius, 12f);
 
             // Xác định tâm dội thiên thạch (ưu tiên vị trí Player)
             Vector3 centerTargetPos = playerTarget != null ? playerTarget.position : (transform.position + Vector3.right * facingDirection * 3f);
@@ -583,7 +783,7 @@ namespace Roguelite.Enemy
 
             for (int i = 1; i < totalMeteors; i++)
             {
-                float randomOffsetX = UnityEngine.Random.Range(-meteorSpawnRadius, meteorSpawnRadius);
+                float randomOffsetX = UnityEngine.Random.Range(-effectiveRadius, effectiveRadius);
                 float randomOffsetY = UnityEngine.Random.Range(-1.5f, 2.5f);
                 Vector3 targetPoint = centerTargetPos + new Vector3(randomOffsetX, randomOffsetY, 0f);
 
@@ -611,7 +811,7 @@ namespace Roguelite.Enemy
             // Chờ thời gian hiển thị vòng cảnh báo
             yield return new WaitForSeconds(meteorTelegraphDuration);
 
-            // 3. Cho các quả thiên thạch dội xuống
+            // 3. Cho các quả thiên thạch dội xuống (giãn cách nhẹ 0.15s)
             for (int i = 0; i < impactPoints.Count; i++)
             {
                 Vector3 impactPos = impactPoints[i];
@@ -619,8 +819,7 @@ namespace Roguelite.Enemy
 
                 StartCoroutine(DropSingleMeteor(impactPos, marker));
 
-                // Giãn cách một chút giữa các quả thiên thạch liên tiếp để tạo cảm giác mưa dội
-                yield return new WaitForSeconds(0.12f);
+                yield return new WaitForSeconds(0.15f);
             }
 
             // Chờ hết thời gian tụ chiêu
@@ -634,7 +833,7 @@ namespace Roguelite.Enemy
         {
             // Điểm xuất phát của thiên thạch từ trên trời
             float spawnHeight = 12f;
-            float spawnOffsetX = UnityEngine.Random.Range(-3f, 3f);
+            float spawnOffsetX = UnityEngine.Random.Range(-2.5f, 2.5f);
             Vector3 startPos = targetImpactPos + new Vector3(spawnOffsetX, spawnHeight, 0f);
 
             GameObject meteorInstance = null;
@@ -645,14 +844,13 @@ namespace Roguelite.Enemy
             }
             else
             {
-                // Fallback Procedural Meteor
+                // Fallback Procedural Meteor (Shared Resource - Zero GC Alloc)
                 meteorInstance = CreateProceduralMeteorObject(startPos);
             }
 
             // Tính hướng rơi
-            Vector3 travelDir = (targetImpactPos - startPos).normalized;
             float distance = Vector3.Distance(startPos, targetImpactPos);
-            float duration = distance / meteorFallSpeed;
+            float duration = distance / Mathf.Max(meteorFallSpeed, 10f);
             float elapsed = 0f;
 
             while (elapsed < duration)
@@ -698,14 +896,9 @@ namespace Roguelite.Enemy
                 AudioSource.PlayClipAtPoint(meteorImpactSound, impactPos);
             }
 
-            // HitStop nhẹ tạo lực chấn động
-            if (HitStopManager.Instance != null)
-            {
-                HitStopManager.Instance.LightHitStop();
-            }
-
             // Tìm và gây sát thương cho các đối tượng trong vùng nổ
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(impactPos, meteorImpactRadius, playerLayer);
+            bool hitPlayer = false;
 
             foreach (Collider2D hit in hitColliders)
             {
@@ -719,6 +912,8 @@ namespace Roguelite.Enemy
 
                 if (damageable != null)
                 {
+                    hitPlayer = true;
+
                     // Tính hướng đẩy văng ra ngoài tâm vụ nổ
                     Vector2 knockbackDir = (hit.transform.position - impactPos).normalized;
                     if (knockbackDir == Vector2.zero) knockbackDir = Vector2.up;
@@ -732,11 +927,50 @@ namespace Roguelite.Enemy
                     Debug.Log($"[WorldBoss] 💥 Thiên thạch phát nổ trúng {hit.name}! Gây {meteorDamage} sát thương.");
                 }
             }
+
+            // Chỉ kích hoạt HitStop khi thực sự TRÚNG Player và có giới hạn tần suất (tránh lag giật FPS)
+            if (hitPlayer && HitStopManager.Instance != null && (Time.time - s_LastHitStopTime > 0.4f))
+            {
+                s_LastHitStopTime = Time.time;
+                HitStopManager.Instance.LightHitStop();
+            }
         }
 
         // =====================================================================
-        //  PROCEDURAL FALLBACK VISUALS (TỰ ĐỘNG SINH VFX KHI KHÔNG CÓ PREFAB)
+        //  PROCEDURAL FALLBACK VISUALS (SHARED RESOURCES - SIÊU TỐI ƯU FPS)
         // =====================================================================
+
+        private static void EnsureSharedResources()
+        {
+            if (s_SharedSpriteMaterial == null)
+            {
+                Shader shader = Shader.Find("Sprites/Default");
+                if (shader == null) shader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
+                if (shader != null) s_SharedSpriteMaterial = new Material(shader);
+            }
+
+            if (s_SharedMeteorSprite == null)
+            {
+                Texture2D tex = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+                Color[] pixels = new Color[32 * 32];
+                for (int y = 0; y < 32; y++)
+                {
+                    for (int x = 0; x < 32; x++)
+                    {
+                        float dist = Vector2.Distance(new Vector2(x, y), new Vector2(15.5f, 15.5f));
+                        pixels[y * 32 + x] = dist <= 14f ? Color.white : Color.clear;
+                    }
+                }
+                tex.SetPixels(pixels);
+                tex.Apply(false, true);
+                s_SharedMeteorSprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
+            }
+
+            if (s_SharedExplosionSprite == null)
+            {
+                s_SharedExplosionSprite = s_SharedMeteorSprite;
+            }
+        }
 
         private GameObject SpawnTelegraphMarker(Vector3 position)
         {
@@ -745,7 +979,8 @@ namespace Roguelite.Enemy
                 return Instantiate(telegraphMarkerPrefab, position, Quaternion.identity);
             }
 
-            // Fallback: Tạo vòng tròn đỏ cảnh báo bằng GameObject + LineRenderer
+            EnsureSharedResources();
+
             GameObject marker = new GameObject("TelegraphMarker_Procedural");
             marker.transform.position = position;
 
@@ -754,11 +989,11 @@ namespace Roguelite.Enemy
             line.loop = true;
             line.startWidth = 0.08f;
             line.endWidth = 0.08f;
-            line.material = new Material(Shader.Find("Sprites/Default"));
+            if (s_SharedSpriteMaterial != null) line.sharedMaterial = s_SharedSpriteMaterial;
             line.startColor = new Color(1f, 0.2f, 0.2f, 0.8f);
             line.endColor = new Color(1f, 0.4f, 0.1f, 0.8f);
 
-            int segments = 24;
+            int segments = 16;
             line.positionCount = segments;
             for (int i = 0; i < segments; i++)
             {
@@ -771,33 +1006,23 @@ namespace Roguelite.Enemy
 
         private GameObject CreateProceduralMeteorObject(Vector3 position)
         {
+            EnsureSharedResources();
+
             GameObject meteor = new GameObject("Meteor_Procedural");
             meteor.transform.position = position;
 
             SpriteRenderer sr = meteor.AddComponent<SpriteRenderer>();
-            sr.material = new Material(Shader.Find("Sprites/Default"));
+            if (s_SharedSpriteMaterial != null) sr.sharedMaterial = s_SharedSpriteMaterial;
+            sr.sprite = s_SharedMeteorSprite;
             sr.color = new Color(1f, 0.45f, 0.1f, 1f);
-
-            // Tạo Sprite hình tròn cho thiên thạch
-            Texture2D tex = new Texture2D(32, 32);
-            for (int y = 0; y < 32; y++)
-            {
-                for (int x = 0; x < 32; x++)
-                {
-                    float dist = Vector2.Distance(new Vector2(x, y), new Vector2(15.5f, 15.5f));
-                    tex.SetPixel(x, y, dist <= 14f ? Color.white : Color.clear);
-                }
-            }
-            tex.Apply();
-            sr.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
             meteor.transform.localScale = Vector3.one * 1.2f;
 
             // Trail Renderer tạo đuôi lửa
             TrailRenderer trail = meteor.AddComponent<TrailRenderer>();
-            trail.time = 0.25f;
-            trail.startWidth = 0.8f;
-            trail.endWidth = 0.1f;
-            trail.material = new Material(Shader.Find("Sprites/Default"));
+            trail.time = 0.2f;
+            trail.startWidth = 0.6f;
+            trail.endWidth = 0.05f;
+            if (s_SharedSpriteMaterial != null) trail.sharedMaterial = s_SharedSpriteMaterial;
             trail.startColor = new Color(1f, 0.6f, 0.1f, 0.9f);
             trail.endColor = new Color(1f, 0.1f, 0f, 0f);
 
@@ -806,28 +1031,18 @@ namespace Roguelite.Enemy
 
         private void CreateProceduralExplosionEffect(Vector3 position)
         {
+            EnsureSharedResources();
+
             GameObject explosion = new GameObject("Explosion_Procedural");
             explosion.transform.position = position;
 
             SpriteRenderer sr = explosion.AddComponent<SpriteRenderer>();
-            sr.material = new Material(Shader.Find("Sprites/Default"));
-            sr.color = new Color(1f, 0.3f, 0.05f, 0.9f);
+            if (s_SharedSpriteMaterial != null) sr.sharedMaterial = s_SharedSpriteMaterial;
+            sr.sprite = s_SharedExplosionSprite;
+            sr.color = new Color(1f, 0.3f, 0.05f, 0.7f);
+            explosion.transform.localScale = Vector3.one * (meteorImpactRadius * 1.8f);
 
-            Texture2D tex = new Texture2D(32, 32);
-            for (int y = 0; y < 32; y++)
-            {
-                for (int x = 0; x < 32; x++)
-                {
-                    float dist = Vector2.Distance(new Vector2(x, y), new Vector2(15.5f, 15.5f));
-                    tex.SetPixel(x, y, dist <= 14f ? Color.white : Color.clear);
-                }
-            }
-            tex.Apply();
-            sr.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
-            explosion.transform.localScale = Vector3.one * (meteorImpactRadius * 2f);
-
-            // Tự hủy sau 0.25s
-            Destroy(explosion, 0.25f);
+            Destroy(explosion, 0.2f);
         }
 
         // =====================================================================
@@ -916,13 +1131,26 @@ namespace Roguelite.Enemy
             Debug.Log($"[WorldBoss] Đã chuyển sang Phase {newPhase}! Tăng cường độ tấn công và thiên thạch.");
         }
 
+        protected override void OnStateExit(EnemyState exitingState)
+        {
+            base.OnStateExit(exitingState);
+
+            // Khi thoát khỏi Attack state, tắt toàn bộ hitbox ngay lập tức
+            if (exitingState == EnemyState.Attack)
+            {
+                CleanupAttackHitboxes();
+            }
+        }
+
         protected override void OnStateEnter(EnemyState enteringState, EnemyState previousState)
         {
             base.OnStateEnter(enteringState, previousState);
 
-            // Cancel attack coroutine khi bị hit hoặc chết
+            // Tắt hitbox và cancel coroutine khi bị hit hoặc chết
             if (enteringState == EnemyState.Hit || enteringState == EnemyState.Dead)
             {
+                CleanupAttackHitboxes();
+
                 if (attackLogicCoroutine != null)
                 {
                     StopCoroutine(attackLogicCoroutine);
@@ -949,6 +1177,24 @@ namespace Roguelite.Enemy
                         anim.SetTrigger("AI_hit");
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Dọn dẹp và tắt triệt để các collider hitbox tấn công để tránh gây sát thương ngoài ý muốn.
+        /// </summary>
+        private void CleanupAttackHitboxes()
+        {
+            HitboxController hc = GetComponent<HitboxController>();
+            if (hc != null)
+            {
+                hc.DeactivateHitboxes();
+            }
+
+            EntityHitboxHandler ehh = GetComponentInChildren<EntityHitboxHandler>();
+            if (ehh != null)
+            {
+                ehh.StopAttack();
             }
         }
 

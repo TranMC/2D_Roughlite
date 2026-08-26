@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Roguelite.RoomSystem;
 using Roguelite.Core;
+using Roguelite.Combat;
 
 namespace Roguelite.Enemy
 {
@@ -202,6 +203,11 @@ namespace Roguelite.Enemy
             if (hitboxHandler != null)
             {
                 hitboxHandler.StopAttack();
+            }
+            HitboxController hc = GetComponent<HitboxController>();
+            if (hc != null)
+            {
+                hc.DeactivateHitboxes();
             }
             if (attackLockCoroutine != null)
             {

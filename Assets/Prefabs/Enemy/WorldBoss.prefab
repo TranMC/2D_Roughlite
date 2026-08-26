@@ -33,8 +33,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.5502, y: 0.51675, z: 0}
-  m_LocalScale: {x: 1.1686919, y: 1.1686919, z: 1.1686919}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1659228807673223548}
   - {fileID: 6160192512309345555}
@@ -125,8 +125,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.03433013, y: 0.089326024}
-  m_Size: {x: 0.942019, y: 2.2421243}
+  m_Offset: {x: -0.06154106, y: 0.0413903}
+  m_Size: {x: 0.9194608, y: 2.2364843}
   m_Direction: 0
 --- !u!50 &789157754885838305
 Rigidbody2D:
@@ -196,11 +196,11 @@ MonoBehaviour:
   idleDuration: 1
   patrolDuration: 5
   patrolAnchor: {fileID: 0}
-  patrolRange: 30
-  detectionRange: 7.75
+  patrolRange: 39
+  detectionRange: 7.8
   attackRange: 3
-  attackCooldown: 0.9
-  hitStaggerDuration: 0.3
+  attackCooldown: 0.6
+  hitStaggerDuration: 0.1
   edgeCheckPoint: {fileID: 0}
   edgeCheckDistance: 1.5
   wallCheckDistance: 0.5
@@ -244,19 +244,19 @@ MonoBehaviour:
   healthBarWorldSize: {x: 3.5, y: 0.5}
   jumpForce: 8
   jumpForwardSpeed: 5.5
-  jumpCooldown: 0
+  jumpCooldown: 0.5
   jumpHeightThreshold: 1.2
   groundCheckRadius: 0.8
   groundCheckOffset: {x: 0, y: -0.8}
-  attacksBeforeMeteor: 4
-  meteorDamage: 60
-  baseMeteorCount: 15
-  meteorSpawnRadius: 40
+  attacksBeforeMeteor: 3
+  meteorDamage: 45
+  baseMeteorCount: 20
+  meteorSpawnRadius: 45
   meteorTelegraphDuration: 2
-  meteorFallSpeed: 18
+  meteorFallSpeed: 30
   meteorImpactRadius: 2.5
   meteorKnockback: {x: 5, y: 7}
-  meteorCastDuration: 7
+  meteorCastDuration: 5
   meteorPrefab: {fileID: 0}
   telegraphMarkerPrefab: {fileID: 0}
   explosionVfxPrefab: {fileID: 0}
@@ -361,7 +361,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -468,7 +468,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -573,7 +573,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

@@ -242,21 +242,21 @@ MonoBehaviour:
   healthBar: {fileID: 3040243229772024297, guid: e0bc9716994d30a42ba2ae764c34e46d, type: 3}
   healthBarPadding: 0
   healthBarWorldSize: {x: 3.5, y: 0.5}
-  jumpForce: 8
+  jumpForce: 7
   jumpForwardSpeed: 5.5
-  jumpCooldown: 0.5
+  jumpCooldown: 1
   jumpHeightThreshold: 1.2
   groundCheckRadius: 0.8
   groundCheckOffset: {x: 0, y: -0.8}
   attacksBeforeMeteor: 3
   meteorDamage: 45
-  baseMeteorCount: 20
-  meteorSpawnRadius: 45
-  meteorTelegraphDuration: 2
-  meteorFallSpeed: 30
+  baseMeteorCount: 500
+  meteorSpawnRadius: 578.4
+  meteorTelegraphDuration: 1.5
+  meteorFallSpeed: 40
   meteorImpactRadius: 2.5
   meteorKnockback: {x: 5, y: 7}
-  meteorCastDuration: 5
+  meteorCastDuration: 3
   meteorPrefab: {fileID: 0}
   telegraphMarkerPrefab: {fileID: 0}
   explosionVfxPrefab: {fileID: 0}

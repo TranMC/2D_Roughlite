@@ -5,9 +5,11 @@ namespace Roguelite.RoomSystem
 {
     /// <summary>
     /// Thuật toán sinh màn chơi procedural bằng cách ghép nối cửa (Doorway Alignment) không chồng lấn.
+    /// Version: 1.1.0
     /// </summary>
     public class MapGenerator : MonoBehaviour
     {
+        public const string VERSION = "1.1.0";
         [Header("===== Room Prefabs =====")]
         [Tooltip("Prefab của phòng bắt đầu (Start Room).")]
         [SerializeField] private GameObject startRoomPrefab;
@@ -256,7 +258,10 @@ namespace Roguelite.RoomSystem
                     doorB.ConnectTo(doorA);
 
                     spawnedRooms.Add(roomB);
-                    roomsWithOpenDoors.Add(roomB);
+                    if (roomB.roomType != RoomType.Boss)
+                    {
+                        roomsWithOpenDoors.Add(roomB);
+                    }
 
                     currentRoomCount++;
                     roomAttempts = 0; // Reset số lần thử cho phòng tiếp theo

@@ -8,11 +8,11 @@ namespace Roguelite.UI
     /// <summary>
     /// Thanh máu player cố định góc trái dưới màn hình (HUD), không bám theo đầu nhân vật.
     /// Có hỗ trợ hiển thị HP dạng chữ (ví dụ: 100/100).
-    /// Version: 1.1.0
+    /// Version: 1.2.0
     /// </summary>
     public class PlayerHealthBar : MonoBehaviour
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.2.0";
 
         [Header("Slider Settings")]
         [SerializeField] private Slider slider;
@@ -54,6 +54,14 @@ namespace Roguelite.UI
             BindPlayer();
         }
 
+        private void Update()
+        {
+            if (playerStats == null)
+            {
+                BindPlayer();
+            }
+        }
+
         private void OnDisable()
         {
             if (playerStats != null)
@@ -62,7 +70,7 @@ namespace Roguelite.UI
             }
         }
 
-        private void BindPlayer()
+        public void BindPlayer()
         {
             if (playerStats == null)
             {
@@ -154,7 +162,7 @@ namespace Roguelite.UI
             hpTextTMP.raycastTarget = false;
         }
 
-        private void EnsureHudPlacement()
+        public void EnsureHudPlacement()
         {
             if (!lockToBottomLeft || rectTransform == null)
             {
@@ -187,6 +195,11 @@ namespace Roguelite.UI
             {
                 Canvas canvas = canvases[i];
                 if (canvas == null || canvas.renderMode == RenderMode.WorldSpace)
+                {
+                    continue;
+                }
+
+                if (canvas.name.Contains("Transition") || canvas.GetComponentInParent<Roguelite.Core.SceneTransitionManager>() != null)
                 {
                     continue;
                 }

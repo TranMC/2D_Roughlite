@@ -11,11 +11,11 @@ namespace Roguelite.UI
     /// Component UI hiển thị số tiền vàng (Currency/Gold) trên màn hình HUD.
     /// Hỗ trợ hiển thị Sprite/Image icon tiền vàng và Text số lượng.
     /// Tự động cập nhật khi số tiền thay đổi thông qua PermanentUpgradeManager và SaveManager.
-    /// Version: 1.2.1
+    /// Version: 1.3.0
     /// </summary>
     public class GoldDisplayUI : MonoBehaviour
     {
-        public const string VERSION = "1.2.1";
+        public const string VERSION = "1.3.0";
 
         [Header("UI References")]
         [SerializeField] private Image goldIconImage;
@@ -238,7 +238,7 @@ namespace Roguelite.UI
             }
         }
 
-        private void EnsureHudPlacement()
+        public void EnsureHudPlacement()
         {
             if (!lockToHUD || rectTransform == null) return;
 
@@ -268,6 +268,11 @@ namespace Roguelite.UI
             {
                 Canvas canvas = canvases[i];
                 if (canvas == null || canvas.renderMode == RenderMode.WorldSpace)
+                {
+                    continue;
+                }
+
+                if (canvas.name.Contains("Transition") || canvas.GetComponentInParent<SceneTransitionManager>() != null)
                 {
                     continue;
                 }
@@ -359,19 +364,39 @@ namespace Roguelite.UI
             return generatedDefaultGoldSprite;
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoEnsureGoldUI()
+        /// <summary>
+        /// Khởi tạo hoặc tìm kiếm GoldDisplayUI trên HUD Canvas.
+        /// </summary>
+        public static GoldDisplayUI EnsureGoldUI(Canvas parentCanvas = null)
         {
-            if (IsMainMenuScene()) return;
+            if (IsMainMenuScene()) return null;
 
-            Canvas mainCanvas = FindHudCanvas();
-            if (mainCanvas == null) return;
-
-            if (FindFirstObjectByType<GoldDisplayUI>() == null)
+            GoldDisplayUI existing = FindFirstObjectByType<GoldDisplayUI>(FindObjectsInactive.Include);
+            if (existing != null)
             {
-                GameObject goldGO = new GameObject("GoldDisplayUI", typeof(RectTransform), typeof(GoldDisplayUI));
-                goldGO.transform.SetParent(mainCanvas.transform, false);
+                if (!existing.gameObject.activeSelf)
+                {
+                    existing.gameObject.SetActive(true);
+                }
+                existing.EnsureHudPlacement();
+                existing.RefreshDisplay();
+                return existing;
             }
+
+            Canvas targetCanvas = parentCanvas != null ? parentCanvas : FindHudCanvas();
+            if (targetCanvas == null) return null;
+
+            GameObject goldGO = new GameObject("GoldDisplayUI", typeof(RectTransform), typeof(GoldDisplayUI));
+            goldGO.transform.SetParent(targetCanvas.transform, false);
+
+            GoldDisplayUI newUI = goldGO.GetComponent<GoldDisplayUI>();
+            if (newUI != null)
+            {
+                newUI.EnsureHudPlacement();
+                newUI.RefreshDisplay();
+            }
+
+            return newUI;
         }
     }
 }

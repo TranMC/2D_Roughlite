@@ -4,9 +4,12 @@ namespace Roguelite.RoomSystem
 {
     /// <summary>
     /// Quản lý trạng thái, kết nối vật lý và vật cản của từng cửa trong phòng.
+    /// Version: 1.2.1
     /// </summary>
     public class RoomDoor : MonoBehaviour
     {
+        public const string VERSION = "1.2.1";
+
         [Header("Cấu hình Cửa")]
         [Tooltip("Hướng của cửa này.")]
         public DoorDirection direction;
@@ -36,6 +39,12 @@ namespace Roguelite.RoomSystem
             if (ownerRoom == null)
             {
                 Debug.LogWarning($"[RoomDoor] [{gameObject.name}] Không tìm thấy RoomManager ở các GameObject cha!");
+            }
+
+            // Nếu chưa gán gateObject thì tự động gán chính GameObject này nếu có Collider
+            if (gateObject == null && GetComponent<Collider2D>() != null)
+            {
+                gateObject = gameObject;
             }
         }
 
@@ -70,6 +79,18 @@ namespace Roguelite.RoomSystem
 
         public void CloseDoorPermanently()
         {
+            if (ownerRoom == null)
+            {
+                ownerRoom = GetComponentInParent<RoomManager>();
+            }
+
+            // Tuyệt đối không đóng vĩnh viễn cửa của phòng Boss,
+            // vì cửa phải (RightDoor) là lối thoát tới Portal sau khi hạ gục Boss!
+            if (ownerRoom != null && ownerRoom.roomType == RoomType.Boss)
+            {
+                return;
+            }
+
             isConnected = false;
             connectedDoor = null;
             isClosedPermanently = true;
@@ -78,12 +99,17 @@ namespace Roguelite.RoomSystem
             if (wallObject != null)
             {
                 wallObject.SetActive(true);
+                if (gateObject != null && gateObject != wallObject)
+                {
+                    gateObject.SetActive(false);
+                }
             }
-
-            // Tắt cửa chặn combat
-            if (gateObject != null)
+            else if (gateObject != null)
             {
-                gateObject.SetActive(false);
+                // Nếu phòng không có wallObject riêng (như CombatRoom),
+                // chính gateObject (với Collider2D) phải luôn được BẬT để đóng kín cửa,
+                // ngăn không cho quái hay người chơi lọt ra ngoài phòng!
+                gateObject.SetActive(true);
             }
         }
 
@@ -92,11 +118,40 @@ namespace Roguelite.RoomSystem
         /// </summary>
         public void SetGateActive(bool isActive)
         {
-            // Chỉ hoạt động nếu cửa không bị bịt kín vĩnh viễn
-            if (gateObject != null && !isClosedPermanently)
+            if (gateObject == null) return;
+
+            if (ownerRoom == null)
+            {
+                ownerRoom = GetComponentInParent<RoomManager>();
+            }
+
+            // Với phòng Boss: Cửa luôn tuân theo lệnh đóng/mở của RoomManager
+            // - Khi phòng bị khóa (LockRoom): isActive = true -> Khóa cửa (cả cửa vào và cửa ra Portal) để nhốt Boss
+            // - Khi phòng hoàn thành (OpenDoors): isActive = false -> Mở cửa để người chơi đi tới Portal!
+            if (ownerRoom != null && ownerRoom.roomType == RoomType.Boss)
             {
                 gateObject.SetActive(isActive);
+                Collider2D col = GetComponent<Collider2D>();
+                if (col != null)
+                {
+                    col.enabled = isActive;
+                }
+                return;
             }
+
+            // Nếu cửa này đã bị đóng vĩnh viễn (không có phòng nối ở các phòng thường)
+            if (isClosedPermanently)
+            {
+                // Nếu không có wallObject thì gateObject bắt buộc phải luôn BẬT để đóng vai trò làm tường chắn
+                if (wallObject == null)
+                {
+                    gateObject.SetActive(true);
+                }
+                return;
+            }
+
+            // Với cửa có kết nối hợp lệ: bật khi phòng bị khóa chiến đấu, tắt khi dọn phòng xong
+            gateObject.SetActive(isActive);
         }
 
         // Dùng để vẽ trực quan hướng cửa trong Editor

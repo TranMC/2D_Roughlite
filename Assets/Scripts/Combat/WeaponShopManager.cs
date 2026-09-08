@@ -13,7 +13,7 @@ namespace Roguelite.Combat
     /// </summary>
     public class WeaponShopManager : MonoBehaviour
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.2.0";
         private static WeaponShopManager instance;
         public static WeaponShopManager Instance
         {

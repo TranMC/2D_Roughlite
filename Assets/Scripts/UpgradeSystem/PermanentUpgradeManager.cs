@@ -15,7 +15,7 @@ namespace Roguelite.UpgradeSystem
     /// </summary>
     public class PermanentUpgradeManager : MonoBehaviour
     {
-        public const string VERSION = "1.2.0";
+        public const string VERSION = "1.3.0";
         private static PermanentUpgradeManager instance;
         public static PermanentUpgradeManager Instance
         {

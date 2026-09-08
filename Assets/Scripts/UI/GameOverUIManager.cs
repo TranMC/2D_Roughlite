@@ -132,7 +132,6 @@ namespace Roguelite.UI
                     $"<b>Tổng quái đã diệt:</b> <color=#00e5ff>{kills}</color>\n" +
                     $"<b>Phòng sâu nhất đạt được:</b> <color=#ffcc00>Phòng {highestRoom}</color>\n" +
                     $"<b>Lượt chạy thứ:</b> <color=#ffffff>#{runs}</color>\n" +
-                    $"<b>Số Perk đã thu thập:</b> <color=#00ff88>{perksCount} Perks</color>\n" +
                     $"<b>Vũ khí Support hỗ trợ:</b> <color=#00e5ff>{equippedWeapons}/{WeaponUnlockData.MAX_EQUIPPED_SLOTS} Slots</color>\n" +
                     $"<b>Tổng vàng sở hữu:</b> <color=#ffcc00><b>{totalCurrency} Vàng</b></color>";
             }

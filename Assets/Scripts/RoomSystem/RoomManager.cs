@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Cinemachine;
 
@@ -12,7 +13,7 @@ namespace Roguelite.RoomSystem
     [RequireComponent(typeof(Collider2D))]
     public class RoomManager : MonoBehaviour
     {
-        public const string VERSION = "1.1.1";
+        public const string VERSION = "1.5.0";
         #region ====== SERIALIZE FIELDS ======
 
         [Header("===== Room Type Settings =====")]
@@ -30,6 +31,9 @@ namespace Roguelite.RoomSystem
         [Header("===== Spawner Settings =====")]
         [Tooltip("Tham chiếu tới EnemySpawner của phòng (Tự động tìm kiếm trên cùng GameObject nếu để trống).")]
         [SerializeField] private EnemySpawner enemySpawner;
+
+        [Tooltip("Danh sách tất cả các EnemySpawner trong phòng (hỗ trợ nhiều spawner cho phòng đa quái / đa Boss).")]
+        [SerializeField] private EnemySpawner[] enemySpawners;
 
         [Header("===== Space / Collision Settings =====")]
         [Tooltip("Collider đại diện cho kích thước vật lý của phòng để kiểm tra chồng lấn (Overlap Box).")]
@@ -100,17 +104,8 @@ namespace Roguelite.RoomSystem
                 roomBoundsCollider = GetComponent<Collider2D>();
             }
 
-            // Tự động tìm kiếm EnemySpawner trên cùng GameObject nếu chưa gán
-            if (enemySpawner == null)
-            {
-                enemySpawner = GetComponent<EnemySpawner>();
-            }
-
-            // Đăng ký sự kiện hoàn thành dọn phòng
-            if (enemySpawner != null)
-            {
-                enemySpawner.OnAllEnemiesCleared += OnRoomCleared;
-            }
+            // Tự động tìm kiếm và đồng bộ tất cả EnemySpawner trong phòng
+            InitEnemySpawners();
 
             // Tự động tìm kiếm Cinemachine Virtual Camera trong phòng (Phương án 2)
             if (roomVirtualCamera == null)
@@ -164,9 +159,21 @@ namespace Roguelite.RoomSystem
         private void OnDestroy()
         {
             // Hủy đăng ký sự kiện tránh rò rỉ bộ nhớ
+            if (enemySpawners != null)
+            {
+                foreach (var s in enemySpawners)
+                {
+                    if (s != null)
+                    {
+                        s.OnAllEnemiesCleared -= CheckAndTriggerRoomClear;
+                    }
+                }
+            }
+
             if (enemySpawner != null)
             {
                 enemySpawner.OnAllEnemiesCleared -= OnRoomCleared;
+                enemySpawner.OnAllEnemiesCleared -= CheckAndTriggerRoomClear;
             }
         }
 
@@ -326,15 +333,33 @@ namespace Roguelite.RoomSystem
         /// </summary>
         private void SpawnEnemies()
         {
-            if (enemySpawner != null)
+            if (enemySpawners != null && enemySpawners.Length > 0)
+            {
+                Debug.Log($"[RoomManager] Phòng {gameObject.name} bị khóa, kích hoạt {enemySpawners.Length} EnemySpawner sinh quái...");
+                foreach (var s in enemySpawners)
+                {
+                    if (s != null)
+                    {
+                        s.SpawnEnemies();
+                    }
+                }
+            }
+            else if (enemySpawner != null)
             {
                 Debug.Log($"[RoomManager] Phòng {gameObject.name} bị khóa, yêu cầu EnemySpawner sinh quái...");
                 enemySpawner.SpawnEnemies();
             }
             else
             {
-                Debug.LogWarning($"[RoomManager] Không tìm thấy EnemySpawner cho phòng {gameObject.name}! Tự động hoàn thành.");
-                OnRoomCleared();
+                if (CheckIfAllEnemiesDefeated())
+                {
+                    Debug.LogWarning($"[RoomManager] Không tìm thấy EnemySpawner và không có quái vật trong phòng {gameObject.name}! Tự động hoàn thành.");
+                    OnRoomCleared();
+                }
+                else
+                {
+                    Debug.Log($"[RoomManager] Phòng {gameObject.name} không có Spawner nhưng có quái vật đặt sẵn. Chờ người chơi tiêu diệt sạch...");
+                }
             }
         }
 
@@ -343,24 +368,161 @@ namespace Roguelite.RoomSystem
         // =====================================================================
 
         /// <summary>
+        /// Kiểm tra xem toàn bộ quái vật và Boss trong phòng đã bị tiêu diệt sạch chưa.
+        /// </summary>
+        public bool CheckIfAllEnemiesDefeated()
+        {
+            // 1. Kiểm tra tất cả các Spawner trong phòng xem còn quái sống không
+            if (enemySpawners != null)
+            {
+                foreach (var spawner in enemySpawners)
+                {
+                    if (spawner != null && spawner.HasActiveEnemies)
+                    {
+                        Debug.Log($"[RoomManager] Spawner '{spawner.gameObject.name}' vẫn còn {spawner.ActiveEnemyCount} quái vật sống.");
+                        return false;
+                    }
+                }
+            }
+
+            // 2. Quét tất cả EnemyBase (bao gồm BossBase) con trong phòng
+            Roguelite.Enemy.EnemyBase[] allEnemies = GetComponentsInChildren<Roguelite.Enemy.EnemyBase>(true);
+            foreach (var enemy in allEnemies)
+            {
+                if (enemy != null && enemy.gameObject.activeInHierarchy && !enemy.IsDead && enemy.CurrentHP > 0f)
+                {
+                    Debug.Log($"[RoomManager] Mục tiêu '{enemy.gameObject.name}' (HP: {enemy.CurrentHP}) vẫn còn sống trong phòng '{gameObject.name}'.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private Coroutine delayedClearCheckCoroutine;
+
+        /// <summary>
+        /// Kiểm tra an toàn trước khi quyết định phòng đã được dọn sạch.
+        /// Chỉ khi toàn bộ quái và Boss trong phòng đã chết thì mới gọi OnRoomCleared().
+        /// </summary>
+        public void CheckAndTriggerRoomClear()
+        {
+            if (IsCleared) return;
+
+            if (!CheckIfAllEnemiesDefeated())
+            {
+                Debug.Log($"[RoomManager] Nhận thông báo một quái/Boss trong phòng '{gameObject.name}' bị hạ, nhưng phòng vẫn còn quái/Boss khác còn sống. Chưa clear phòng!");
+
+                // Lên lịch kiểm tra lại sau một nhịp ngắn (đề phòng nhiều quái cùng chết trong một frame hoặc đòn đánh diện rộng)
+                if (delayedClearCheckCoroutine != null)
+                {
+                    StopCoroutine(delayedClearCheckCoroutine);
+                }
+                delayedClearCheckCoroutine = StartCoroutine(DelayedClearCheckRoutine());
+                return;
+            }
+
+            if (delayedClearCheckCoroutine != null)
+            {
+                StopCoroutine(delayedClearCheckCoroutine);
+                delayedClearCheckCoroutine = null;
+            }
+
+            Debug.Log($"[RoomManager] Toàn bộ quái vật và Boss trong phòng '{gameObject.name}' đã bị tiêu diệt sạch! Tiến hành Clear phòng...");
+            OnRoomCleared();
+        }
+
+        private IEnumerator DelayedClearCheckRoutine()
+        {
+            yield return new WaitForSeconds(0.25f);
+            if (!IsCleared && CheckIfAllEnemiesDefeated())
+            {
+                Debug.Log($"[RoomManager] [DelayedCheck] Xác nhận toàn bộ quái và Boss trong phòng '{gameObject.name}' đã dọn sạch! Tiến hành Clear phòng...");
+                OnRoomCleared();
+            }
+            delayedClearCheckCoroutine = null;
+        }
+
+        /// <summary>
+        /// Khởi tạo và liên kết toàn bộ EnemySpawner trong phòng.
+        /// </summary>
+        private void InitEnemySpawners()
+        {
+            var foundSpawners = new System.Collections.Generic.List<EnemySpawner>();
+            if (enemySpawners != null && enemySpawners.Length > 0)
+            {
+                foreach (var s in enemySpawners)
+                {
+                    if (s != null && !foundSpawners.Contains(s)) foundSpawners.Add(s);
+                }
+            }
+
+            if (enemySpawner != null && !foundSpawners.Contains(enemySpawner))
+            {
+                foundSpawners.Add(enemySpawner);
+            }
+
+            EnemySpawner[] childSpawners = GetComponentsInChildren<EnemySpawner>(true);
+            foreach (var s in childSpawners)
+            {
+                if (s != null && !foundSpawners.Contains(s)) foundSpawners.Add(s);
+            }
+
+            enemySpawners = foundSpawners.ToArray();
+            if (enemySpawner == null && enemySpawners.Length > 0)
+            {
+                enemySpawner = enemySpawners[0];
+            }
+
+            foreach (var s in enemySpawners)
+            {
+                if (s != null)
+                {
+                    s.OnAllEnemiesCleared -= CheckAndTriggerRoomClear;
+                    s.OnAllEnemiesCleared += CheckAndTriggerRoomClear;
+                }
+            }
+        }
+
+        /// <summary>
         /// Được gọi từ bên ngoài khi tất cả quái trong phòng đã bị tiêu diệt.
         /// Thực hiện chuỗi: Room Cleared → Reward/Upgrade → Open Doors.
         /// </summary>
         public void OnRoomCleared()
         {
-            IsCleared = true;
-            // [BƯỚC 5] Room Cleared
-            Debug.Log($"[RoomManager] Phòng {gameObject.name} đã được dọn sạch!");
-
-            // [BƯỚC 6] Reward/Upgrade
-            Debug.Log($"[RoomManager] Trao thưởng Perk chọn 1 trong 3 cho người chơi...");
-            if (Roguelite.UI.RewardSelectionController.Instance != null)
+            if (IsCleared)
             {
-                Roguelite.UI.RewardSelectionController.Instance.OpenSelection();
+                Debug.LogWarning($"[RoomManager] Phòng {gameObject.name} đã được dọn sạch trước đó, bỏ qua yêu cầu trùng lặp.");
+                return;
+            }
+
+            IsCleared = true;
+            Debug.Log($"[RoomManager] Phòng {gameObject.name} (Loại: {roomType}) đã được dọn sạch hoàn toàn!");
+
+            // Kiểm tra xem phòng này có phải là phòng chứa World Boss không
+            bool isWorldBossEncounter = GetComponentInChildren<Roguelite.Enemy.WorldBoss>(true) != null;
+
+            if (isWorldBossEncounter)
+            {
+                // World Boss là trực tiếp kết thúc trận, không nhận Perk
+                Debug.Log("[RoomManager] Đã dọn phòng World Boss! Trực tiếp chuyển trạng thái kết thúc, không trao Perk.");
+            }
+            else if (roomType != RoomType.Start)
+            {
+                // [BƯỚC 6] Reward/Upgrade - Các phòng chiến đấu (Combat, Boss, Reward) khi dọn sạch đều trao thưởng Perk chọn 1 trong 3
+                Debug.Log($"[RoomManager] Đã dọn sạch phòng {roomType}! Trao thưởng Perk chọn 1 trong 3 cho người chơi...");
+                if (Roguelite.UI.RewardSelectionController.Instance != null)
+                {
+                    Roguelite.UI.RewardSelectionController.Instance.OpenSelection();
+                }
+                else
+                {
+                    Debug.LogWarning("[RoomManager] Không tìm thấy RewardSelectionController Instance trong Scene!");
+                }
             }
             else
             {
-                Debug.LogWarning("[RoomManager] Không tìm thấy RewardSelectionController Instance trong Scene!");
+                Debug.Log($"[RoomManager] Phòng {roomType} không yêu cầu chiến đấu, không trao thưởng Perk.");
             }
 
             // [BƯỚC 7] Open Doors – Mở các cửa chặn để mở lối đi tiếp

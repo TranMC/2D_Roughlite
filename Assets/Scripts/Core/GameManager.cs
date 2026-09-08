@@ -23,7 +23,7 @@ namespace Roguelite.Core
     /// </summary>
     public class GameManager : MonoBehaviour
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.3.0";
         public static GameManager Instance { get; private set; }
 
         [Header("Trạng thái Hiện tại")]
@@ -176,6 +176,15 @@ namespace Roguelite.Core
                 Combat.WeaponShopManager.Instance.ResetEquippedWeaponsForNewRun();
             }
 
+            // Dọn sạch Active Perks của run trước để đảm bảo chỉ số Player trở về mặc định
+            if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                Roguelite.UpgradeSystem.UpgradeManager.Instance.ClearActivePerks();
+            }
+
+            // Reset máu lưu trữ để nhân vật bắt đầu lượt chơi mới với 100% HP
+            Roguelite.Player.PlayerStats.ResetSavedHealth();
+
             ChangeState(GameState.Gameplay);
             LoadScene(gameplaySceneName);
         }
@@ -232,6 +241,13 @@ namespace Roguelite.Core
         /// </summary>
         public void RestartRun()
         {
+            if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                Roguelite.UpgradeSystem.UpgradeManager.Instance.ClearActivePerks();
+            }
+
+            Roguelite.Player.PlayerStats.ResetSavedHealth();
+
             Time.timeScale = 1f;
             ChangeState(GameState.Gameplay);
             LoadScene(SceneManager.GetActiveScene().name);
@@ -242,6 +258,13 @@ namespace Roguelite.Core
         /// </summary>
         public void BackToMainMenu()
         {
+            if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                Roguelite.UpgradeSystem.UpgradeManager.Instance.ClearActivePerks();
+            }
+
+            Roguelite.Player.PlayerStats.ResetSavedHealth();
+
             ChangeState(GameState.MainMenu);
             LoadScene(mainMenuSceneName);
         }

@@ -99,7 +99,7 @@ namespace Roguelite.UI
             {
                 if (isVictory)
                 {
-                    titleText.text = "<color=#00ff88>Chiến Thắng (VICTORY)!</color>\n<size=65%><color=#00e5ff>Hoàn thành lượt chạy xuất sắc</color></size>";
+                    titleText.text = "<color=#00ff88>Chiến Thắng!</color>\n<size=65%><color=#00e5ff>Hoàn thành lượt chạy xuất sắc</color></size>";
                 }
                 else
                 {

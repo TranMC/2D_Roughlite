@@ -38,7 +38,7 @@ MonoBehaviour:
   - tierIndex: 2
     cost: 200
     statType: 5
-    statValue: 2
+    statValue: 1.2
     isPercent: 0
     isMilestone: 0
     milestoneBonus:
@@ -50,7 +50,7 @@ MonoBehaviour:
   - tierIndex: 3
     cost: 300
     statType: 5
-    statValue: 3
+    statValue: 1.5
     isPercent: 0
     isMilestone: 0
     milestoneBonus:
@@ -62,7 +62,7 @@ MonoBehaviour:
   - tierIndex: 4
     cost: 400
     statType: 5
-    statValue: 4
+    statValue: 2
     isPercent: 0
     isMilestone: 0
     milestoneBonus:
@@ -74,7 +74,7 @@ MonoBehaviour:
   - tierIndex: 5
     cost: 500
     statType: 5
-    statValue: 6
+    statValue: 2.5
     isPercent: 0
     isMilestone: 1
     milestoneBonus:

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Roguelite.Combat;
 using Roguelite.Core;
+using Roguelite.RoomSystem;
 
 namespace Roguelite.Enemy
 {
@@ -32,7 +33,7 @@ namespace Roguelite.Enemy
     [RequireComponent(typeof(Collider2D))]
     public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.3.0";
 
         #region ====== SERIALIZE FIELDS ======
 
@@ -120,7 +121,7 @@ namespace Roguelite.Enemy
         public EnemyState CurrentState { get; protected set; }
 
         /// <summary>Trả về true nếu quái vật đã chết.</summary>
-        public bool IsDead => CurrentState == EnemyState.Dead;
+        public bool IsDead => isDead || CurrentState == EnemyState.Dead;
 
         /// <summary>Hướng quay mặt: 1 = phải, -1 = trái.</summary>
         protected int facingDirection = 1;
@@ -576,6 +577,13 @@ namespace Roguelite.Enemy
             foreach (Collider2D col in colliders)
             {
                 col.enabled = false;
+            }
+
+            // Thông báo tới RoomManager (nếu có) để kiểm tra xem đã dọn sạch phòng hay chưa
+            RoomManager roomManager = GetComponentInParent<RoomManager>() ?? FindObjectOfType<RoomManager>();
+            if (roomManager != null)
+            {
+                roomManager.CheckAndTriggerRoomClear();
             }
 
             // Lớp con override để thêm: animation die, drop loot, Destroy/Disable sau delay...

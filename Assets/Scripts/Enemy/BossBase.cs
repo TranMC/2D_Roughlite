@@ -10,7 +10,7 @@ namespace Roguelite.Enemy
 {
     public abstract class BossBase : EnemyBase
     {
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.3.0";
 
         #region ====== SANDBOX SETTINGS ======
 
@@ -333,12 +333,12 @@ namespace Roguelite.Enemy
 
             // Tìm RoomManager trên parent hoặc cùng hierarchy
             // (Boss thường nằm trong Room → RoomManager ở parent/root của Room)
-            RoomManager roomManager = GetComponentInParent<RoomManager>();
+            RoomManager roomManager = GetComponentInParent<RoomManager>() ?? FindObjectOfType<RoomManager>();
 
             if (roomManager != null)
             {
-                Debug.Log($"[BossBase] Boss {gameObject.name} đã bị hạ! Mở cửa phòng Boss.");
-                roomManager.OnRoomCleared();
+                Debug.Log($"[BossBase] Boss {gameObject.name} đã bị hạ! Yêu cầu RoomManager kiểm tra dọn sạch phòng...");
+                roomManager.CheckAndTriggerRoomClear();
             }
             else
             {

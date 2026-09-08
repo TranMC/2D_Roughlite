@@ -124,24 +124,15 @@ namespace Roguelite.UI
             {
                 SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: true);
                 Debug.Log($"[MainMenu] Đã tải Slot {slotIndex}. Vào game!");
-                GameManager.Instance.StartNewRun();
             }
             else
             {
-                // Nếu slot trống (chưa có dữ liệu) -> Tạo mới (Start)
-                
-                // Chặn không cho tạo mới đè lên slot Auto Save (nếu nó lỡ bị trống)
-                if (slotIndex == SaveManager.AUTOSAVE_SLOT_INDEX)
-                {
-                    Debug.LogWarning("[MainMenu] Không thể tạo run mới trên Auto Save slot!");
-                    return;
-                }
-
-                SaveManager.Instance.SetCurrentSlot(slotIndex, autoLoad: false);
-                SaveManager.Instance.SaveToDiskSync();
-                Debug.Log($"[MainMenu] Bắt đầu run mới tại Slot {slotIndex}!");
-                GameManager.Instance.StartNewRun();
+                // Nếu slot trống (chưa có dữ liệu) -> Tạo mới hoàn toàn sạch sẽ (New Game)
+                SaveManager.Instance.CreateNewSlot(slotIndex);
+                Debug.Log($"[MainMenu] Khởi tạo mới Slot {slotIndex} thành công. Bắt đầu chơi!");
             }
+
+            GameManager.Instance.StartNewRun();
         }
 
         /// <summary>Nút Quay lại — đóng Slot Panel, mở lại Main Panel.</summary>
@@ -167,9 +158,16 @@ namespace Roguelite.UI
             if (slotPanel != null) slotPanel.SetActive(true);
             if (pauseMenu != null) pauseMenu.SetActive(false);
 
-            if (slotUIs == null) return;
+            // Tìm tất cả SaveSlotUI con trong slotPanel để đảm bảo không bỏ sót bất kỳ slot nào
+            SaveSlotUI[] allSlots = (slotPanel != null) ? slotPanel.GetComponentsInChildren<SaveSlotUI>(true) : slotUIs;
+            if (allSlots == null || allSlots.Length == 0)
+            {
+                allSlots = slotUIs;
+            }
 
-            foreach (SaveSlotUI slot in slotUIs)
+            if (allSlots == null) return;
+
+            foreach (SaveSlotUI slot in allSlots)
             {
                 if (slot == null) continue;
                 slot.Setup(OnSlotSelected);

@@ -281,36 +281,20 @@ namespace Roguelite.UpgradeSystem
             OnMilestoneBonusGranted?.Invoke(milestoneKey, tier.milestoneBonus);
         }
 
+
         /// <summary>
-        /// Áp dụng toàn bộ chỉ số Nâng cấp vĩnh viễn (+ Milestone bonuses) lên Player khi bắt đầu Run.
+        /// Thu thập tất cả các modifier nâng cấp vĩnh viễn đã mở khóa vào 5 nhóm StatModifierGroup.
         /// </summary>
-        public void ApplyAllUpgrades(GameObject player)
+        public void CollectPermanentModifiers(
+            ref StatModifierGroup hpGroup,
+            ref StatModifierGroup walkSpeedGroup,
+            ref StatModifierGroup runSpeedGroup,
+            ref StatModifierGroup jumpGroup,
+            ref StatModifierGroup damageGroup)
         {
-            if (player == null) return;
+            if (database == null || database.AllUpgrades == null) return;
+            if (SaveManager.Instance == null || SaveManager.Instance.CurrentSaveData == null) return;
 
-            PlayerStats playerStats = player.GetComponent<PlayerStats>();
-            PlayerController playerController = player.GetComponent<PlayerController>();
-
-            if (playerStats == null || playerController == null)
-            {
-                Debug.LogError("[PermanentUpgradeManager] Không tìm thấy PlayerStats hoặc PlayerController trên Player GameObject!");
-                return;
-            }
-
-            if (database == null || database.AllUpgrades == null)
-            {
-                Debug.LogWarning("[PermanentUpgradeManager] Chưa gán PermanentUpgradeDatabase!");
-                return;
-            }
-
-            // Dùng StatModifierGroup để gom nhóm modifiers và giải quyết xung đột chỉ số
-            StatModifierGroup hpGroup = StatModifierGroup.Default;
-            StatModifierGroup walkSpeedGroup = StatModifierGroup.Default;
-            StatModifierGroup runSpeedGroup = StatModifierGroup.Default;
-            StatModifierGroup jumpGroup = StatModifierGroup.Default;
-            StatModifierGroup damageGroup = StatModifierGroup.Default;
-
-            // 1. Duyệt qua tất cả Permanent Upgrades trong Database
             foreach (var upgrade in database.AllUpgrades)
             {
                 if (upgrade == null) continue;
@@ -318,7 +302,6 @@ namespace Roguelite.UpgradeSystem
                 int unlockedLevel = GetUpgradeLevel(upgrade.UpgradeId);
                 if (unlockedLevel <= 0) continue;
 
-                // Tích lũy hiệu ứng từ Tier 1 -> unlockedLevel
                 for (int level = 1; level <= unlockedLevel; level++)
                 {
                     PermanentUpgradeTier tier = upgrade.GetTier(level);
@@ -327,7 +310,6 @@ namespace Roguelite.UpgradeSystem
                     AccumulateStatModifier(tier.statType, tier.statValue, tier.isPercent,
                         ref hpGroup, ref walkSpeedGroup, ref runSpeedGroup, ref jumpGroup, ref damageGroup);
 
-                    // Nếu tier có Milestone và đã được granted -> tích lũy thêm milestone bonus
                     if (tier.isMilestone)
                     {
                         string milestoneKey = $"{upgrade.UpgradeId}_milestone_tier_{tier.tierIndex}";
@@ -339,29 +321,17 @@ namespace Roguelite.UpgradeSystem
                     }
                 }
             }
+        }
 
-            // 2. Áp dụng chỉ số đã được tính toán thông qua StatCalculator
-            // Áp dụng Max Health
-            playerStats.ApplyMaxHealthModifier(hpGroup.flatSum, hpGroup.percentAdditiveSum);
+        /// <summary>
+        /// Áp dụng các hiệu ứng nâng cấp vĩnh viễn kết hợp với Active Perks lên Player hiện tại.
+        /// </summary>
+        public void ApplyAllUpgrades(GameObject player)
+        {
+            if (player == null) return;
 
-            // Áp dụng Speed
-            playerController.ApplySpeedModifiers(walkSpeedGroup.flatSum, walkSpeedGroup.percentAdditiveSum,
-                                                 runSpeedGroup.flatSum, runSpeedGroup.percentAdditiveSum);
-
-            // Áp dụng Jump
-            playerController.ApplyJumpModifiers(jumpGroup.flatSum, jumpGroup.percentAdditiveSum);
-
-            // Áp dụng Sát thương đòn đánh
-            Attack[] attacks = player.GetComponentsInChildren<Attack>(true);
-            foreach (Attack attack in attacks)
-            {
-                attack.ApplyDamageModifier(damageGroup.flatSum, damageGroup.percentAdditiveSum);
-            }
-
-            Debug.Log($"[PermanentUpgradeManager] 🚀 Đã áp dụng toàn bộ chỉ số Nâng cấp Vĩnh Viễn lên Player! " +
-                      $"HP Flat/Perc: +{hpGroup.flatSum}/+{hpGroup.percentAdditiveSum * 100}%, " +
-                      $"WalkSpeed Flat/Perc: +{walkSpeedGroup.flatSum}/+{walkSpeedGroup.percentAdditiveSum * 100}%, " +
-                      $"Damage Flat/Perc: +{damageGroup.flatSum}/+{damageGroup.percentAdditiveSum * 100}%");
+            var activePerks = UpgradeManager.Instance != null ? UpgradeManager.Instance.ActivePerks : null;
+            PerkEffectApplier.ApplyCombinedStats(player, activePerks);
 
             OnPermanentStatsApplied?.Invoke();
         }

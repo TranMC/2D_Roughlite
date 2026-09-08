@@ -253,7 +253,7 @@ namespace Roguelite.UI
             CloseSelection();
         }
 
-        private void CloseSelection()
+        public void CloseSelection()
         {
             if (selectionPanel != null)
             {

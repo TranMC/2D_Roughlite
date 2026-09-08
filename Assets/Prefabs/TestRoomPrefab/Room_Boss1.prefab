@@ -57874,6 +57874,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enemySpawner: {fileID: 8849683061581851152}
+  enemySpawners: []
   roomBoundsCollider: {fileID: 3567095677656781146}
   roomVirtualCamera: {fileID: 0}
   playerVirtualCamera: {fileID: 0}
@@ -76176,11 +76177,11 @@ MonoBehaviour:
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
   - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
-    spawnOffset: {x: 11.440961, y: 64.95856}
+    spawnOffset: {x: 18.17355, y: 51.64815}
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
   - enemyPrefab: {fileID: 3533622752072390192, guid: feea223b949cd7446b4913281924c608, type: 3}
-    spawnOffset: {x: 73.98677, y: 57.50393}
+    spawnOffset: {x: 78.93948, y: 48.60453}
     useCustomPatrolCenter: 0
     patrolCenterOffset: {x: 0, y: 0}
 --- !u!1001 &3426832324768417005

@@ -14,6 +14,19 @@ namespace Roguelite.Player
     /// </summary>
     public class PlayerStats : MonoBehaviour, IDamageable
     {
+        public const string VERSION = "1.3.0";
+
+        /// <summary>
+        /// Lượng HP được lưu trữ để bảo toàn qua các màn chơi (Scenes) trong cùng một lượt Run.
+        /// Giá trị -1f biểu thị chưa có lưu trữ (bắt đầu lượt chơi mới, hồi đầy máu).
+        /// </summary>
+        public static float SavedRunHealth { get; set; } = -1f;
+
+        public static void ResetSavedHealth()
+        {
+            SavedRunHealth = -1f;
+        }
+
         // === Debug Config ===
         private const string MODULE_NAME = "PlayerStats";
 
@@ -59,6 +72,7 @@ namespace Roguelite.Player
             }
             else
             {
+                SavedRunHealth = currentHealth;
                 OnHealthChanged?.Invoke(currentHealth, maxHealth);
                 healthChanged?.Invoke(currentHealth, maxHealth);
             }
@@ -138,14 +152,9 @@ namespace Roguelite.Player
 
         private void Start()
         {
-            // Thiết lập lượng máu ban đầu bằng máu tối đa
-            currentHealth = maxHealth;
             isDead = false;
             isInvincible = false;
             timeSinceHit = 0f;
-
-            OnHealthChanged?.Invoke(currentHealth, maxHealth);
-            healthChanged?.Invoke(currentHealth, maxHealth);
 
             if (playerController != null && playerController.Animator != null)
             {
@@ -154,11 +163,29 @@ namespace Roguelite.Player
             }
             LockVelocity = false; // Đảm bảo mở khóa di chuyển khi bắt đầu game
 
-            // Áp dụng các chỉ số nâng cấp vĩnh viễn từ PermanentUpgradeManager
+            // 1. Áp dụng các chỉ số nâng cấp kết hợp (Nâng cấp vĩnh viễn + Active Perks) trước để có maxHealth chuẩn
             if (PermanentUpgradeManager.Instance != null)
             {
                 PermanentUpgradeManager.Instance.ApplyAllUpgrades(gameObject);
             }
+            else if (Roguelite.UpgradeSystem.UpgradeManager.Instance != null)
+            {
+                Roguelite.UpgradeSystem.UpgradeManager.Instance.ApplyPerksToCurrentPlayer();
+            }
+
+            // 2. Thiết lập lượng máu ban đầu: Khôi phục từ SavedRunHealth nếu có, ngược lại khởi tạo đầy máu
+            if (SavedRunHealth > 0f)
+            {
+                currentHealth = Mathf.Clamp(SavedRunHealth, 1f, maxHealth);
+            }
+            else
+            {
+                currentHealth = maxHealth;
+                SavedRunHealth = currentHealth;
+            }
+
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+            healthChanged?.Invoke(currentHealth, maxHealth);
         }
 
         private void Update()
@@ -311,6 +338,10 @@ namespace Roguelite.Player
 
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+            if (!isDead && currentHealth > 0f)
+            {
+                SavedRunHealth = currentHealth;
+            }
             isInvincible = true;
 
             // Kích hoạt Lưỡi Gươm Báo Thù (vengeance_damage) khi nhận sát thương
@@ -384,6 +415,7 @@ namespace Roguelite.Player
 
             float oldHealth = currentHealth;
             currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+            SavedRunHealth = currentHealth;
             float actualHealed = currentHealth - oldHealth;
 
             if (logHealthChanges)
@@ -428,6 +460,7 @@ namespace Roguelite.Player
         private void Die()
         {
             isDead = true;
+            SavedRunHealth = -1f;
 
             OnDead?.Invoke();
 
@@ -600,6 +633,14 @@ namespace Roguelite.Player
 
         [ContextMenu("Test/Heal 10 HP")]
         private void TestHeal10HP() => Heal(10f);
+
+        private void OnDestroy()
+        {
+            if (!isDead && currentHealth > 0f)
+            {
+                SavedRunHealth = currentHealth;
+            }
+        }
 
         public void SetDebugEnabled(bool enabled)
         {

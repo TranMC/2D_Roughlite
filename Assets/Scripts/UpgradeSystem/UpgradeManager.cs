@@ -317,11 +317,20 @@ namespace Roguelite.UpgradeSystem
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // Khi load scene gameplay, tự động áp dụng lại Perks lên Player mới sinh ra
+            if (scene.name.Equals("MainMenu", StringComparison.OrdinalIgnoreCase)) return;
+
+            // Chờ 1 frame để toàn bộ các hàm Awake/Start trong Scene mới (bao gồm PlayerStats) hoàn tất
+            StartCoroutine(ApplyPerksNextFrameCoroutine(scene.name));
+        }
+
+        private System.Collections.IEnumerator ApplyPerksNextFrameCoroutine(string sceneName)
+        {
+            yield return null;
+
             PlayerStats playerStats = FindObjectOfType<PlayerStats>();
             if (playerStats != null)
             {
-                Debug.Log($"[UpgradeManager] Phát hiện Player trong scene mới '{scene.name}'. Áp dụng lại active perks...");
+                Debug.Log($"[UpgradeManager] Phát hiện Player trong scene mới '{sceneName}'. Tự động áp dụng lại active perks...");
                 ApplyPerksToCurrentPlayer();
             }
         }

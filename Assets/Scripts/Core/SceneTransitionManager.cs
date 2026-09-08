@@ -12,11 +12,11 @@ namespace Roguelite.Core
     /// <summary>
     /// Quản lý chuyển Scene mượt mà (Fade Screen, Load Async, Progress Bar, Tips ngẫu nhiên, Auto Save, Auto EventSystem).
     /// Hỗ trợ đầy đủ cả khi TransitionCanvas bị Disable (SetActive = false) trong Hierarchy.
-    /// Version: 1.5.3
+    /// Version: 1.6.0
     /// </summary>
     public class SceneTransitionManager : MonoBehaviour
     {
-        public const string VERSION = "1.5.3";
+        public const string VERSION = "1.6.0";
         public static SceneTransitionManager Instance { get; private set; }
 
         [Header("UI Canvas Overlay")]
@@ -454,6 +454,14 @@ namespace Roguelite.Core
                 faderCanvasGroup.blocksRaycasts = true;
                 faderCanvasGroup.interactable = true;
                 faderCanvasGroup.alpha = 0f;
+            }
+
+            // Lưu lượng HP hiện tại của người chơi để bảo toàn sang Scene tiếp theo
+            Roguelite.Player.PlayerStats playerStats = FindObjectOfType<Roguelite.Player.PlayerStats>();
+            if (playerStats != null && !playerStats.IsDead && playerStats.CurrentHealth > 0f)
+            {
+                Roguelite.Player.PlayerStats.SavedRunHealth = playerStats.CurrentHealth;
+                Debug.Log($"[SceneTransitionManager] Đã lưu lượng HP ({playerStats.CurrentHealth:F1}) để bảo toàn sang scene '{targetSceneName}'.");
             }
 
             // 1. Fade Out màn hình (Tối dần - dùng unscaledDeltaTime)

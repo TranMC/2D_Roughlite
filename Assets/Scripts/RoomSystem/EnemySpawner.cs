@@ -29,12 +29,40 @@ namespace Roguelite.RoomSystem
     /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
+        public const string VERSION = "1.3.0";
+
         [Header("===== Enemy Spawn Settings =====")]
         [Tooltip("Danh sách các quái vật sẽ được sinh ra.")]
         [SerializeField] private List<EnemySpawnData> enemiesToSpawn = new List<EnemySpawnData>();
 
         // Danh sách các quái vật đã được sinh ra và còn sống
         private List<EnemyBase> spawnedEnemies = new List<EnemyBase>();
+
+        /// <summary>
+        /// Cho biết Spawner này có đang quản lý quái vật nào còn sống hay không.
+        /// </summary>
+        public bool HasActiveEnemies
+        {
+            get
+            {
+                if (spawnedEnemies == null) return false;
+                spawnedEnemies.RemoveAll(e => e == null || e.IsDead || e.CurrentHP <= 0f);
+                return spawnedEnemies.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Số lượng quái vật hiện còn sống của Spawner này.
+        /// </summary>
+        public int ActiveEnemyCount
+        {
+            get
+            {
+                if (spawnedEnemies == null) return 0;
+                spawnedEnemies.RemoveAll(e => e == null || e.IsDead || e.CurrentHP <= 0f);
+                return spawnedEnemies.Count;
+            }
+        }
 
         // Sự kiện báo khi toàn bộ quái vật đã bị tiêu diệt sạch
         public event Action OnAllEnemiesCleared;
@@ -98,16 +126,17 @@ namespace Roguelite.RoomSystem
 
         private void OnEnemyDied(EnemyBase enemy)
         {
-            if (spawnedEnemies.Contains(enemy))
-            {
-                spawnedEnemies.Remove(enemy);
-                Debug.Log($"[EnemySpawner] Quái vật {enemy.gameObject.name} đã chết. Còn lại: {spawnedEnemies.Count}");
+            if (spawnedEnemies == null) return;
 
-                if (spawnedEnemies.Count == 0)
-                {
-                    Debug.Log("[EnemySpawner] Toàn bộ quái vật đã bị tiêu diệt sạch!");
-                    OnAllEnemiesCleared?.Invoke();
-                }
+            spawnedEnemies.Remove(enemy);
+            spawnedEnemies.RemoveAll(e => e == null || e.IsDead || e.CurrentHP <= 0f);
+
+            Debug.Log($"[EnemySpawner] Quái vật {(enemy != null ? enemy.gameObject.name : "null")} đã chết. Còn lại: {spawnedEnemies.Count}");
+
+            if (spawnedEnemies.Count == 0)
+            {
+                Debug.Log("[EnemySpawner] Toàn bộ quái vật đã bị tiêu diệt sạch!");
+                OnAllEnemiesCleared?.Invoke();
             }
         }
     }

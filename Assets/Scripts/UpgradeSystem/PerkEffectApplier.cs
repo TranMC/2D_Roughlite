@@ -12,11 +12,19 @@ namespace Roguelite.UpgradeSystem
     public static class PerkEffectApplier
     {
         /// <summary>
-        /// Tính toán tổng hiệu ứng của các active perks và áp dụng lên các thành phần của Player.
+        /// Tính toán tổng hiệu ứng của các active perks và áp dụng lên các thành phần của Player (gọi chuyển tiếp sang ApplyCombinedStats).
         /// </summary>
         /// <param name="player">GameObject của Player</param>
         /// <param name="activePerks">Danh sách các Perk đang hoạt động và số stack của chúng</param>
         public static void ApplyAllActivePerks(GameObject player, Dictionary<PerkData, int> activePerks)
+        {
+            ApplyCombinedStats(player, activePerks);
+        }
+
+        /// <summary>
+        /// Hợp nhất toàn bộ Modifiers từ Permanent Upgrade và Run Perks, áp dụng đồng thời lên Player.
+        /// </summary>
+        public static void ApplyCombinedStats(GameObject player, Dictionary<PerkData, int> activePerks)
         {
             if (player == null) return;
 
@@ -29,86 +37,84 @@ namespace Roguelite.UpgradeSystem
                 return;
             }
 
-            // --- 1. Khởi tạo các biến tích lũy modifiers cho từng chỉ số ---
-            float maxHealthFlat = 0f;
-            float maxHealthPercent = 0f;
+            // --- 1. Khởi tạo các nhóm modifiers cho từng chỉ số ---
+            StatModifierGroup hpGroup = StatModifierGroup.Default;
+            StatModifierGroup walkSpeedGroup = StatModifierGroup.Default;
+            StatModifierGroup runSpeedGroup = StatModifierGroup.Default;
+            StatModifierGroup jumpGroup = StatModifierGroup.Default;
+            StatModifierGroup damageGroup = StatModifierGroup.Default;
 
-            float walkSpeedFlat = 0f;
-            float walkSpeedPercent = 0f;
-            float runSpeedFlat = 0f;
-            float runSpeedPercent = 0f;
-
-            float jumpFlat = 0f;
-            float jumpPercent = 0f;
-
-            float damageFlat = 0f;
-            float damagePercent = 0f;
-
-            // --- 2. Duyệt qua danh sách các Perk đang active để tích lũy modifiers ---
-            foreach (var kvp in activePerks)
+            // --- 2. Thu thập Modifiers từ Permanent Upgrade (Nâng cấp vĩnh viễn) ---
+            if (PermanentUpgradeManager.Instance != null)
             {
-                PerkData perk = kvp.Key;
-                int stackCount = kvp.Value;
+                PermanentUpgradeManager.Instance.CollectPermanentModifiers(
+                    ref hpGroup, ref walkSpeedGroup, ref runSpeedGroup, ref jumpGroup, ref damageGroup);
+            }
 
-                if (perk == null || stackCount <= 0) continue;
-
-                // Bỏ qua nếu không phải StatModifier (SpecialBehavior sẽ được xử lý riêng theo event)
-                if (perk.EffectType != PerkEffectType.StatModifier) continue;
-
-                // Tính toán giá trị tổng hợp của perk này dựa trên StackBehavior
-                float totalValue = CalculateTotalValue(perk.EffectValue, stackCount, perk.StackBehavior, perk.IsPercent);
-
-                // Gom nhóm các modifier theo loại chỉ số
-                switch (perk.StatType)
+            // --- 3. Thu thập Modifiers từ Run Perks (Perk trong trận) ---
+            if (activePerks != null)
+            {
+                foreach (var kvp in activePerks)
                 {
-                    case PlayerStatType.MaxHealth:
-                        if (perk.IsPercent) maxHealthPercent += totalValue;
-                        else maxHealthFlat += totalValue;
-                        break;
+                    PerkData perk = kvp.Key;
+                    int stackCount = kvp.Value;
 
-                    case PlayerStatType.WalkSpeed:
-                        if (perk.IsPercent) walkSpeedPercent += totalValue;
-                        else walkSpeedFlat += totalValue;
-                        break;
+                    if (perk == null || stackCount <= 0) continue;
+                    if (perk.EffectType != PerkEffectType.StatModifier) continue;
 
-                    case PlayerStatType.RunSpeed:
-                        if (perk.IsPercent) runSpeedPercent += totalValue;
-                        else runSpeedFlat += totalValue;
-                        break;
+                    float totalValue = CalculateTotalValue(perk.EffectValue, stackCount, perk.StackBehavior, perk.IsPercent);
 
-                    case PlayerStatType.JumpImpulse:
-                        if (perk.IsPercent) jumpPercent += totalValue;
-                        else jumpFlat += totalValue;
-                        break;
+                    switch (perk.StatType)
+                    {
+                        case PlayerStatType.MaxHealth:
+                            if (perk.IsPercent) hpGroup.AddPercentAdditive(totalValue);
+                            else hpGroup.AddFlat(totalValue);
+                            break;
 
-                    case PlayerStatType.AttackDamage:
-                        if (perk.IsPercent) damagePercent += totalValue;
-                        else damageFlat += totalValue;
-                        break;
+                        case PlayerStatType.WalkSpeed:
+                            if (perk.IsPercent) walkSpeedGroup.AddPercentAdditive(totalValue);
+                            else walkSpeedGroup.AddFlat(totalValue);
+                            break;
+
+                        case PlayerStatType.RunSpeed:
+                            if (perk.IsPercent) runSpeedGroup.AddPercentAdditive(totalValue);
+                            else runSpeedGroup.AddFlat(totalValue);
+                            break;
+
+                        case PlayerStatType.JumpImpulse:
+                            if (perk.IsPercent) jumpGroup.AddPercentAdditive(totalValue);
+                            else jumpGroup.AddFlat(totalValue);
+                            break;
+
+                        case PlayerStatType.AttackDamage:
+                            if (perk.IsPercent) damageGroup.AddPercentAdditive(totalValue);
+                            else damageGroup.AddFlat(totalValue);
+                            break;
+                    }
                 }
             }
 
-            // --- 3. Áp dụng các thay đổi lên Player ---
-            // Nâng HP
-            playerStats.ApplyMaxHealthModifier(maxHealthFlat, maxHealthPercent);
+            // --- 4. Áp dụng các thay đổi hợp nhất lên Player ---
+            playerStats.ApplyMaxHealthModifier(hpGroup.flatSum, hpGroup.percentAdditiveSum);
 
-            // Nâng Tốc độ di chuyển
-            playerController.ApplySpeedModifiers(walkSpeedFlat, walkSpeedPercent, runSpeedFlat, runSpeedPercent);
+            playerController.ApplySpeedModifiers(
+                walkSpeedGroup.flatSum, walkSpeedGroup.percentAdditiveSum,
+                runSpeedGroup.flatSum, runSpeedGroup.percentAdditiveSum);
 
-            // Nâng Lực nhảy
-            playerController.ApplyJumpModifiers(jumpFlat, jumpPercent);
+            playerController.ApplyJumpModifiers(jumpGroup.flatSum, jumpGroup.percentAdditiveSum);
 
-            // Nâng Sát thương: tìm tất cả component Attack con trên Player và áp dụng
             Attack[] attacks = player.GetComponentsInChildren<Attack>(true);
             foreach (Attack attack in attacks)
             {
-                attack.ApplyDamageModifier(damageFlat, damagePercent);
+                attack.ApplyDamageModifier(damageGroup.flatSum, damageGroup.percentAdditiveSum);
             }
 
-            Debug.Log($"[PerkEffectApplier] Đã áp dụng lại toàn bộ active perks lên Player. " +
-                      $"HP Bonus: +{maxHealthFlat}/+{maxHealthPercent*100}%, " +
-                      $"WalkSpeed Bonus: +{walkSpeedFlat}/+{walkSpeedPercent*100}%, " +
-                      $"Damage Bonus: +{damageFlat}/+{damagePercent*100}%");
+            Debug.Log($"[PerkEffectApplier] ✅ Đã áp dụng chỉ số kết hợp (Permanent + Perks) lên Player: " +
+                      $"HP (+{hpGroup.flatSum}/+{hpGroup.percentAdditiveSum * 100}%), " +
+                      $"WalkSpeed (+{walkSpeedGroup.flatSum}/+{walkSpeedGroup.percentAdditiveSum * 100}%), " +
+                      $"RunSpeed (+{runSpeedGroup.flatSum}/+{runSpeedGroup.percentAdditiveSum * 100}%), " +
+                      $"Jump (+{jumpGroup.flatSum}/+{jumpGroup.percentAdditiveSum * 100}%), " +
+                      $"Damage (+{damageGroup.flatSum}/+{damageGroup.percentAdditiveSum * 100}%)");
         }
 
         /// <summary>

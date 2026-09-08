@@ -134,6 +134,36 @@ namespace Roguelite.SaveSystem
             {
                 LoadFromDisk();
             }
+            else
+            {
+                // Nếu không autoLoad nhưng slot đang trống hoặc đang giữ dữ liệu của slot khác
+                if (CurrentSaveData == null || CurrentSaveData.slotIndex != CurrentSlotIndex)
+                {
+                    CurrentSaveData = CreateDefaultSaveData(CurrentSlotIndex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tạo mới một ô lưu trống hoàn toàn với các thông số mặc định (Default SaveData).
+        /// Đảm bảo sạch sẽ 100%, không bị dính dữ liệu từ slot cũ trước đó.
+        /// </summary>
+        public SaveData CreateNewSlot(int slotIndex)
+        {
+            CurrentSlotIndex = Mathf.Clamp(slotIndex, MIN_SLOT_INDEX, MAX_SLOT_INDEX);
+
+            if (CurrentSettingData != null)
+            {
+                CurrentSettingData.lastActiveSlotIndex = CurrentSlotIndex;
+                SaveSettingData();
+            }
+
+            InitializePaths();
+
+            CurrentSaveData = CreateDefaultSaveData(CurrentSlotIndex);
+            SaveToDiskSync();
+            Debug.Log($"[SaveManager] Đã tạo mới hoàn toàn sạch sẽ cho Slot {CurrentSlotIndex}.");
+            return CurrentSaveData;
         }
 
         /// <summary>
@@ -373,13 +403,14 @@ namespace Roguelite.SaveSystem
 
         public void SaveToDiskAsync(int targetSlotIndex = -1)
         {
+            int slotToUse = targetSlotIndex >= MIN_SLOT_INDEX ? targetSlotIndex : CurrentSlotIndex;
             if (isSaving)
             {
                 hasPendingSave = true;
-                pendingSlotIndex = targetSlotIndex;
+                pendingSlotIndex = slotToUse;
                 return;
             }
-            StartCoroutine(SaveToDiskCoroutine(targetSlotIndex));
+            StartCoroutine(SaveToDiskCoroutine(slotToUse));
         }
 
         private IEnumerator SaveToDiskCoroutine(int targetSlotIndex = -1)
@@ -388,14 +419,14 @@ namespace Roguelite.SaveSystem
             OnSaveStarted?.Invoke();
             yield return null;
 
-            int slotToUse = targetSlotIndex >= 0 ? targetSlotIndex : CurrentSlotIndex;
+            int slotToUse = targetSlotIndex >= MIN_SLOT_INDEX ? targetSlotIndex : CurrentSlotIndex;
             string slotFileName = GetSlotFileName(slotToUse);
             string basePath = Application.persistentDataPath;
             string targetPath = Path.Combine(basePath, slotFileName);
             string backupPath = Path.Combine(basePath, slotFileName + ".bak");
 
             InitializePaths();
-            if (CurrentSaveData == null)
+            if (CurrentSaveData == null || CurrentSaveData.slotIndex != slotToUse)
             {
                 CurrentSaveData = CreateDefaultSaveData(slotToUse);
             }
@@ -426,7 +457,7 @@ namespace Roguelite.SaveSystem
                 yield return null;
             }
 
-            Debug.Log($"[SaveManager] Lưu SaveData Slot {slotToUse} (AutoSave/Manual) thành công xuống đĩa (Async).");
+            Debug.Log($"[SaveManager] Lưu SaveData Slot {slotToUse} thành công xuống đĩa (Async).");
             isSaving = false;
             OnSaveCompleted?.Invoke();
 
@@ -441,7 +472,7 @@ namespace Roguelite.SaveSystem
 
         public void TriggerAutoSave(float delaySeconds = 0.1f)
         {
-            Debug.Log("[SaveManager] TriggerAutoSave called with delay: " + delaySeconds);
+            Debug.Log($"[SaveManager] TriggerAutoSave gọi cho Slot {CurrentSlotIndex} (delay: {delaySeconds}s)");
             
             if (autoSaveDebounceCoroutine != null)
             {
@@ -461,23 +492,25 @@ namespace Roguelite.SaveSystem
                 Debug.Log("[SaveManager] AutoSave already pending, skipping event invoke");
             }
 
-            // Nếu delay = 0, lưu ngay lập tức vào ô AutoSave (Slot 0)
+            // Lưu chính xác vào Slot người chơi đang chọn (CurrentSlotIndex), không lưu lệch ra ngoài
+            int slotToSave = CurrentSlotIndex;
+
             if (delaySeconds <= 0f)
             {
                 isAutoSavePending = false;
-                SaveToDiskAsync(AUTOSAVE_SLOT_INDEX);
+                SaveToDiskAsync(slotToSave);
             }
             else
             {
-                autoSaveDebounceCoroutine = StartCoroutine(DebouncedAutoSaveCoroutine(delaySeconds));
+                autoSaveDebounceCoroutine = StartCoroutine(DebouncedAutoSaveCoroutine(delaySeconds, slotToSave));
             }
         }
 
-        private IEnumerator DebouncedAutoSaveCoroutine(float delay)
+        private IEnumerator DebouncedAutoSaveCoroutine(float delay, int slotToSave)
         {
             yield return new WaitForSecondsRealtime(delay);
             isAutoSavePending = false;
-            SaveToDiskAsync(AUTOSAVE_SLOT_INDEX);
+            SaveToDiskAsync(slotToSave);
             autoSaveDebounceCoroutine = null;
         }
 

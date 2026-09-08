@@ -19,7 +19,7 @@ namespace Roguelite.Enemy
     /// </summary>
     public class WorldBoss : BossBase
     {
-        public const string VERSION = "1.8.2";
+        public const string VERSION = "1.9.0";
 
         #region ====== SERIALIZE FIELDS - HEALTHBAR & DISPLAY ======
 
@@ -126,10 +126,6 @@ namespace Roguelite.Enemy
         private static Sprite s_SharedExplosionSprite;
         private static Material s_SharedSpriteMaterial;
         private static float s_LastHitStopTime = 0f;
-
-        // Biến Dummy Mode cho Sandbox Tool
-        private bool isDummyMode = false;
-        public bool IsDummyMode { get => isDummyMode; set => isDummyMode = value; }
 
         /// <summary>Số đòn đánh đã tích lũy hiện tại.</summary>
         public int CurrentAttackCount => currentAttackCount;
@@ -1083,7 +1079,7 @@ namespace Roguelite.Enemy
         /// <summary>
         /// Ép chuyển Boss sang Phase mong muốn (0, 1, 2) tức thì.
         /// </summary>
-        public void ForceSetPhase(int targetPhase)
+        public override void ForceSetPhase(int targetPhase)
         {
             if (isDead) return;
             targetPhase = Mathf.Clamp(targetPhase, 0, TotalPhases - 1);
@@ -1104,7 +1100,7 @@ namespace Roguelite.Enemy
         /// <summary>
         /// Hồi đầy máu cho Boss.
         /// </summary>
-        public void ResetBossHealth()
+        public override void ResetBossHealth()
         {
             currentHP = maxHP;
             UpdateHealthBar(0f, currentHP);
@@ -1123,6 +1119,12 @@ namespace Roguelite.Enemy
                 SaveManager.Instance.CurrentSaveData.progressData.totalEnemiesKilled += 1;
                 SaveManager.Instance.CurrentSaveData.progressData.totalCurrency += 500;
                 SaveManager.Instance.SaveToDiskSync();
+            }
+
+            // Đảm bảo tuyệt đối không có bảng chọn Perk nào mở ra khi World Boss bị hạ gục
+            if (Roguelite.UI.RewardSelectionController.Instance != null && Roguelite.UI.RewardSelectionController.IsSelectionOpen)
+            {
+                Roguelite.UI.RewardSelectionController.Instance.CloseSelection();
             }
 
             // Đợi 2s để animation chết chạy xong, sau đó chuyển trạng thái GameState.Victory để hiển thị UI tổng kết lượt chạy

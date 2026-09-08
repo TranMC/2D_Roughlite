@@ -21,6 +21,9 @@ public class SoundManager : MonoBehaviour
 {
     public const string VERSION = "1.1.0";
     [SerializeField] private SoundList[] soundList;
+    [SerializeField, Range(0.5f, 3f)] private float hurtVolume = 1000f;
+    [SerializeField, Range(0.5f, 3f)] private float footstepVolume = 4f;
+    [SerializeField, Range(0.5f, 3f)] private float landingVolume = 10f;
     private static SoundManager instance;
     public static SoundManager Instance => instance;
     private AudioSource audioSource;
@@ -122,7 +125,22 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        instance.audioSource.PlayOneShot(randomClip, volume);
+        instance.audioSource.PlayOneShot(randomClip, volume * instance.GetTypeVolume(sound));
+    }
+
+    private float GetTypeVolume(SoundType sound)
+    {
+        switch (sound)
+        {
+            case SoundType.HURT:
+                return hurtVolume;
+            case SoundType.FOOTSTEP:
+                return footstepVolume;
+            case SoundType.LANDING:
+                return landingVolume;
+            default:
+                return 1f;
+        }
     }
 
     public static void StopMusic()

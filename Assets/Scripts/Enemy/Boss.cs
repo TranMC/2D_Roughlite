@@ -8,6 +8,8 @@ namespace Roguelite.Enemy
     /// </summary>
     public class Boss: BossBase
     {
+        public const string VERSION = "1.1.0";
+
         [SerializeField] private HealthBar healthBar;
 
         [Tooltip("Khoảng cách bổ sung phía trên sprite Boss (world units).")]
@@ -85,6 +87,16 @@ namespace Roguelite.Enemy
             if (healthBar != null)
             {
                 healthBar.SetHealth(remainingHP);
+            }
+        }
+
+        public override void ResetBossHealth()
+        {
+            base.ResetBossHealth();
+            if (healthBar != null)
+            {
+                healthBar.Show();
+                healthBar.SetHealth(currentHP);
             }
         }
 

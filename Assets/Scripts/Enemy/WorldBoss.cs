@@ -19,7 +19,7 @@ namespace Roguelite.Enemy
     /// </summary>
     public class WorldBoss : BossBase
     {
-        public const string VERSION = "1.8.1";
+        public const string VERSION = "1.8.2";
 
         #region ====== SERIALIZE FIELDS - HEALTHBAR & DISPLAY ======
 

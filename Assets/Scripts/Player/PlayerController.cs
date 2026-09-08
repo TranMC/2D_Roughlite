@@ -8,7 +8,7 @@ using Roguelite.Player;
 [RequireComponent(typeof(Rigidbody2D), typeof(TouchingDirections), typeof(PlayerStats))]
 public class PlayerController : MonoBehaviour
 {
-    public const string VERSION = "1.3.1";
+    public const string VERSION = "1.3.2";
     Rigidbody2D rb;
     Animator animator;
 
@@ -336,6 +336,11 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
+            // Chặn nhận input đánh khi con trỏ đang nằm trên bảng Debug Tool
+            if (RuntimeDebugConsole.Instance != null && RuntimeDebugConsole.Instance.IsPointerOverConsole())
+            {
+                return;
+            }
             _attackRequested = true;
         }
     }
@@ -352,6 +357,12 @@ public class PlayerController : MonoBehaviour
 
         // 2. Chặn tấn công khi đang click chuột trên giao diện UI (Buttons, Shop, Canvas...)
         if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
+        // 3. Chặn tấn công khi đang click chuột trên giao diện RuntimeDebugConsole
+        if (RuntimeDebugConsole.Instance != null && RuntimeDebugConsole.Instance.IsPointerOverConsole())
         {
             return;
         }

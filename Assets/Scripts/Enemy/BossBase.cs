@@ -10,6 +10,22 @@ namespace Roguelite.Enemy
 {
     public abstract class BossBase : EnemyBase
     {
+        public const string VERSION = "1.1.0";
+
+        #region ====== SANDBOX SETTINGS ======
+
+        [Header("===== Boss Sandbox Settings =====")]
+        [Tooltip("Chế độ bất tử/khóa máu phục vụ test combo trong Boss Sandbox.")]
+        [SerializeField] protected bool isDummyMode = false;
+
+        public bool IsDummyMode
+        {
+            get => isDummyMode;
+            set => isDummyMode = value;
+        }
+
+        #endregion
+
         #region ====== PHASE SETTINGS ======
 
         [Header("===== Boss Phase Settings =====")]
@@ -263,7 +279,7 @@ namespace Roguelite.Enemy
         /// <summary>
         /// Cập nhật tốc độ Animator và Scale của Boss dựa theo cấu hình Phase hiện tại
         /// </summary>
-        private void ApplyPhaseModifiers(int phaseIndex)
+        protected virtual void ApplyPhaseModifiers(int phaseIndex)
         {
             if (phasePatterns == null || phasePatterns.Count == 0) return;
 
@@ -329,6 +345,106 @@ namespace Roguelite.Enemy
                 Debug.LogWarning($"[BossBase] Không tìm thấy RoomManager cho Boss {gameObject.name}.");
             }
         }
+
+        // =====================================================================
+        //  TAKE DAMAGE OVERRIDE (DUMMY MODE SUPPORT)
+        // =====================================================================
+
+        public override void TakeDamage(float damage, Vector2 knockback)
+        {
+            if (isDummyMode)
+            {
+                // Dummy Mode: hiển thị hiệu ứng trúng đòn/knockback nhưng giữ đầy máu
+                currentHP = maxHP;
+                TriggerOnDamageTaken(0f, currentHP);
+
+                if (knockback != Vector2.zero && rb != null)
+                {
+                    rb.velocity = new Vector2(knockback.x, rb.velocity.y + knockback.y);
+                }
+                return;
+            }
+
+            base.TakeDamage(damage, knockback);
+        }
+
+        // =====================================================================
+        //  DEBUG & SANDBOX CONTROLS
+        // =====================================================================
+
+        #region ====== DEBUG & SANDBOX CONTROLS ======
+
+        /// <summary>
+        /// Hồi đầy máu và reset phase cho Boss, đồng thời hồi sinh lại nếu Boss đã chết.
+        /// </summary>
+        public virtual void ResetBossHealth()
+        {
+            if (isDead)
+            {
+                isDead = false;
+                if (rb != null)
+                {
+                    rb.simulated = true;
+                    rb.velocity = Vector2.zero;
+                }
+                TransitionToState(EnemyState.Idle);
+                if (anim != null)
+                {
+                    anim.Play("Idle", 0, 0f);
+                }
+            }
+
+            currentHP = maxHP;
+            currentPhase = 0;
+            ApplyPhaseModifiers(0);
+            OnPhaseChanged?.Invoke(0);
+            TriggerOnDamageTaken(0f, currentHP);
+            Debug.Log($"[{GetType().Name}] [DebugSandbox] Đã hồi đầy máu và reset Boss!");
+        }
+
+        /// <summary>
+        /// Ép Boss chuyển sang Phase chỉ định tức thì.
+        /// </summary>
+        public virtual void ForceSetPhase(int targetPhase)
+        {
+            if (isDead) return;
+            targetPhase = Mathf.Clamp(targetPhase, 0, TotalPhases - 1);
+
+            if (targetPhase > 0 && targetPhase <= phaseThresholds.Length)
+            {
+                currentHP = maxHP * (phaseThresholds[targetPhase - 1] - 0.02f);
+            }
+            else
+            {
+                currentHP = maxHP;
+            }
+
+            currentPhase = targetPhase;
+            ApplyPhaseModifiers(currentPhase);
+            OnPhaseChanged?.Invoke(currentPhase);
+            TriggerOnDamageTaken(0f, currentHP);
+            Debug.Log($"[{GetType().Name}] [DebugSandbox] Đã ép Boss chuyển sang Phase {targetPhase}!");
+        }
+
+        /// <summary>
+        /// Ép Boss thực hiện tấn công (ưu tiên Pattern nếu có, ngược lại gọi đòn đánh cơ bản).
+        /// </summary>
+        public virtual void ForcePerformAttack()
+        {
+            if (isDead) return;
+
+            AttackPattern pattern = GetRandomPatternForCurrentPhase();
+            if (pattern != null)
+            {
+                TriggerAttackPattern(pattern);
+            }
+            else
+            {
+                base.PerformAttack();
+            }
+        }
+
+        #endregion
 
         // =====================================================================
         //  HELPERS

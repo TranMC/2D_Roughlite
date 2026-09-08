@@ -148,7 +148,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -340,7 +340,7 @@ MonoBehaviour:
     m_ActionName: Player/Jump[/Keyboard/space]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4750286034433932332, guid: 06ac895977169d448bb92975e4bc24ba, type: 3}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
         m_MethodName: OnPauseInput
         m_Mode: 0
@@ -439,10 +439,10 @@ MonoBehaviour:
   logMovement: 0
   logActions: 1
   logStateChanges: 1
-  walkSpeed: 5
-  runSpeed: 7
-  jumpImpulse: 14
-  airWalkSpeed: 3
+  walkSpeed: 8
+  runSpeed: 15
+  jumpImpulse: 15
+  airWalkSpeed: 12
   attackMovementMultiplier: 0
   _isMoving: 0
   _isRunning: 0

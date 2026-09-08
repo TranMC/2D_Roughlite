@@ -18,7 +18,33 @@ namespace Roguelite.Core
     /// </summary>
     public class RuntimeDebugConsole : MonoBehaviour
     {
+        public const string VERSION = "1.1.0";
         public static RuntimeDebugConsole Instance { get; private set; }
+
+        public bool IsOpen => showConsole;
+
+        /// <summary>
+        /// Kiểm tra xem con trỏ chuột hiện tại có đang nằm trong giao diện cửa sổ Debug Tool hay không.
+        /// Dùng để chặn các hành vi tấn công (Attack) hoặc thao tác gameplay vô tình khi click trong console.
+        /// </summary>
+        public bool IsPointerOverConsole()
+        {
+            if (!showConsole) return false;
+
+            Vector2 mouseScreenPos;
+            if (UnityEngine.InputSystem.Mouse.current != null)
+            {
+                mouseScreenPos = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+            }
+            else
+            {
+                mouseScreenPos = Input.mousePosition;
+            }
+
+            // Đổi tọa độ chuột từ Screen Space (gốc dưới-trái) sang IMGUI Space (gốc trên-trái)
+            Vector2 mouseGuiPos = new Vector2(mouseScreenPos.x, Screen.height - mouseScreenPos.y);
+            return windowRect.Contains(mouseGuiPos);
+        }
 
         [Header("===== Console Settings =====")]
         [Tooltip("Phím tắt chính để ẩn/hiện bảng Debug.")]
@@ -49,6 +75,7 @@ namespace Roguelite.Core
         private Vector2 weaponScrollPos;
         private Vector2 saveScrollPos;
         private Vector2 playerStatsScrollPos;
+        private int selectedBossIndex = 0;
 
         // Perk Pool Search & Filter Data
         private string perkSearchQuery = "";
@@ -187,7 +214,7 @@ namespace Roguelite.Core
 
             // GUI Skin & Layout
             GUI.depth = -1000; // Hiển thị trên cùng
-            windowRect = GUI.Window(99999, windowRect, DrawConsoleWindow, "<color=#00e5ff><b>🛠️ IN-GAME ADVANCED DEBUG TOOL</b></color> <color=#888888>(2D Roughlite Sandbox)</color>", windowStyle);
+            windowRect = GUI.Window(99999, windowRect, DrawConsoleWindow, $"<color=#00e5ff><b>🛠️ DEBUG MENU v{VERSION}</b></color> <color=#888888>(2D Roughlite Sandbox)</color>", windowStyle);
         }
 
         #endregion
@@ -569,96 +596,13 @@ namespace Roguelite.Core
 
         private void DrawBossSandboxTab()
         {
-            WorldBoss worldBoss = FindObjectOfType<WorldBoss>();
-            BossBase genericBoss = FindObjectOfType<BossBase>();
+            BossBase[] allBosses = FindObjectsOfType<BossBase>();
 
             GUILayout.BeginVertical(cardBoxStyle);
             GUILayout.Label("👑 <b>QUẢN LÝ & ĐIỀU KHIỂN BOSS SANDBOX</b>", cardTitleStyle);
             GUILayout.Space(4);
 
-            if (worldBoss != null)
-            {
-                float bossHpPercent = worldBoss.MaxHP > 0 ? (worldBoss.CurrentHP / worldBoss.MaxHP) * 100f : 0f;
-                GUILayout.Label($"• <b>Target Boss:</b> <color=#00ff88><b>{worldBoss.gameObject.name}</b></color> (WorldBoss v{WorldBoss.VERSION})");
-                GUILayout.Label($"• <b>Máu Boss:</b> <color=#ff4d4d>{worldBoss.CurrentHP:F1}</color> / {worldBoss.MaxHP:F1} ({bossHpPercent:F0}%) | <b>Phase:</b> <color=#00e5ff>{worldBoss.CurrentPhase}</color>/{worldBoss.TotalPhases - 1}");
-                GUILayout.Label($"• <b>Tích Lũy Đòn Đánh:</b> [{worldBoss.CurrentAttackCount}/{worldBoss.AttacksBeforeMeteor}] | <b>Trạng thái:</b> {(worldBoss.IsCastingMeteor ? "<color=#ffcc00>ĐANG TỤ METEOR</color>" : worldBoss.CurrentState.ToString())} | <b>Grounded:</b> {worldBoss.IsGrounded}");
-                GUILayout.Label($"• <b>Dummy Mode (Bất Tử / Khóa Máu):</b> {(worldBoss.IsDummyMode ? "<color=#00ff88>BẬT</color>" : "<color=#ff4d4d>TẮT</color>")}");
-
-                GUILayout.Space(6);
-
-                // --- HÀNG 1: DUMMY MODE & EP METEOR RAIN ---
-                GUILayout.BeginHorizontal();
-                GUIStyle dummyStyle = worldBoss.IsDummyMode ? btnToggleOnStyle : btnToggleOffStyle;
-                if (GUILayout.Button(worldBoss.IsDummyMode ? "🛡️ Dummy Mode: ON" : "🛡️ Dummy Mode: OFF", dummyStyle, GUILayout.Height(30)))
-                {
-                    worldBoss.IsDummyMode = !worldBoss.IsDummyMode;
-                    commandOutput = $"🛡️ Boss Dummy Mode: {(worldBoss.IsDummyMode ? "BẬT" : "TẮT")}";
-                }
-
-                if (GUILayout.Button("🔥 Ép Cast Mưa Thiên Thạch", btnWarningStyle, GUILayout.Height(30)))
-                {
-                    worldBoss.ForceTriggerMeteorRain();
-                    commandOutput = "🔥 Đã ép Boss kích hoạt chiêu Mưa Thiên Thạch!";
-                }
-
-                if (GUILayout.Button("❤️ Hồi Đầy Máu Boss", btnPrimaryStyle, GUILayout.Height(30)))
-                {
-                    worldBoss.ResetBossHealth();
-                    commandOutput = "❤️ Đã hồi đầy máu Boss!";
-                }
-
-                if (GUILayout.Button("☠️ Diệt Boss Ngay", btnDangerStyle, GUILayout.Height(30)))
-                {
-                    worldBoss.TakeDamage(999999f, Vector2.zero);
-                    commandOutput = "☠️ Đã tiêu diệt Boss!";
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.Space(6);
-
-                // --- HÀNG 2: EP CHUYỂN PHASE ---
-                GUILayout.Label("🌟 <b>ÉP CHUYỂN PHASE BOSS TỨC THÌ:</b>", cardTitleStyle);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Phase 0 (100% HP)", btnNormalStyle, GUILayout.Height(26))) worldBoss.ForceSetPhase(0);
-                if (GUILayout.Button("Phase 1 (Enrage 1)", btnNormalStyle, GUILayout.Height(26))) worldBoss.ForceSetPhase(1);
-                if (GUILayout.Button("Phase 2 (Enrage 2)", btnDangerStyle, GUILayout.Height(26))) worldBoss.ForceSetPhase(2);
-                GUILayout.EndHorizontal();
-
-                GUILayout.Space(6);
-
-                // --- HÀNG 3: TELEPORT TƯƠNG TÁC ---
-                GUILayout.Label("📍 <b>ĐIỀU HƯỚNG VỊ TRÍ:</b>", cardTitleStyle);
-                GUILayout.BeginHorizontal();
-                var player = FindObjectOfType<PlayerController>();
-                if (GUILayout.Button("🚀 Dịch Chuyển Player Đến Boss", btnNormalStyle, GUILayout.Height(26)))
-                {
-                    if (player != null)
-                    {
-                        player.transform.position = worldBoss.transform.position + Vector3.left * 3f;
-                        commandOutput = "🚀 Đã dịch chuyển Player tới cạnh Boss!";
-                    }
-                }
-                if (GUILayout.Button("🧲 Kéo Boss Lại Gần Player", btnNormalStyle, GUILayout.Height(26)))
-                {
-                    if (player != null)
-                    {
-                        worldBoss.transform.position = player.transform.position + Vector3.right * 4f;
-                        commandOutput = "🧲 Đã kéo Boss lại gần Player!";
-                    }
-                }
-                GUILayout.EndHorizontal();
-            }
-            else if (genericBoss != null)
-            {
-                GUILayout.Label($"• <b>Target Boss:</b> <color=#00ff88><b>{genericBoss.gameObject.name}</b></color> (BossBase)");
-                GUILayout.Label($"• <b>Máu Boss:</b> <color=#ff4d4d>{genericBoss.CurrentHP:F1}</color> / {genericBoss.MaxHP:F1} | <b>Phase:</b> {genericBoss.CurrentPhase}");
-                GUILayout.Space(4);
-                if (GUILayout.Button("☠️ Diệt Boss Ngay", btnDangerStyle, GUILayout.Height(28)))
-                {
-                    genericBoss.TakeDamage(999999f, Vector2.zero);
-                }
-            }
-            else
+            if (allBosses == null || allBosses.Length == 0)
             {
                 GUILayout.Label("<color=#ffcc00>⚠️ Hiện tại không có Boss nào trong Scene!</color>");
                 GUILayout.Space(6);
@@ -666,7 +610,139 @@ namespace Roguelite.Core
                 {
                     SkipToBossRoom();
                 }
+                GUILayout.EndVertical();
+                return;
             }
+
+            // Nếu có nhiều Boss trong Scene, cho phép chuyển đổi mục tiêu Boss
+            if (allBosses.Length > 1)
+            {
+                GUILayout.Label("🎯 <b>CHỌN BOSS ĐANG ĐIỀU KHIỂN:</b>", cardTitleStyle);
+                GUILayout.BeginHorizontal();
+                for (int i = 0; i < allBosses.Length; i++)
+                {
+                    if (allBosses[i] == null) continue;
+                    GUIStyle bStyle = (selectedBossIndex == i) ? btnPrimaryStyle : btnNormalStyle;
+                    string bName = $"{allBosses[i].gameObject.name} ({(allBosses[i] is WorldBoss ? "WorldBoss" : "Boss")})";
+                    if (GUILayout.Button(bName, bStyle, GUILayout.Height(26)))
+                    {
+                        selectedBossIndex = i;
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(4);
+            }
+
+            if (selectedBossIndex >= allBosses.Length) selectedBossIndex = 0;
+            BossBase targetBoss = allBosses[selectedBossIndex];
+
+            if (targetBoss == null)
+            {
+                GUILayout.EndVertical();
+                return;
+            }
+
+            WorldBoss worldBoss = targetBoss as WorldBoss;
+            float bossHpPercent = targetBoss.MaxHP > 0 ? (targetBoss.CurrentHP / targetBoss.MaxHP) * 100f : 0f;
+            string bossTypeName = (worldBoss != null) ? $"WorldBoss v{WorldBoss.VERSION}" : $"{targetBoss.GetType().Name} (Boss Thường)";
+
+            GUILayout.Label($"• <b>Target Boss:</b> <color=#00ff88><b>{targetBoss.gameObject.name}</b></color> ({bossTypeName})");
+            GUILayout.Label($"• <b>Máu Boss:</b> <color=#ff4d4d>{targetBoss.CurrentHP:F1}</color> / {targetBoss.MaxHP:F1} ({bossHpPercent:F0}%) | <b>Phase:</b> <color=#00e5ff>{targetBoss.CurrentPhase}</color>/{targetBoss.TotalPhases - 1}");
+
+            if (worldBoss != null)
+            {
+                GUILayout.Label($"• <b>Tích Lũy Đòn Đánh:</b> [{worldBoss.CurrentAttackCount}/{worldBoss.AttacksBeforeMeteor}] | <b>Trạng thái:</b> {(worldBoss.IsCastingMeteor ? "<color=#ffcc00>ĐANG TỤ METEOR</color>" : worldBoss.CurrentState.ToString())} | <b>Grounded:</b> {worldBoss.IsGrounded}");
+            }
+            else
+            {
+                GUILayout.Label($"• <b>Trạng thái:</b> <color=#00e5ff>{targetBoss.CurrentState}</color> | <b>Đang ra chiêu:</b> {(targetBoss.IsAttackingPattern ? "<color=#ffcc00>CÓ (Attack Pattern)</color>" : "KHÔNG")}");
+            }
+
+            GUILayout.Label($"• <b>Dummy Mode (Bất Tử / Khóa Máu):</b> {(targetBoss.IsDummyMode ? "<color=#00ff88>BẬT</color>" : "<color=#ff4d4d>TẮT</color>")}");
+
+            GUILayout.Space(6);
+
+            // --- HÀNG 1: DUMMY MODE, ACTIONS, V.V. ---
+            GUILayout.BeginHorizontal();
+            GUIStyle dummyStyle = targetBoss.IsDummyMode ? btnToggleOnStyle : btnToggleOffStyle;
+            if (GUILayout.Button(targetBoss.IsDummyMode ? "🛡️ Dummy Mode: ON" : "🛡️ Dummy Mode: OFF", dummyStyle, GUILayout.Height(30)))
+            {
+                targetBoss.IsDummyMode = !targetBoss.IsDummyMode;
+                commandOutput = $"🛡️ Boss Dummy Mode: {(targetBoss.IsDummyMode ? "BẬT" : "TẮT")}";
+            }
+
+            if (worldBoss != null)
+            {
+                if (GUILayout.Button("🔥 Ép Cast Mưa Thiên Thạch", btnWarningStyle, GUILayout.Height(30)))
+                {
+                    worldBoss.ForceTriggerMeteorRain();
+                    commandOutput = "🔥 Đã ép WorldBoss kích hoạt chiêu Mưa Thiên Thạch!";
+                }
+            }
+            else
+            {
+                if (GUILayout.Button("⚔️ Ép Boss Ra Đòn", btnWarningStyle, GUILayout.Height(30)))
+                {
+                    targetBoss.ForcePerformAttack();
+                    commandOutput = "⚔️ Đã ép Boss thực hiện tấn công!";
+                }
+            }
+
+            if (GUILayout.Button("❤️ Hồi Đầy Máu Boss", btnPrimaryStyle, GUILayout.Height(30)))
+            {
+                targetBoss.ResetBossHealth();
+                commandOutput = "❤️ Đã hồi đầy máu và reset trạng thái Boss!";
+            }
+
+            if (GUILayout.Button("☠️ Diệt Boss Ngay", btnDangerStyle, GUILayout.Height(30)))
+            {
+                targetBoss.TakeDamage(999999f, Vector2.zero);
+                commandOutput = "☠️ Đã tiêu diệt Boss!";
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(6);
+
+            // --- HÀNG 2: ÉP CHUYỂN PHASE ---
+            GUILayout.Label("🌟 <b>ÉP CHUYỂN PHASE BOSS TỨC THÌ:</b>", cardTitleStyle);
+            GUILayout.BeginHorizontal();
+            for (int p = 0; p < targetBoss.TotalPhases; p++)
+            {
+                string phaseTitle = p == 0 ? "Phase 0 (100% HP)" : $"Phase {p} (Enrage {p})";
+                GUIStyle pStyle = (p == targetBoss.CurrentPhase) ? btnPrimaryStyle : (p == targetBoss.TotalPhases - 1 ? btnDangerStyle : btnNormalStyle);
+                if (GUILayout.Button(phaseTitle, pStyle, GUILayout.Height(26)))
+                {
+                    targetBoss.ForceSetPhase(p);
+                    commandOutput = $"🌟 Đã ép Boss chuyển sang Phase {p}!";
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(6);
+
+            // --- HÀNG 3: TELEPORT TƯƠNG TÁC ---
+            GUILayout.Label("📍 <b>ĐIỀU HƯỚNG VỊ TRÍ:</b>", cardTitleStyle);
+            GUILayout.BeginHorizontal();
+            var player = FindObjectOfType<PlayerController>();
+            if (GUILayout.Button("🚀 Dịch Chuyển Player Đến Boss", btnNormalStyle, GUILayout.Height(26)))
+            {
+                if (player != null)
+                {
+                    player.transform.position = targetBoss.transform.position + Vector3.left * 3f;
+                    commandOutput = "🚀 Đã dịch chuyển Player tới cạnh Boss!";
+                }
+            }
+            if (GUILayout.Button("🧲 Kéo Boss Lại Gần Player", btnNormalStyle, GUILayout.Height(26)))
+            {
+                if (player != null)
+                {
+                    targetBoss.transform.position = player.transform.position + Vector3.right * 4f;
+                    var rb2d = targetBoss.GetComponent<Rigidbody2D>();
+                    if (rb2d != null) rb2d.velocity = Vector2.zero;
+                    commandOutput = "🧲 Đã kéo Boss lại gần Player!";
+                }
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
         }

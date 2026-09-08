@@ -32,6 +32,8 @@ namespace Roguelite.Enemy
     [RequireComponent(typeof(Collider2D))]
     public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
+        public const string VERSION = "1.1.0";
+
         #region ====== SERIALIZE FIELDS ======
 
         [Header("===== Reward Settings =====")]
@@ -156,6 +158,12 @@ namespace Roguelite.Enemy
 
         /// <summary>Sự kiện tĩnh phát ra khi có bất kỳ quái vật nào chết (dùng cho các hệ thống bổ trợ như Perk).</summary>
         public static event Action<EnemyBase> OnAnyEnemyDied;
+
+        /// <summary>Kích hoạt event OnDamageTaken từ các lớp con (như BossBase) để đồng bộ UI máu và hệ thống liên quan.</summary>
+        protected void TriggerOnDamageTaken(float damage, float remainingHP)
+        {
+            OnDamageTaken?.Invoke(damage, remainingHP);
+        }
 
         #endregion
 
